@@ -1,0 +1,14 @@
+## 2024-03-24
+
+Vytvoril som projekt pre stránku... teda, presnejšie, znovuvytvoril - VSCode odmietal pushnúť mi kód stránky na GitHub, tak som jednoducho zmazal starý repozitár a vytvoril ho nanovo - okrem špecifikácie tam aj tak nič nebolo.
+
+Next.js je pre mňa nová technológia, postupujem preto pomaly a s pomocou tutoriálov. Väčšinu z času venovanému tomuto predmetu som teda strávil učením sa (ďakujem svojmu kamarátovi za to, že mi dal dva in-person dvojhodinové tutoriály na React a Next.js).
+
+A čo reálne vidno:
+tl;dr: neveľa.
+
+Zatiaľ som projekt hodil na Vercel, vytvoril Postgress databázu a hodil do nej malú tabuľku užívateľov. Vysvitlo, že existuje knižnica _bcrypt_, ktorá si preberá na seba všetky starosti s heslami a ukladá heslo + salt spolu do jedného stĺpca v databáze... takže stĺpec so soľou nakoniec nebol potrebný (so much for _Soľ nad zlato_). Prebral a upravil som si _seed.js_ z [tejto stránky](https://nextjs.org/learn/dashboard-app/setting-up-your-database), takže mám spôsob, ako si vygenerovať dummy hodnoty.
+
+Aktuálne stránka má vypisovať zoznam všetkých užívateľov v databáze, ale nerobí to, čo je však problém pre zajtrajšieho mňa.
+
+Do budúceho týždňa skúsim vytvoriť stránku zobrazenia receptu. Viac sľubovať nejdem, lebo nechcem sklamať.

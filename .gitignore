@@ -28,6 +28,9 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# added because a tutorial said so
+.env
+
 # vercel
 .vercel
 
