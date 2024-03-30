@@ -3,16 +3,14 @@ const bcrypt = require("bcrypt");
 
 const users = [
   {
-    id: "410544b2-4001-4271-9855-fec4b6a6442a",
     username: "admin",
     name: "admin",
     password: "admin",
     admin: true,
   },
   {
-    id: "510544b2-4001-4271-9855-fec4b6a6442a",
     username: "cxivo",
-    name: "Cxivo",
+    name: "ĉivo",
     password: "heslo",
     admin: true,
   },
@@ -40,8 +38,8 @@ async function seedUsers(client) {
       users.map(async (user) => {
         const hashedPassword = await bcrypt.hash(user.password, 10);
         return client.sql`
-        INSERT INTO users (id, username, name, password, created, admin)
-        VALUES (${user.id}, ${user.username}, ${user.name}, ${hashedPassword}, NOW() , ${user.admin})
+        INSERT INTO users (username, name, password, created, admin)
+        VALUES (${user.username}, ${user.name}, ${hashedPassword}, NOW() , ${user.admin})
         ON CONFLICT (id) DO NOTHING;
       `;
       })

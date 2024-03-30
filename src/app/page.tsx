@@ -1,10 +1,13 @@
 import { sql } from "@vercel/postgres";
+import { unstable_noStore } from "next/cache";
+import Link from "next/link";
 
 export default async function Cart({
   params,
 }: {
   params: { user: string };
 }): Promise<JSX.Element> {
+  unstable_noStore();
   const { rows } = await sql`SELECT * from USERS`; //where username=${params.user}
 
   return (
@@ -15,6 +18,8 @@ export default async function Cart({
           Užívateľ {row.id} - {row.name}
         </div>
       ))}
+      Btw, stránka receptov:
+      <Link href="/recept"> tuná </Link>
     </div>
   );
 }
