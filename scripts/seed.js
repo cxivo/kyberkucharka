@@ -56,8 +56,11 @@ const recipes = [
         title: "všetko",
         index: 0,
         ingredients: [
-          { ingredient_id: "TODO", amount: 250 },
-          { ingredient_id: "TODO", amount: 1 },
+          {
+            ingredient_id: "c05bd390-55d3-4b42-9b79-48a7f03a5a80",
+            amount: 250,
+          },
+          { ingredient_id: "85aec85e-bb69-4d26-9f49-316ed73f1e98", amount: 1 },
         ],
       },
     ],
@@ -75,7 +78,12 @@ const recipes = [
       {
         title: "MLJEKO!",
         index: 0,
-        ingredients: [{ ingredient_id: "TODO", amount: 250 }],
+        ingredients: [
+          {
+            ingredient_id: "c05bd390-55d3-4b42-9b79-48a7f03a5a80",
+            amount: 250,
+          },
+        ],
       },
     ],
   },
@@ -124,6 +132,10 @@ async function seedUsers(client) {
 
 async function seedRecipes(client) {
   try {
+    await client.sql`DROP TABLE recipes;`;
+    await client.sql`DROP TABLE sections;`;
+    await client.sql`DROP TABLE section_ingredients;`;
+
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     // Create the "recipes" table if it doesn't exist
     const createTable = await client.sql`
@@ -165,31 +177,89 @@ async function seedRecipes(client) {
             REFERENCES users(id)
      */
 
-    console.log(`Created "recipes" table`);
+    console.log(`Created all the neccessary tables`);
 
     // Insert data into the "recipes" table
     const insertedRecipes = await Promise.all(
       recipes.map(async (recipe) => {
+        /*
+        console.log(`
+        WITH recipe_id AS 
+          (INSERT INTO recipes (name, creator, fork, text, created, preparation_time)
+          VALUES ('${recipe.name}', '${recipe.creator}', '${recipe.fork}', '${
+          recipe.text
+        }', NOW(), ${recipe.preparation_time})
+          RETURNING id), 
+          ${recipe.sections
+            .map(
+              (section) =>
+                "section_" +
+                section.index +
+                " AS (INSERT INTO sections (recipe, name, index) VALUES (recipe_id.id, " +
+                section.name +
+                ", " +
+                section.index +
+                ") RETURNING id)"
+            )
+            .join(", ")} 
+          INSERT INTO section_ingredients (section, ingredient, amount) 
+            VALUES ${recipe.sections
+              .map((section) =>
+                section.ingredients
+                  .map(
+                    (ingredient) =>
+                      "(section_" +
+                      section.index +
+                      ".id, '" +
+                      ingredient.ingredient_id +
+                      "', " +
+                      ingredient.amount +
+                      ")"
+                  )
+                  .join(", ")
+              )
+              .join(", ")};`);
+*/
         return client.sql`
         INSERT INTO recipes (name, creator, fork, text, created, preparation_time)
-        VALUES (${recipe.name}, ${recipe.creator}, ${recipe.fork}, ${recipe.text}, NOW(), ${recipe.preparation_time})
-        RETURNING id;
-      `;
+          VALUES (${recipe.name}, ${recipe.creator}, ${recipe.fork}, ${recipe.text}, NOW(), ${recipe.preparation_time})
+          RETURNING id;`;
       })
     );
 
     const insertedSections = await Promise.all(
-      insertedRecipes.map(async (recipe, index) => {
-        return client.sql`
-        INSERT INTO recipes (name, creator, fork, text, created, preparation_time)
-        VALUES (${recipe.name}, ${recipe.creator}, ${recipe.fork}, ${recipe.text}, NOW(), ${recipe.preparation_time})
-        RETURNING id;
-      `;
+      recipes.map(async (recipe, index) => {
+        return Promise.all(
+          recipe.sections.map(async (section, index2) => {
+            return client.sql`
+            INSERT INTO sections (recipe, name, index) 
+            VALUES (${insertedRecipes[index].rows[0].id}, ${recipe.sections[index2].title}, ${recipe.sections[index2].index})
+            RETURNING id;`;
+          })
+        );
+      })
+    );
+
+    const insertedIngredients = await Promise.all(
+      recipes.map(async (recipe, index) => {
+        return Promise.all(
+          recipe.sections.map(async (section, index2) => {
+            return Promise.all(
+              section.ingredients.map(
+                async (ing, index3) => client.sql`
+              INSERT INTO section_ingredients (section, ingredient, amount) 
+              VALUES (${insertedSections[index][index2].rows[0].id}, 
+                ${section.ingredients[index3].ingredient_id}, 
+                ${section.ingredients[index3].amount});`
+              )
+            );
+          })
+        );
       })
     );
 
     console.log(`Seeded ${insertedRecipes.length} recipes`);
-    console.log(insertedRecipes[0].rows[0].id);
+    console.log(insertedSections[0][0].rows[0].id);
 
     return {
       createTable,
@@ -250,9 +320,9 @@ async function seedIngredients(client) {
 async function main() {
   const client = await db.connect();
 
-  await seedUsers(client);
+  //await seedUsers(client);
+  //await seedIngredients(client);
   await seedRecipes(client);
-  await seedIngredients(client);
 
   await client.end();
 }
