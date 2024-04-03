@@ -20,6 +20,8 @@ export default async function Cart({
       ))}
       Btw, stránka receptov:
       <Link href="/recept"> tuná </Link>
+      <br />A tu sa dá
+      <Link href="/registracia"> registrovať</Link>.
     </div>
   );
 }
