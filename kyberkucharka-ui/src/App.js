@@ -4,6 +4,7 @@ import { getRecipes } from "./recipe/communication";
 
 function App() {
   const recipes = getRecipes();
+  console.log(recipes);
 
   return (
     <div className="App">
