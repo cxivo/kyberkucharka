@@ -1,7 +1,10 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { getRecipes } from "./recipe/communication";
 
 function App() {
+  const recipes = getRecipes();
+
   return (
     <div className="App">
       <header className="App-header">
@@ -18,6 +21,7 @@ function App() {
           Learn React
         </a>
       </header>
+      <ul>{recipes}</ul>
     </div>
   );
 }
