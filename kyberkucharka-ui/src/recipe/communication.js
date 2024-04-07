@@ -1,7 +1,5 @@
 export async function getRecipes() {
-  return fetch(
-    "https://kyberkucharka-server-cancslagh-cxivos-projects.vercel.app/api/recipes"
-  )
+  return fetch("https://kyberkucharka-server.vercel.app/api/hello")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Error getting recipe list");
