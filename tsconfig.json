@@ -27,7 +27,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "kyberkucharka-server/routes/index.js",
-    "kyberkucharka-server/api/index.ts"
+    "kyberkucharka-server/api/index.ts",
+    "kyberkucharka-server/database.ts",
+    "kyberkucharka-server/app.js"
   ],
   "exclude": ["node_modules"]
 }
