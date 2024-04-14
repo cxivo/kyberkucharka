@@ -1,5 +1,5 @@
 export async function getRecipes() {
-  return fetch("https://kyberkucharka-server.vercel.app/api/hello")
+  return fetch("https://kyberkucharka.onrender.com/")
     .then((response) => {
       if (!response.ok) {
         throw new Error("Error getting recipe list");
