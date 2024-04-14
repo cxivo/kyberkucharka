@@ -94,14 +94,13 @@ async function seedUsers(client) {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     // Create the "users" table if it doesn't exist
     const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS users (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        username VARCHAR(255) NOT NULL UNIQUE,
-        name TEXT NOT NULL,
-        password TEXT NOT NULL,
-        created TIMESTAMP NOT NULL,
-        admin BOOLEAN NOT NULL
-      );
+    CREATE TABLE IF NOT EXISTS users (
+      id VARCHAR(64) PRIMARY KEY,
+      name VARCHAR(64) NOT NULL,
+      password TEXT NOT NULL,
+      created TIMESTAMP NOT NULL,
+      admin BOOLEAN NOT NULL
+    );
     `;
 
     console.log(`Created "users" table`);
@@ -139,18 +138,24 @@ async function seedRecipes(client) {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
     // Create the "recipes" table if it doesn't exist
     const createTable = await client.sql`
-      CREATE TABLE IF NOT EXISTS recipes (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        name TEXT NOT NULL,
-        creator UUID NOT NULL,
-        fork UUID,
-        text TEXT NOT NULL,
-        created TIMESTAMP NOT NULL,
-        preparation_time INT,
-        cook_time INT,
-        rest_time INT,
-        difficulty INT
-      );
+    CREATE TABLE IF NOT EXISTS recipes (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      name TEXT NOT NULL,
+      creator VARCHAR(64) NOT NULL,
+      fork UUID,
+      text TEXT NOT NULL,
+      created TIMESTAMP NOT NULL,
+      preparation_time INT,
+      cook_time INT,
+      rest_time INT,
+      difficulty INT,
+      constraint foreign_key_creator
+        foreign key(creator)
+          references users(id),
+      constraint foreign_key_fork
+        foreign key(fork)
+          references recipes(id)
+    );
     `;
 
     const createTable2 = await client.sql`
@@ -158,7 +163,10 @@ async function seedRecipes(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         recipe UUID NOT NULL,
         name TEXT,
-        index INTEGER
+        index INTEGER,
+        constraint foreign_key_recipe
+          foreign key(recipe)
+            references recipes(id)
       );
     `;
 
@@ -167,7 +175,13 @@ async function seedRecipes(client) {
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         section UUID NOT NULL,
         ingredient UUID NOT NULL,
-        amount REAL
+        amount REAL,
+        constraint foreign_key_section
+          foreign key(section)
+            references sections(id),
+        constraint foreign_key_ingredient
+          foreign key(ingredient)
+            references ingredients(id)
       );
     `;
 
@@ -283,10 +297,13 @@ async function seedIngredients(client) {
         mass_per_piece REAL NOT NULL,
         density REAL NOT NULL,
         alt TEXT,
-        creator UUID NOT NULL,
+        creator VARCHAR(64) NOT NULL,
         approved BOOLEAN NOT NULL,
         vegetarian BOOLEAN NOT NULL,
-        vegan BOOLEAN NOT NULL
+        vegan BOOLEAN NOT NULL,
+        constraint foreign_key_creator
+          foreign key(creator)
+            references users(id)
       );
     `;
 
