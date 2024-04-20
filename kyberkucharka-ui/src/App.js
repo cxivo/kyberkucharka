@@ -1,30 +1,14 @@
 import "./App.css";
-import { getUsers } from "./recipe/communication";
-import { useEffect, useState } from "react";
+import { Outlet, Link } from "react-router-dom";
 
 function App() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getUsers();
-      setUsers(data);
-    };
-
-    fetchData();
-  }, []);
-
-  const listUsers = () => {
-    return (
-      <ul>
-        {users.map((user) => (
-          <li key={user.id}>{user.name}</li>
-        ))}
-      </ul>
-    );
-  };
-
-  return <div className="App">{listUsers()}</div>;
+  return (
+    <div id="common">
+      <p>Helou!</p>
+      <Link to="users">Zoznam používateľov</Link>
+      <Outlet />
+    </div>
+  );
 }
 
 export default App;

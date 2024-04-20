@@ -30,7 +30,7 @@ const ingredients = [
   },
   {
     name: "rožok",
-    primary_unit: "ml",
+    primary_unit: "g",
     mass_per_piece: 40,
     density: 1.0, // netreba
     alt: "rohlík",
@@ -99,7 +99,7 @@ async function seedUsers(client) {
       name VARCHAR(64) NOT NULL,
       password TEXT NOT NULL,
       created TIMESTAMP NOT NULL,
-      admin BOOLEAN NOT NULL
+      admin BOOLEAN NOT NULL DEFAULT FALSE
     );
     `;
 
@@ -139,11 +139,12 @@ async function seedRecipes(client) {
     // Create the "recipes" table if it doesn't exist
     const createTable = await client.sql`
     CREATE TABLE IF NOT EXISTS recipes (
-      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       creator VARCHAR(64) NOT NULL,
-      fork UUID,
-      text TEXT NOT NULL,
+      fork INTEGER,
+      description TEXT,
+      instructions TEXT NOT NULL,
       created TIMESTAMP NOT NULL,
       preparation_time INT,
       cook_time INT,
@@ -160,8 +161,8 @@ async function seedRecipes(client) {
 
     const createTable2 = await client.sql`
       CREATE TABLE IF NOT EXISTS sections (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        recipe UUID NOT NULL,
+        id SERIAL PRIMARY KEY,
+        recipe INTEGER NOT NULL,
         name TEXT,
         index INTEGER,
         constraint foreign_key_recipe
@@ -172,9 +173,9 @@ async function seedRecipes(client) {
 
     const createTable3 = await client.sql`
       CREATE TABLE IF NOT EXISTS section_ingredients (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        section UUID NOT NULL,
-        ingredient UUID NOT NULL,
+        id SERIAL PRIMARY KEY,
+        section INTEGER NOT NULL,
+        ingredient INTEGER NOT NULL,
         amount REAL,
         constraint foreign_key_section
           foreign key(section)
@@ -291,7 +292,7 @@ async function seedIngredients(client) {
     // Create the "ingredients" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS ingredients (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         primary_unit TEXT NOT NULL,
         mass_per_piece REAL NOT NULL,
