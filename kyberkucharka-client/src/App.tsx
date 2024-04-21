@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 import logout from "./api/logout";
 import { User } from "./interfaces/user";
 
-export const serverAddress = "http://localhost:3001";
+export const serverAddress = "https://kyberkucharka-api.onrender.com";
 
 function App() {
   //const userContext = useContext(UserContext);
