@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { BrowserRouter, Link, Outlet, Route, Routes } from "react-router-dom";
 import { UserContext } from "./api/UserContext";
 import UserList from "./pages/UserList";
@@ -7,12 +7,12 @@ import Register from "./pages/Register";
 import { ErrorPage } from "./pages/error/ErrorPage";
 import Home from "./pages/Home";
 import logout from "./api/logout";
-import { User } from "./user";
+import { User } from "./interfaces/user";
 
-export const serverAddress = "https://kyberkucharka-api.onrender.com";
+export const serverAddress = "http://localhost:3001";
 
 function App() {
-  const userContext = useContext(UserContext);
+  //const userContext = useContext(UserContext);
 
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user") ?? "{}") as User
