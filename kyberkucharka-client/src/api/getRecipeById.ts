@@ -1,10 +1,10 @@
 import { serverAddress } from "../App";
 
-export default async function getUserById(id: string) {
-  return await fetch(serverAddress + `/user/${id}`)
+export default async function getRecipeById(id: string) {
+  return await fetch(serverAddress + `/recipe/${id}`)
     .then((response) => {
       if (!response.ok) {
-        throw new Error(`Error getting user ${id}`);
+        throw new Error(`Error getting recipe ${id}`);
       }
 
       return response;

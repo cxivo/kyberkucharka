@@ -1,5 +1,5 @@
 //import { useEffect, useState } from "react";
-import { User } from "../user.ts";
+import { User } from "../interfaces/user.ts";
 import { useState } from "react";
 import { getUsers } from "../api/getUsers.ts";
 

@@ -272,6 +272,51 @@ app.post("/init", async (req, res) => {
   res.json({ message: "Zen reset performed, master" });
 });
 
+app.get("/recipe/:recipeId", async (req, res) => {
+  try {
+    const recipe = await db.any(
+      new PreparedStatement({
+        name: "get-recipe",
+        text: `SELECT json_build_object(
+          'id', recipes.id,
+          'name', recipes.name,
+          'created', recipes.created,
+          'fork', recipes.fork,
+          'description', recipes.description,
+          'instructions', recipes.instructions,
+          'preparationTime', recipes.preparation_time,
+          'cookTime', recipes.cook_time,
+          'restTime', recipes.rest_time,
+          'difficulty', recipes.difficulty,
+          'sections', json_build_array(json_build_object(
+            'name', sections.name,
+            'index', sections.index,
+            'ingredients', json_build_array(json_build_object(
+              'amount', section_ingredients.amount,
+              'ingredient', json_build_object(
+                'name', ingredients.name,
+                'primaryUnit', ingredients.primary_unit
+              )
+            ))
+          ))
+
+        )
+          FROM recipes
+          LEFT JOIN sections ON sections.recipe = recipes.id 
+          LEFT JOIN section_ingredients ON section_ingredients.section = sections.id
+          JOIN ingredients ON section_ingredients.ingredient = ingredients.id
+          WHERE recipes.id = $1
+          ORDER BY sections.index ASC;`,
+        values: [req.params.recipeId],
+      })
+    );
+
+    res.json(recipe);
+  } catch (e) {
+    res.status(404).json({});
+  }
+});
+
 const server = app.listen(port, () =>
   console.log(`Example app listening on port ${port}!`)
 );
