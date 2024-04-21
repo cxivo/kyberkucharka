@@ -1,14 +1,17 @@
-import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router-dom";
+//import { useEffect, useState } from "react";
+import { User } from "../user.ts";
+import { useState } from "react";
+import { getUsers } from "../api/getUsers.ts";
 
-interface User {
-  id: string;
-  name: string;
-  created: string;
-  admin: boolean;
-}
 export default function UserList() {
-  const users = useLoaderData() as User[];
+  //const users = useLoaderData() as User[];
+  const [users, setUsers] = useState([]) as [User[], any];
+  const [finished, setFinished] = useState(false) as [boolean, any];
+
+  getUsers().then((u) => {
+    setUsers(u);
+    setFinished(true);
+  });
 
   return (
     <div>
@@ -18,8 +21,10 @@ export default function UserList() {
             <li key={user.id}>{user.name}</li>
           ))}
         </ul>
+      ) : finished ? (
+        <em>Žiadni užívatelia</em>
       ) : (
-        <em>No users found</em>
+        <em>Načítanie...</em>
       )}
     </div>
   );

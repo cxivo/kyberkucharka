@@ -1,5 +1,7 @@
+import { serverAddress } from "../App";
+
 export default async function getUserById(id: string) {
-  return await fetch(`http://localhost:3001/${id}`)
+  return await fetch(serverAddress + `/${id}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Error getting user ${id}`);

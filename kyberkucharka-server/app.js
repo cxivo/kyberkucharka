@@ -7,7 +7,12 @@ const cors = require("cors"); // of CORS it didn't work
 const bcrypt = require("bcrypt");
 const { PreparedStatement } = require("pg-promise");
 
-const { check, validationResult } = require("express-validator");
+const {
+  check,
+  validationResult,
+  body,
+  ExpressValidator,
+} = require("express-validator");
 const jsonwebtoken = require("jsonwebtoken");
 
 app.use(express.json());
@@ -43,32 +48,34 @@ app.get("/users/:userId", async (req, res) => {
 app.post(
   "/users",
   [
-    check("id")
-      .isLength({ min: 3, max: 32 })
-      .withMessage("Jedinečné meno musí mať dĺžku 3-32 znakov"),
-    check("id")
-      .matches(/^[a-zA-Z0-9-_]+$/)
-      .withMessage(
-        "Jedinečné meno môže obsahovať iba písmená bez diakritiky, čísla, pomlčku a podčiarkovník"
-      ),
-    check("name")
-      .isLength({ min: 3, max: 64 })
-      .withMessage("Meno musí mať dĺžku 3-64 znakov"),
-    check("password")
-      .isLength({ min: 8, max: 64 })
-      .withMessage("Heslo musí mať dĺžku 8-64 znakov"),
+    [
+      check("id")
+        .isLength({ min: 3, max: 32 })
+        .withMessage("Jedinečné meno musí mať dĺžku 3-32 znakov"),
+      check("id")
+        .matches(/^[a-zA-Z0-9-_]+$/)
+        .withMessage(
+          "Jedinečné meno môže obsahovať iba písmená bez diakritiky, čísla, pomlčku a podčiarkovník"
+        ),
+      check("name")
+        .isLength({ min: 3, max: 64 })
+        .withMessage("Meno musí mať dĺžku 3-64 znakov"),
+      check("password")
+        .isLength({ min: 8, max: 64 })
+        .withMessage("Heslo musí mať dĺžku 8-64 znakov"),
+    ],
   ],
   async (req, res) => {
     // returns errors if validation failed
     const errors = validationResult(req);
+
+    const { id, name, password } = req.body;
     if (!errors.isEmpty()) {
       res
         .status(400)
         .json({ id: id, name: name, error: errors.array()[0].msg });
       return;
     }
-
-    const { id, name, password } = req.body;
 
     // test for duplicates
     const possibleDuplicate = await db.any(
@@ -104,7 +111,8 @@ app.post(
       });
 
     // everything went well
-    res.status(201).json({ id: id, name: name });
+    const user = { id: id, name: name, admin: false };
+    res.status(201).json({ user: user });
   }
 );
 
@@ -149,13 +157,10 @@ app.post("/login", async (req, res) => {
   }
 
   // token
-  const token = jsonwebtoken.sign(
-    { id: userInfo.id, admin: userInfo.admin },
-    accessToken,
-    {
-      expiresIn: "60m",
-    }
-  );
+  const user = { id: id, name: userInfo.name, admin: userInfo.admin };
+  const token = jsonwebtoken.sign({ user: user }, accessToken, {
+    expiresIn: "60m",
+  });
 
   let options = {
     maxAge: 60 * 60 * 1000,
@@ -167,8 +172,7 @@ app.post("/login", async (req, res) => {
   res.cookie("SessionID", token, options);
 
   res.status(200).json({
-    id: userInfo.id,
-    name: userInfo.name,
+    user: user,
     message: "Úspešne vstránkovanô",
   });
 });
