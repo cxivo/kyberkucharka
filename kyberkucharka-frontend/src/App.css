@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss"; */
 
 
 #root {
@@ -43,3 +43,29 @@
 .read-the-docs {
   color: #888;
 }
+
+nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+nav * {
+  display: block;
+}
+
+#userDiv {
+  display: flex;
+  flex-direction: row;
+}
+
+#userDiv * {
+  margin-left: 10pt;
+}
+
+.recipe {
+  border-style: solid;
+}
+
+
+
