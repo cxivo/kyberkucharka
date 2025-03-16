@@ -2,19 +2,27 @@ import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+import Recipe from "./Recipe";
+import { Link } from "react-router-dom";
 
 function Header() {
-	return (<>
-		<div>Kyberkuchárka</div>
-		<div>prihlásiť sa</div>
-	</>)
+  return (
+    <>
+      <Link to="/">Kyberkuchárka</Link>
+      <div>prihlásiť sa</div>
+    </>
+  );
 }
 
-function App() {
-	return (<>
-		<Header></Header>
-		<h1>Vitajte na hlavnej stránke!</h1>
-	</>)
+function App({ children }) {
+  return (
+    <>
+      <Header></Header>
+      <h1>Vitajte na hlavnej stránke!</h1>
+      <Link to="/about">O projekte</Link>
+      <div>{children}</div>
+    </>
+  );
 }
 
 
