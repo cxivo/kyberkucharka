@@ -9,8 +9,9 @@ interface Recipe {
 }
 
 const recipes: Recipe[] = [
+  { id: 0, title: "Nulový koláč", author: "nikto" },
   { id: 1, title: "Obzerance s makom", author: "cxivo" },
-  { id: 2, title: "Chlebík s maslom", author: "cimrman" }
+  { id: 2, title: "Chlebík s maslom", author: "cimrman" },
 ];
 
 

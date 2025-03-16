@@ -5,6 +5,7 @@ import "./index.css";
 import App from "./App.tsx";
 import About from "./About.tsx";
 import Recipe from "./Recipe.tsx";
+import NoPage from "./NoPage.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,22 @@ const router = createBrowserRouter([
     element: (
       <App>
         <About></About>
+      </App>
+    ),
+  },
+  {
+    path: "/recipes/:slug",
+    element: (
+      <App>
+        <Recipe />
+      </App>
+    ),
+  },
+  {
+    path: "*",
+    element: (
+      <App>
+        <NoPage />
       </App>
     ),
   },
