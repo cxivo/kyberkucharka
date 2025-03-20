@@ -6,13 +6,14 @@ import App from "./App.tsx";
 import About from "./About.tsx";
 import ReadRecipe from "./ReadRecipe.tsx";
 import NoPage from "./NoPage.tsx";
+import MainPage from "./MainPage.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
       <App>
-        <ReadRecipe></ReadRecipe>
+        <MainPage></MainPage>
       </App>
     ),
   },

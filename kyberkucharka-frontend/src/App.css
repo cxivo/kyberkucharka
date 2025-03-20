@@ -67,5 +67,10 @@ nav * {
   border-style: solid;
 }
 
-
+.recipeCard {
+  border-style: outset;
+  border-radius: 10pt;
+  margin-top: 20pt;
+  padding: 10pt;
+}
 

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import {
   Ingredient,
+  PartialRecipe,
   Recipe,
   User,
 } from "../../../common-interfaces/interfaces";
@@ -77,7 +78,7 @@ const recipes: Recipe[] = [
 
 // get all recipes
 router.get("/recipes", (req: Request, res: Response) => {
-  res.json(recipes);
+  res.json(recipes as PartialRecipe[]);
 });
 
 // get recipe by id

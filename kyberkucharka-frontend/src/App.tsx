@@ -19,8 +19,6 @@ function App({ children }: any) {
   return (
     <>
       <Header></Header>
-      <h1>Vitajte na hlavnej stránke!</h1>
-      <Link to="/about">O projekte</Link>
       <div>{children}</div>
     </>
   );
