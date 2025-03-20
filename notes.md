@@ -1,0 +1,4 @@
+- useful TS+Express tutorial https://blog.logrocket.com/how-to-set-up-node-typescript-express/
+- sharing typescript interfaces 
+  - https://www.reddit.com/r/typescript/comments/11zibzy/how_to_sync_types_between_the_backend_and_frontend/
+  -  https://stackoverflow.com/questions/47729344/how-to-share-code-between-typescript-projects

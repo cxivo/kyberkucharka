@@ -1,15 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { Recipe } from "../../common-interfaces/interfaces";
 
-export default function Recipe() {
-  const [recipeData, setRecipeData] = useState<any>([]);
+export default function ReadRecipe() {
+  const [recipeData, setRecipeData] = useState<Recipe>();
   const [loading, setLoading] = useState<boolean>(true);
 
-  let { slug } = useParams();
-  if (!slug) {
-    slug = "0";
-  }
+  const { slug = "0" } = useParams();
 
   const apiCall = () => {
     axios.get("http://localhost:3000").then((data) => {
@@ -26,7 +24,7 @@ export default function Recipe() {
           const response = await fetch(
             `http://localhost:3000/api/recipes/${slug}`
           );
-          const result = await response.json();
+          const result = (await response.json()) as Recipe;
           setRecipeData(result);
           setLoading(false);
         }, 1000);
@@ -45,19 +43,30 @@ export default function Recipe() {
         <p>načítavam...</p>
       ) : (
         <>
-          <h2>{recipeData.title}</h2>
-          <img src="https://i.imgur.com/MK3eW3Am.jpg" alt="Katherine Johnson" />
-          <p>autor: {recipeData.author}</p>
-          <p>Tento recept robia odjakživa moja stará mama (na obrázku)</p>
+          <h2>{recipeData?.title}</h2>
+          {recipeData?.image_link ? (
+            <img src={recipeData?.image_link} alt="Obrázok k receptu" />
+          ) : (
+            <></>
+          )}
+          <p>autor: {recipeData?.author.display_name}</p>
+          <p>{recipeData?.description}</p>
           <h3>Ingrediencie</h3>
-          <ul className="ingredientList">
-            <li>Milý pohľad</li>
-            <li>Vrúcne srdce</li>
-            <li>Veľa lásky</li>
-            <li>Štipka humoru</li>
-          </ul>
+          {recipeData?.sections.map((section) => (
+            <>
+              <h4>{section.name}</h4>
+              <ul className="ingredientList">
+                {section.used_ingredients.map((used_ingredient) => (
+                  <li>
+                    {used_ingredient.ingredient.name}: {used_ingredient.amount}{" "}
+                    {used_ingredient.ingredient.primary_unit}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ))}
           <h3>Postup</h3>
-          <p>Všetko zmiešame a posypané láskou podávame.</p>
+          <p>{recipeData?.instructions}</p>
         </>
       )}
       <button onClick={apiCall}>apikól</button>

@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
 import About from "./About.tsx";
-import Recipe from "./Recipe.tsx";
+import ReadRecipe from "./ReadRecipe.tsx";
 import NoPage from "./NoPage.tsx";
 
 const router = createBrowserRouter([
@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <App>
-        <Recipe></Recipe>
+        <ReadRecipe></ReadRecipe>
       </App>
     ),
   },
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
     path: "/recipes/:slug",
     element: (
       <App>
-        <Recipe />
+        <ReadRecipe />
       </App>
     ),
   },
