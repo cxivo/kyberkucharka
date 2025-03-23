@@ -129,6 +129,11 @@ router.post("/recipes", (req: Request, res: Response) => {
   res.status(201).json(newRecipe);
 });
 
+// get all ingredients
+router.get("/ingredients", (req: Request, res: Response) => {
+  res.json(ingredients);
+});
+
 // get ingredient by id
 router.get("/ingredients/:id", (req: Request, res: Response) => {
   const ingredientId = parseInt(req.params.id);

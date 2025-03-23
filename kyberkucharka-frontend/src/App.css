@@ -85,3 +85,7 @@ nav * {
   border-style: dotted;
   margin: 5pt;
 }
+
+.select-thing {
+  color: black;
+}
