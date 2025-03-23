@@ -65,6 +65,8 @@ nav * {
 
 .recipe {
   border-style: solid;
+  margin: 5pt;
+  padding: 10pt;
 }
 
 .recipeCard {
@@ -74,3 +76,12 @@ nav * {
   padding: 10pt;
 }
 
+.section {
+  border-style: solid;
+  margin: 5pt;
+}
+
+.ingredient {
+  border-style: dotted;
+  margin: 5pt;
+}

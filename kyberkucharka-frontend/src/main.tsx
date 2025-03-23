@@ -7,6 +7,9 @@ import About from "./About.tsx";
 import ReadRecipe from "./ReadRecipe.tsx";
 import NoPage from "./NoPage.tsx";
 import MainPage from "./MainPage.tsx";
+import EditRecipe from "./EditRecipe.tsx";
+
+export const serverURL = "http://localhost:3000";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +33,22 @@ const router = createBrowserRouter([
     element: (
       <App>
         <ReadRecipe />
+      </App>
+    ),
+  },
+  {
+    path: "/edit",
+    element: (
+      <App>
+        <EditRecipe />
+      </App>
+    ),
+  },
+  {
+    path: "/edit/:slug",
+    element: (
+      <App>
+        <EditRecipe />
       </App>
     ),
   },

@@ -1,16 +1,17 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Recipe } from "../../common-interfaces/interfaces";
+import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
+import { serverURL } from "./main";
 
 export default function ReadRecipe() {
-  const [recipeData, setRecipeData] = useState<Recipe>();
+  const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
 
   const { slug = "0" } = useParams();
 
   const apiCall = () => {
-    axios.get("http://localhost:3000").then((data) => {
+    axios.get(`${serverURL}`).then((data) => {
       //this console.log will be in our frontend console
       console.log(data);
     });
@@ -21,9 +22,7 @@ export default function ReadRecipe() {
       try {
         // Simulating a delay to show loading state
         setTimeout(async () => {
-          const response = await fetch(
-            `http://localhost:3000/api/recipes/${slug}`
-          );
+          const response = await fetch(`${serverURL}/api/recipes/${slug}`);
           const result = (await response.json()) as Recipe;
           setRecipeData(result);
           setLoading(false);
@@ -53,17 +52,17 @@ export default function ReadRecipe() {
           <p>{recipeData?.description}</p>
           <h3>Ingrediencie</h3>
           {recipeData?.sections.map((section) => (
-            <>
+            <div className="section">
               <h4>{section.name}</h4>
-              <ul className="ingredientList">
+              <ul>
                 {section.used_ingredients.map((used_ingredient) => (
-                  <li>
+                  <li key={used_ingredient.id}>
                     {used_ingredient.ingredient.name}: {used_ingredient.amount}{" "}
                     {used_ingredient.ingredient.primary_unit}
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           ))}
           <h3>Postup</h3>
           <p>{recipeData?.instructions}</p>
