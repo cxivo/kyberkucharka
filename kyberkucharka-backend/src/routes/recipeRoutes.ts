@@ -94,6 +94,42 @@ const recipes: Recipe[] = [
   //{ id: 2, title: "Chlebík s maslom", author: "cimrman" },
 ];
 
+const testRecipe = `{ 
+  "id": 1,
+  "title": "Rožok s túžbami",
+  "author": {
+      "username": "cimrman",
+      "display_name": "Jára Cimrman",
+      "registered_on": null,
+      "is_admin": false
+  },
+  "description": "Názkorozpočtová pochúťka",
+  "image_link": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Rohl%C3%ADk.jpg",
+  "instructions": "Jedz suchý rožok a predstavuj si, že je to niečo lepšie.",
+  "preparation_time": 1,
+  "tags": [],
+  "sections": [
+    {
+      "id": 0,
+      "name": "rohlík is love, rohlík is life",
+      "used_ingredients": [
+        {
+          "id": 0,
+          "amount": 1,
+          "ingredient": {
+              "id": 1,
+              "name": "rožok",
+              "alt_names": "rohlík",
+              "primary_unit": "piece",
+              "mass_per_piece": 50,
+              "verified": true
+          }
+        }
+      ]
+    }
+  ]
+}`;
+
 // get all recipes
 router.get("/recipes", (req: Request, res: Response) => {
   res.json(recipes as PartialRecipe[]);
@@ -112,19 +148,10 @@ router.get("/recipes/:id", (req: Request, res: Response) => {
 
 // Create a new recipe
 router.post("/recipes", (req: Request, res: Response) => {
-  const newRecipe: Recipe = {
-    id: recipes.length + 1,
-    title: req.body.title,
-    author: req.body.author,
-    created_on: new Date(),
-    forked_from: undefined,
-    description: req.body.description,
-    image_link: req.body.image_link,
-    instructions: req.body.instructions,
-    preparation_time: req.body.preparation_time,
-    tags: [],
-    sections: [],
-  };
+  const newRecipe: Recipe = { ...req.body };
+  newRecipe.id = recipes.length;
+  newRecipe.author.registered_on = new Date();
+
   recipes.push(newRecipe);
   res.status(201).json(newRecipe);
 });

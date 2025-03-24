@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_RECIPE, Recipe, Section } from "../../common-interfaces/interfaces";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
-
 
 export default function EditRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -12,119 +11,178 @@ export default function EditRecipe() {
 
   const { slug = "" } = useParams();
 
+  let navigate = useNavigate();
+
   useEffect(() => {
-      const fetchData = async () => {
-        try {
-          // Simulating a delay to show loading state
-          setTimeout(async () => {
-            const response = await fetch(
-              `${serverURL}/api/recipes/${slug}`
-            );
-            const result = (await response.json()) as Recipe;
-            
-            // what the next section ID will be
-            setNextSectionID(result.sections.reduce((x, y) => x && x.id > y.id ? x : y, {id: 0}).id + 1);
-            
-            setRecipeData(result);
-            setLoading(false);
-          }, 1000);
-        } catch (error) {
-          console.error("Error fetching data:", error);
+    const fetchData = async () => {
+      try {
+        // Simulating a delay to show loading state
+        setTimeout(async () => {
+          const response = await fetch(`${serverURL}/api/recipes/${slug}`);
+          const result = (await response.json()) as Recipe;
+
+          // what the next section ID will be
+          setNextSectionID(
+            result.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
+              id: 0,
+            }).id + 1
+          );
+
+          setRecipeData(result);
           setLoading(false);
-        }
-      };
-  
-      if (slug !== "") {
-        fetchData();
-      } else {
+        }, 1000);
+      } catch (error) {
+        console.error("Error fetching data:", error);
         setLoading(false);
       }
-    }, []);
+    };
 
-
-    function submitRecipe(event: React.SyntheticEvent<HTMLFormElement>) {
-      event.preventDefault();
-      console.log(event.currentTarget.elements);
+    if (slug !== "") {
+      fetchData();
+    } else {
+      setLoading(false);
     }
+  }, []);
 
-    function updateFieldFromForm(field: keyof Recipe, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
-      const newRecipe: Recipe = { ...recipeData, [field]: e.target.value};
-      setRecipeData(newRecipe);
-    }
+  function submitRecipe(event: React.SyntheticEvent<HTMLFormElement>) {
+    event.preventDefault();
+    console.log(recipeData);
 
-    // form elements
-    const titleElement = <input type="text" id="recipe-title" defaultValue={recipeData?.title ?? ""} 
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {updateFieldFromForm("title", e)}}/>;
-    const imageLinkElement = <input type="text" id="recipe-image" defaultValue={recipeData?.image_link ?? ""} 
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {updateFieldFromForm("image_link", e)}}/>;
-    const descriptionElement = <textarea name="recipe-description" id="recipe-description" defaultValue={recipeData?.description ?? ""} 
-      onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {updateFieldFromForm("description", e)}}/>;
-    const instructionsElement = <textarea name="recipe-instructions" id="recipe-instructions" defaultValue={recipeData?.instructions ?? ""} 
-      onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {updateFieldFromForm("instructions", e)}}/>;
+    fetch(`${serverURL}/api/recipes`, {
+      method: "POST",
+      body: JSON.stringify(recipeData),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }).then(() => {
+      navigate("/");
+    });
+  }
 
-    function addSection() {
-      const newRecipe: Recipe = { ...recipeData};
-      newRecipe.sections.push({id: nextSectionID, name: "", used_ingredients: []});
-      setNextSectionID(nextSectionID + 1);
-      setRecipeData(newRecipe);
-    }
+  function updateFieldFromForm(
+    field: keyof Recipe,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    const newRecipe: Recipe = { ...recipeData, [field]: e.target.value };
+    setRecipeData(newRecipe);
+  }
 
-    function deleteSection(index: number) {
-      const newRecipe: Recipe = { ...recipeData};
-      newRecipe.sections.splice(index, 1);
-      setRecipeData(newRecipe);
-    }
+  // form elements
+  const titleElement = (
+    <input
+      type="text"
+      id="recipe-title"
+      defaultValue={recipeData?.title ?? ""}
+      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+        updateFieldFromForm("title", e);
+      }}
+    />
+  );
+  const imageLinkElement = (
+    <input
+      type="text"
+      id="recipe-image"
+      defaultValue={recipeData?.image_link ?? ""}
+      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+        updateFieldFromForm("image_link", e);
+      }}
+    />
+  );
+  const descriptionElement = (
+    <textarea
+      name="recipe-description"
+      id="recipe-description"
+      defaultValue={recipeData?.description ?? ""}
+      onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        updateFieldFromForm("description", e);
+      }}
+    />
+  );
+  const instructionsElement = (
+    <textarea
+      name="recipe-instructions"
+      id="recipe-instructions"
+      defaultValue={recipeData?.instructions ?? ""}
+      onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        updateFieldFromForm("instructions", e);
+      }}
+    />
+  );
 
-    function setSection(index: number, section: Section) {
-      const newRecipe: Recipe = { ...recipeData};
-      newRecipe.sections[index] = section;
-      setRecipeData(newRecipe);
-    }
+  function addSection() {
+    const newRecipe: Recipe = { ...recipeData };
+    newRecipe.sections.push({
+      id: nextSectionID,
+      name: "",
+      used_ingredients: [],
+    });
+    setNextSectionID(nextSectionID + 1);
+    setRecipeData(newRecipe);
+  }
 
-    useEffect(() => {
-      console.log(recipeData); // This will log the updated state
-    }, [recipeData]); 
+  function deleteSection(index: number) {
+    const newRecipe: Recipe = { ...recipeData };
+    newRecipe.sections.splice(index, 1);
+    setRecipeData(newRecipe);
+  }
 
+  function setSection(index: number, section: Section) {
+    const newRecipe: Recipe = { ...recipeData };
+    newRecipe.sections[index] = section;
+    setRecipeData(newRecipe);
+  }
 
-    return (
-      <div className="edit-recipe">
-        {loading ? (
-          <p>načítavam...</p>
-        ) : (
-          <form onSubmit={submitRecipe}>
-            <div>
-              <label htmlFor="recipe-title">Názov receptu: </label>
-              {titleElement}
-            </div>
+  useEffect(() => {
+    console.log(recipeData); // This will log the updated state
+  }, [recipeData]);
 
-            <div>
-              <label htmlFor="recipe-image">Obrázok k receptu: </label>
-              {imageLinkElement}
-            </div>
+  return (
+    <div className="edit-recipe">
+      {loading ? (
+        <p>načítavam...</p>
+      ) : (
+        <form onSubmit={submitRecipe}>
+          <div>
+            <label htmlFor="recipe-title">Názov receptu: </label>
+            {titleElement}
+          </div>
 
-            <p>autor: {recipeData?.author.display_name}</p>
+          <div>
+            <label htmlFor="recipe-image">Obrázok k receptu: </label>
+            {imageLinkElement}
+          </div>
 
-            <label htmlFor="recipe-description">Popis: </label>
-            {descriptionElement}
+          <p>autor: {recipeData?.author.display_name}</p>
 
-            <div id="ingredients">
-              <h3>Ingrediencie</h3>
-              {recipeData?.sections.map((section, index) => (
-                <EditableSection key={section.id} section={section} index={index} deleteSection={() => {deleteSection(index)}} 
-                  setSection={setSection} />
-              ))}
-              <button type="button" onClick={addSection}>Pridaj Sekciu</button>
-            </div>
+          <label htmlFor="recipe-description">Popis: </label>
+          {descriptionElement}
 
-            <label htmlFor="recipe-instructions">Inštrukcie: </label>
-            {instructionsElement}
+          <div id="ingredients">
+            <h3>Ingrediencie</h3>
+            {recipeData?.sections.map((section, index) => (
+              <EditableSection
+                key={section.id}
+                section={section}
+                index={index}
+                deleteSection={() => {
+                  deleteSection(index);
+                }}
+                setSection={setSection}
+              />
+            ))}
+            <button type="button" onClick={addSection}>
+              Pridaj Sekciu
+            </button>
+          </div>
 
-            <div>
-              <input type="submit" value="Hotovo" />
-              <input type="button" onClick={() => {console.log(recipeData)}} value="recipeData"/>
-            </div>
-          </form>
-        )}
-      </div>
-    );
+          <label htmlFor="recipe-instructions">Inštrukcie: </label>
+          {instructionsElement}
+
+          <div>
+            <input type="submit" value="Hotovo" />
+          </div>
+        </form>
+      )}
+    </div>
+  );
 }

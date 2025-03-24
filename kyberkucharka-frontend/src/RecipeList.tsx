@@ -29,7 +29,7 @@ export default function RecipeList() {
     <div>
       <ul>
         {recipesList.map((recipe) => (
-          <li className="recipeCard">
+          <li key={recipe.id} className="recipeCard">
             <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link> (autor:{" "}
             {recipe.author.display_name})
           </li>

@@ -41,7 +41,7 @@ export default function ReadRecipe() {
       {loading ? (
         <p>načítavam...</p>
       ) : (
-        <>
+        <div key={recipeData.id}>
           <h2>{recipeData?.title}</h2>
           {recipeData?.image_link ? (
             <img src={recipeData?.image_link} alt="Obrázok k receptu" />
@@ -52,7 +52,7 @@ export default function ReadRecipe() {
           <p>{recipeData?.description}</p>
           <h3>Ingrediencie</h3>
           {recipeData?.sections.map((section) => (
-            <div className="section">
+            <div key={section.id} className="section">
               <h4>{section.name}</h4>
               <ul>
                 {section.used_ingredients.map((used_ingredient) => (
@@ -66,7 +66,7 @@ export default function ReadRecipe() {
           ))}
           <h3>Postup</h3>
           <p>{recipeData?.instructions}</p>
-        </>
+        </div>
       )}
       <button onClick={apiCall}>apikól</button>
     </div>

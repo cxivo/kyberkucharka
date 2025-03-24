@@ -1,8 +1,8 @@
 export interface User {
-    username: string;
-    display_name: string;
-    registered_on: Date;
-    is_admin: boolean;
+  username: string;
+  display_name: string;
+  registered_on?: Date;
+  is_admin: boolean;
 }
 
 export interface Tag {
