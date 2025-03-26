@@ -1,0 +1,35 @@
+{ 
+    "id": 1,
+    "title": "Rožok s túžbami",
+    "author": {
+        "username": "cimrman",
+        "display_name": "Jára Cimrman",
+        "registered_on": null,
+        "is_admin": false
+    },
+    "description": "Názkorozpočtová pochúťka",
+    "image_link": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Rohl%C3%ADk.jpg",
+    "instructions": "Jedz suchý rožok a predstavuj si, že je to niečo lepšie.",
+    "preparation_time": 1,
+    "tags": [],
+    "sections": [
+      {
+        "id": 0,
+        "name": "rohlík is love, rohlík is life",
+        "used_ingredients": [
+          {
+            "id": 0,
+            "amount": 1,
+            "ingredient": {
+                "id": 1,
+                "name": "rožok",
+                "alt_names": "rohlík",
+                "primary_unit": "piece",
+                "mass_per_piece": 50,
+                "verified": true
+            }
+          }
+        ]
+      }
+    ]
+  }

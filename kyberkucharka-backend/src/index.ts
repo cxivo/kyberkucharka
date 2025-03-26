@@ -2,11 +2,21 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import recipeRoutes from "./routes/recipeRoutes";
+import {
+  createTables,
+  dropTables,
+  getIngredients,
+  initTables,
+  printAllUsers,
+} from "./databaseFunctions";
 
 dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
+
+dropTables().then(() => createTables()).then(()=> initTables()).then(async ()=> {const a = await getIngredients(); console.log(a)});
+//initTables();
 
 app.use(cors());
 app.use(express.json());
