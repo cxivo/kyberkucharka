@@ -8,37 +8,48 @@ import {
 import { ingredients, recipes } from "../dummyData";
 import {
   addIngredient,
+  addRecipe,
   getIngredientByID,
   getIngredients,
   getIngredientsByName,
+  getPartialRecipes,
+  getRecipeByID,
 } from "../databaseFunctions";
 
 const router = Router();
 
 // get all recipes
 router.get("/recipes", (req: Request, res: Response) => {
-  res.json(recipes as PartialRecipe[]);
+  getPartialRecipes()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
 });
 
 // get recipe by id
 router.get("/recipes/:id", (req: Request, res: Response) => {
   const recipeId = parseInt(req.params.id);
-  const recipe = recipes.find((x) => x.id === recipeId);
-  if (recipe) {
-    res.json(recipe);
-  } else {
-    res.status(404).json({ message: "Recipe not found" });
-  }
+  getRecipeByID(recipeId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      res.status(404).json({ message: "Recipe not found", error: e });
+    });
 });
 
 // Create a new recipe
 router.post("/recipes", (req: Request, res: Response) => {
-  const newRecipe: Recipe = { ...req.body };
-  newRecipe.id = recipes.length;
-  newRecipe.author.registered_on = new Date();
-
-  recipes.push(newRecipe);
-  res.status(201).json(newRecipe);
+  addRecipe(req.body)
+    .then((result) => {
+      res.status(201).json(result);
+    })
+    .catch((e) => {
+      res.status(400).json({ message: "Could not add recipe", error: e });
+    });
 });
 
 // get all ingredients

@@ -6,6 +6,8 @@ import {
   createTables,
   dropTables,
   getIngredients,
+  getPartialRecipes,
+  getRecipesByName,
   initTables,
   printAllUsers,
 } from "./databaseFunctions";
@@ -15,8 +17,14 @@ dotenv.config();
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-dropTables().then(() => createTables()).then(()=> initTables()).then(async ()=> {const a = await getIngredients(); console.log(a)});
-//initTables();
+/* dropTables()
+  .then(() => createTables())
+  .then(() => initTables())
+  .then(async () => {
+    const a = await getRecipeByName("raňajky");
+    console.log(a);
+  }); */
+  
 
 app.use(cors());
 app.use(express.json());

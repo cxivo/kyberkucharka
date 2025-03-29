@@ -44,7 +44,11 @@ export default function ReadRecipe() {
         <div key={recipeData.id}>
           <h2>{recipeData?.title}</h2>
           {recipeData?.image_link ? (
-            <img src={recipeData?.image_link} alt="Obrázok k receptu" />
+            <img
+              src={recipeData?.image_link}
+              alt="Obrázok k receptu"
+              className="recipe_img"
+            />
           ) : (
             <></>
           )}
