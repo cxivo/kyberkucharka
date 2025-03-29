@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
 
@@ -9,6 +9,8 @@ export default function ReadRecipe() {
   const [loading, setLoading] = useState<boolean>(true);
 
   const { slug = "0" } = useParams();
+
+  let navigate = useNavigate();
 
   const apiCall = () => {
     axios.get(`${serverURL}`).then((data) => {
@@ -42,6 +44,9 @@ export default function ReadRecipe() {
         <p>načítavam...</p>
       ) : (
         <div key={recipeData.id}>
+          <button type="button" onClick={() => navigate(`/edit/${slug}`)}>
+            Uprav recept
+          </button>
           <h2>{recipeData?.title}</h2>
           {recipeData?.image_link ? (
             <img

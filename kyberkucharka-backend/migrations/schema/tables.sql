@@ -35,10 +35,12 @@ CREATE TABLE IF NOT EXISTS recipes (
     instructions TEXT NOT NULL,
     CONSTRAINT fk_author
         FOREIGN KEY(author)
-            REFERENCES users(username),
+            REFERENCES users(username)
+            ON DELETE CASCADE,
     CONSTRAINT fk_fork
         FOREIGN KEY(forked_from)
             REFERENCES recipes(id)
+            ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS sections (
@@ -49,6 +51,7 @@ CREATE TABLE IF NOT EXISTS sections (
     CONSTRAINT fk_recipe
         FOREIGN KEY(recipe)
             REFERENCES recipes(id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS used_ingredients (
@@ -58,10 +61,12 @@ CREATE TABLE IF NOT EXISTS used_ingredients (
     amount real NOT NULL,
     CONSTRAINT fk_ingredient
         FOREIGN KEY(ingredient)
-            REFERENCES ingredients(id),
+            REFERENCES ingredients(id)
+            ON DELETE RESTRICT,
     CONSTRAINT fk_section
         FOREIGN KEY(section)
             REFERENCES sections(id)
+            ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS recipe_tags (
@@ -70,10 +75,12 @@ CREATE TABLE IF NOT EXISTS recipe_tags (
     PRIMARY KEY (tag, recipe),
     CONSTRAINT fk_tag
         FOREIGN KEY(tag)
-            REFERENCES tags(id),
+            REFERENCES tags(id)
+            ON DELETE CASCADE,
     CONSTRAINT fk_recipe
         FOREIGN KEY(recipe)
             REFERENCES recipes(id)
+            ON DELETE CASCADE
 )
 
 /* 

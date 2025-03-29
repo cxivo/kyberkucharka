@@ -6,7 +6,10 @@ export default function MainPage() {
   return (
     <>
       <h1>Vitajte na hlavnej stránke!</h1>
-      <Link to="/about">O projekte</Link>
+      <div className="links">
+        <Link to="/about">O projekte</Link>
+        <Link to="/edit">Vytvor recept</Link>
+      </div>
       <h2>Zoznam všetkých receptov:</h2>
       <RecipeList></RecipeList>
     </>

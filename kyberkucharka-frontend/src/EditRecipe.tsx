@@ -48,8 +48,9 @@ export default function EditRecipe() {
     event.preventDefault();
     console.log(recipeData);
 
-    fetch(`${serverURL}/api/recipes`, {
-      method: "POST",
+    // either create a new recipe or modify the existing one
+    fetch(`${serverURL}/api/recipes${slug === "" ? "" : "/" + slug}`, {
+      method: slug === "" ? "POST" : "PUT",
       body: JSON.stringify(recipeData),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -58,7 +59,11 @@ export default function EditRecipe() {
       .then((response: Response) => response.json())
       .then((json) => {
         console.log(json);
-        navigate(`/recipes/${json.newID}`);
+        if (json.newID < 0) {
+          console.error("Unknown error");
+        } else {
+          navigate(`/recipes/${json.newID}`);
+        }
       });
   }
 

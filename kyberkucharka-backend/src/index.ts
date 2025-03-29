@@ -21,7 +21,7 @@ const port = process.env.PORT || 3000;
   .then(() => createTables())
   .then(() => initTables())
   .then(async () => {
-    const a = await getRecipeByName("raňajky");
+    const a = await getRecipesByName("raňajky");
     console.log(a);
   }); */
   

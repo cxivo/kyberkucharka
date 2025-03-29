@@ -130,7 +130,10 @@ export async function getRecipesByName(name: string): Promise<Recipe[]> {
 }
 
 // this works both for adding a new recipe and forking an existing one
-export async function addRecipe(recipe: Recipe): Promise<number> {
+export async function addOrUpdateRecipe(
+  recipe: Recipe,
+  id?: number
+): Promise<number> {
   let db_recipe_id: number = -1;
   // use a transaction, so it either all succeeds or all fails
   return await db
@@ -143,11 +146,30 @@ export async function addRecipe(recipe: Recipe): Promise<number> {
       r2.forked_from_id =
         r2.forked_from == null ? undefined : r2.forked_from.id;
 
+      // if id is set, then we need to remove the previous recipe
+      // also remembers the date of the original creation
+      const original_creation: string =
+        id == null
+          ? undefined
+          : (
+              await transaction.one(
+                `DELETE FROM recipes WHERE id = $1 RETURNING created_on;`,
+                [id]
+              )
+            ).created_on
+              .toISOString()
+              .slice(0, 19)
+              .replace("T", " ");
+
       // add into the recipe table and get the ID
       db_recipe_id = (
         await transaction.one(
-          `INSERT INTO recipes(title, author, created_on, forked_from, description, image_link, preparation_time, instructions)
-          VALUES ($<title>, $<author_username>, NOW(), $<forked_from_id>, $<description>, $<image_link>, $<preparation_time>, $<instructions>)
+          `INSERT INTO recipes(${
+            id == null ? "" : "id, "
+          }title, author, created_on, forked_from, description, image_link, preparation_time, instructions)
+          VALUES (${id == null ? "" : "$<id>, "}$<title>, $<author_username>, ${
+            id == null ? "NOW()" : `'${original_creation}'`
+          }, $<forked_from_id>, $<description>, $<image_link>, $<preparation_time>, $<instructions>)
           RETURNING id; `,
           r2
         )
@@ -212,7 +234,7 @@ export async function initTables() {
       console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
     });
 
-  const recipePromises = recipes.map((r) => addRecipe(r));
+  const recipePromises = recipes.map((r) => addOrUpdateRecipe(r));
   await Promise.all(recipePromises)
     .then(() => {
       console.log("Rows inserted successfully!");

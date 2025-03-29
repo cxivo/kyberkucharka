@@ -8,7 +8,7 @@ import {
 import { ingredients, recipes } from "../dummyData";
 import {
   addIngredient,
-  addRecipe,
+  addOrUpdateRecipe,
   getIngredientByID,
   getIngredients,
   getIngredientsByName,
@@ -43,9 +43,20 @@ router.get("/recipes/:id", (req: Request, res: Response) => {
 
 // Create a new recipe
 router.post("/recipes", (req: Request, res: Response) => {
-  addRecipe(req.body)
+  addOrUpdateRecipe(req.body)
     .then((newID) => {
       res.status(201).json({ newID });
+    })
+    .catch((e) => {
+      res.status(400).json({ message: "Could not add recipe", error: e });
+    });
+});
+
+// Modify an existing recipe
+router.put("/recipes/:id", (req: Request, res: Response) => {
+  addOrUpdateRecipe(req.body, req.body.id)
+    .then((newID) => {
+      res.status(200).json({ newID });
     })
     .catch((e) => {
       res.status(400).json({ message: "Could not add recipe", error: e });
