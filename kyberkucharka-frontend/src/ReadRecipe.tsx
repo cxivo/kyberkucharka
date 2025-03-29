@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
 
@@ -19,6 +19,7 @@ export default function ReadRecipe() {
     });
   };
 
+  // each time the slug (which is the recipe ID) gets updated, the site will soft-reload
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,16 +37,34 @@ export default function ReadRecipe() {
     };
 
     fetchData();
-  }, []);
+  }, [slug]);
+
+  useEffect(() => console.log(recipeData), [recipeData]);
 
   return (
     <div className="recipe">
+      <title>
+        {(recipeData.title ?? "načítavam recept") + " - Kyberkuchárka"}
+      </title>
       {loading ? (
         <p>načítavam...</p>
       ) : (
         <div key={recipeData.id}>
+          {recipeData.forked_from != null ? (
+            <div>
+              Forknuté z{" "}
+              <Link to={`/recipes/${recipeData.forked_from.id}`}>
+                {recipeData.forked_from.title}
+              </Link>
+            </div>
+          ) : (
+            ""
+          )}
           <button type="button" onClick={() => navigate(`/edit/${slug}`)}>
             Uprav recept
+          </button>
+          <button type="button" onClick={() => navigate(`/fork/${slug}`)}>
+            Forkni recept
           </button>
           <h2>{recipeData?.title}</h2>
           {recipeData?.image_link ? (

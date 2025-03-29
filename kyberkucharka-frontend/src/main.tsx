@@ -7,7 +7,11 @@ import About from "./About.tsx";
 import ReadRecipe from "./ReadRecipe.tsx";
 import NoPage from "./NoPage.tsx";
 import MainPage from "./MainPage.tsx";
-import EditRecipe from "./EditRecipe.tsx";
+import EditRecipe, {
+  createSubmit,
+  editSubmit,
+  forkSubmit,
+} from "./EditRecipe.tsx";
 
 export const serverURL = "http://localhost:3000";
 
@@ -37,10 +41,18 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/edit",
+    path: "/create",
     element: (
       <App>
-        <EditRecipe />
+        <EditRecipe submitAction={createSubmit} type="create" />
+      </App>
+    ),
+  },
+  {
+    path: "/fork/:slug",
+    element: (
+      <App>
+        <EditRecipe submitAction={forkSubmit} type="fork" />
       </App>
     ),
   },
@@ -48,7 +60,7 @@ const router = createBrowserRouter([
     path: "/edit/:slug",
     element: (
       <App>
-        <EditRecipe />
+        <EditRecipe submitAction={editSubmit} type="edit" />
       </App>
     ),
   },

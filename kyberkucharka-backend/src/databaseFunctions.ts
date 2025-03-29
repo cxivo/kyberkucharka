@@ -76,6 +76,21 @@ const getRecipeQuery = `
     'is_admin', u.is_admin  
   ) AS author,
   r.created_on,
+  (
+    SELECT row_to_json(z) FROM
+    (
+      SELECT r2.id, r2.title, 
+      json_build_object(
+        'username', u2.username,
+        'display_name', u2.display_name,
+        'registered_on', u2.registered_on,
+        'is_admin', u2.is_admin  
+      ) AS author
+      FROM recipes AS r2
+      JOIN users AS u2 ON r2.author = u2.username
+      WHERE r2.id = r.forked_from
+    ) z
+  ) AS forked_from,
   r.description,
   r.image_link,
   r.preparation_time,

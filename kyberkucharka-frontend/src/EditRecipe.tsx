@@ -4,10 +4,46 @@ import { useNavigate, useParams } from "react-router-dom";
 import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
 
-export default function EditRecipe() {
+interface EditRecipeProps {
+  submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
+  type: "edit" | "create" | "fork";
+}
+
+export function editSubmit(slug: string, recipe: Recipe) {
+  return fetch(`${serverURL}/api/recipes${slug}`, {
+    method: "PUT",
+    body: JSON.stringify(recipe),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+}
+
+export function createSubmit(_slug: string, recipe: Recipe) {
+  return fetch(`${serverURL}/api/recipes`, {
+    method: "POST",
+    body: JSON.stringify(recipe),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+}
+
+export function forkSubmit(_slug: string, recipe: Recipe) {
+  return fetch(`${serverURL}/api/recipes`, {
+    method: "POST",
+    body: JSON.stringify(recipe),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  });
+}
+
+export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
   const [nextSectionID, setNextSectionID] = useState<number>(0);
+  const [sendingDisabled, setSendingDisabled] = useState<boolean>(true);
 
   const { slug = "" } = useParams();
 
@@ -28,34 +64,40 @@ export default function EditRecipe() {
             }).id + 1
           );
 
-          setRecipeData(result);
+          const newRecipe = { ...result };
+
+          // this will make sure that the new recipe will have the old one as the reference
+          if (type == "fork") {
+            newRecipe.forked_from = result;
+          }
+
+          setRecipeData(newRecipe);
           setLoading(false);
+          setSendingDisabled(false);
         }, 1000);
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
+        setSendingDisabled(false);
       }
     };
 
+    // if creating a new recipe, no data will be loaded
     if (slug !== "") {
       fetchData();
     } else {
       setLoading(false);
+      setSendingDisabled(false);
     }
   }, []);
 
   function submitRecipe(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log(recipeData);
+    setSendingDisabled(true);
 
     // either create a new recipe or modify the existing one
-    fetch(`${serverURL}/api/recipes${slug === "" ? "" : "/" + slug}`, {
-      method: slug === "" ? "POST" : "PUT",
-      body: JSON.stringify(recipeData),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
+    submitAction(slug, recipeData)
       .then((response: Response) => response.json())
       .then((json) => {
         console.log(json);
@@ -64,7 +106,8 @@ export default function EditRecipe() {
         } else {
           navigate(`/recipes/${json.newID}`);
         }
-      });
+      })
+      .then(() => setSendingDisabled(false));
   }
 
   function updateFieldFromForm(
@@ -74,6 +117,14 @@ export default function EditRecipe() {
     const newRecipe: Recipe = { ...recipeData, [field]: e.target.value };
     setRecipeData(newRecipe);
   }
+
+  // page title
+  const pageTitle =
+    type == "create"
+      ? "Vytváranie receptu"
+      : type == "edit"
+      ? `Úprava receptu ${recipeData.title}`
+      : `Forkovanie receptu ${recipeData.title}`;
 
   // form elements
   const titleElement = (
@@ -146,6 +197,7 @@ export default function EditRecipe() {
 
   return (
     <div className="edit-recipe">
+      <title>{pageTitle}</title>
       {loading ? (
         <p>načítavam...</p>
       ) : (
@@ -187,7 +239,7 @@ export default function EditRecipe() {
           {instructionsElement}
 
           <div>
-            <input type="submit" value="Hotovo" />
+            <input type="submit" disabled={sendingDisabled} value="Hotovo" />
           </div>
         </form>
       )}
