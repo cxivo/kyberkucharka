@@ -44,8 +44,8 @@ router.get("/recipes/:id", (req: Request, res: Response) => {
 // Create a new recipe
 router.post("/recipes", (req: Request, res: Response) => {
   addRecipe(req.body)
-    .then((result) => {
-      res.status(201).json(result);
+    .then((newID) => {
+      res.status(201).json({ newID });
     })
     .catch((e) => {
       res.status(400).json({ message: "Could not add recipe", error: e });

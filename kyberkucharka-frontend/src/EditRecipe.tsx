@@ -54,9 +54,12 @@ export default function EditRecipe() {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
-    }).then(() => {
-      navigate("/");
-    });
+    })
+      .then((response: Response) => response.json())
+      .then((json) => {
+        console.log(json);
+        navigate(`/recipes/${json.newID}`);
+      });
   }
 
   function updateFieldFromForm(

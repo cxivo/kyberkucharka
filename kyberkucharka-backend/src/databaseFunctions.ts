@@ -107,34 +107,51 @@ const getRecipeQuery = `
   JOIN users AS u ON u.username = r.author
 `;
 
+function fixMissingRecipeTags(recipe: Recipe): Recipe {
+  recipe.sections ??= [];
+  recipe.sections.map((section) => {
+    const s2 = { ...section };
+    s2.used_ingredients ??= [];
+    return s2;
+  });
+  return recipe;
+}
+
 export async function getRecipeByID(id: number): Promise<Recipe> {
   const query = getRecipeQuery + `WHERE r.id = $1;`;
-  return db.one(query, [id]);
+  return db.one(query, [id]).then(fixMissingRecipeTags);
 }
 
 export async function getRecipesByName(name: string): Promise<Recipe[]> {
   const query = getRecipeQuery + `WHERE r.title LIKE $1;`;
-  return db.any(query, [`%${name}%`]);
+  return db
+    .any(query, [`%${name}%`])
+    .then((rs) => rs.map(fixMissingRecipeTags));
 }
 
-export async function addRecipe(recipe: Recipe) {
+// this works both for adding a new recipe and forking an existing one
+export async function addRecipe(recipe: Recipe): Promise<number> {
+  let db_recipe_id: number = -1;
   // use a transaction, so it either all succeeds or all fails
-  await db
+  return await db
     .tx(async (transaction) => {
       // prepare the JS object for the database (still not sure if needed)
       const r2: any = { ...recipe };
       r2.description ??= undefined;
-      r2.forked_from ??= undefined;
       r2.image_link ??= undefined;
       r2.author_username = r2.author.username;
+      r2.forked_from_id =
+        r2.forked_from == null ? undefined : r2.forked_from.id;
 
       // add into the recipe table and get the ID
-      const db_recipe_id = await transaction.one(
-        `INSERT INTO recipes(title, author, created_on, forked_from, description, image_link, preparation_time, instructions)
-          VALUES ($<title>, $<author_username>, NOW(), $<forked_from>, $<description>, $<image_link>, $<preparation_time>, $<instructions>)
+      db_recipe_id = (
+        await transaction.one(
+          `INSERT INTO recipes(title, author, created_on, forked_from, description, image_link, preparation_time, instructions)
+          VALUES ($<title>, $<author_username>, NOW(), $<forked_from_id>, $<description>, $<image_link>, $<preparation_time>, $<instructions>)
           RETURNING id; `,
-        r2
-      );
+          r2
+        )
+      ).id;
 
       // add each section of the recipe and its used_ingredients
       await Promise.all(
@@ -143,7 +160,7 @@ export async function addRecipe(recipe: Recipe) {
             `INSERT INTO sections(name, recipe, ordering)
           VALUES ($1, $2, $3)
           RETURNING id; `,
-            [section.name, db_recipe_id.id, i]
+            [section.name, db_recipe_id, i]
           );
 
           section.used_ingredients.map((used_ingredient) =>
@@ -166,9 +183,11 @@ export async function addRecipe(recipe: Recipe) {
     })
     .then(() => {
       console.log("Row inserted successfully!");
+      return db_recipe_id;
     })
     .catch((e) => {
       console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
+      return -1;
     });
 }
 
