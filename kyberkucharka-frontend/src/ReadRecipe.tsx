@@ -23,13 +23,10 @@ export default function ReadRecipe() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Simulating a delay to show loading state
-        setTimeout(async () => {
-          const response = await fetch(`${serverURL}/api/recipes/${slug}`);
-          const result = (await response.json()) as Recipe;
-          setRecipeData(result);
-          setLoading(false);
-        }, 1000);
+        const response = await fetch(`${serverURL}/api/recipes/${slug}`);
+        const result = (await response.json()) as Recipe;
+        setRecipeData(result);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);

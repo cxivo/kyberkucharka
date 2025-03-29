@@ -52,29 +52,26 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Simulating a delay to show loading state
-        setTimeout(async () => {
-          const response = await fetch(`${serverURL}/api/recipes/${slug}`);
-          const result = (await response.json()) as Recipe;
+        const response = await fetch(`${serverURL}/api/recipes/${slug}`);
+        const result = (await response.json()) as Recipe;
 
-          // what the next section ID will be
-          setNextSectionID(
-            result.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
-              id: 0,
-            }).id + 1
-          );
+        // what the next section ID will be
+        setNextSectionID(
+          result.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
+            id: 0,
+          }).id + 1
+        );
 
-          const newRecipe = { ...result };
+        const newRecipe = { ...result };
 
-          // this will make sure that the new recipe will have the old one as the reference
-          if (type == "fork") {
-            newRecipe.forked_from = result;
-          }
+        // this will make sure that the new recipe will have the old one as the reference
+        if (type == "fork") {
+          newRecipe.forked_from = result;
+        }
 
-          setRecipeData(newRecipe);
-          setLoading(false);
-          setSendingDisabled(false);
-        }, 1000);
+        setRecipeData(newRecipe);
+        setLoading(false);
+        setSendingDisabled(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
@@ -190,10 +187,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     newRecipe.sections[index] = section;
     setRecipeData(newRecipe);
   }
-
-  useEffect(() => {
-    console.log(recipeData); // This will log the updated state
-  }, [recipeData]);
 
   return (
     <div className="edit-recipe">
