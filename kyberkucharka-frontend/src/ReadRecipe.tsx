@@ -8,6 +8,7 @@ export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
 
+
   const { slug = "0" } = useParams();
 
   let navigate = useNavigate();

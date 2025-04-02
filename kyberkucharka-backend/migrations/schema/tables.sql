@@ -1,4 +1,4 @@
-CREATE TYPE measurement_unit AS ENUM ('gram', 'liter', 'piece', 'teaspoon');
+CREATE TYPE measurement_unit AS ENUM ('g', 'ml', 'pc', 'tsp', 'pack');
 
 CREATE TABLE IF NOT EXISTS users (
     username varchar(64) PRIMARY KEY,
