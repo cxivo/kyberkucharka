@@ -1,6 +1,11 @@
 import pgPromise from 'pg-promise';
 import dotenv from "dotenv";
-import { Ingredient, Recipe, User } from "../../common-interfaces/interfaces";
+import {
+  Ingredient,
+  NONEXISTENT,
+  Recipe,
+  User,
+} from "../../common-interfaces/interfaces";
 import { ingredients, recipes, users } from "./dummyData";
 import { readFileSync } from "fs";
 
@@ -200,16 +205,34 @@ export async function addOrUpdateRecipe(
             [section.name, db_recipe_id, i]
           );
 
-          section.used_ingredients.map((used_ingredient) =>
-            transaction.none(
-              `INSERT INTO used_ingredients(ingredient, section, amount)
+          await Promise.all(
+            section.used_ingredients.map(async (used_ingredient) => {
+              let ingredient_id = used_ingredient.ingredient.id;
+
+              // add the ingredient if it was newly created
+              if (used_ingredient.ingredient.id === NONEXISTENT) {
+                const newIngredient: Ingredient = {
+                  ...used_ingredient.ingredient,
+                };
+                newIngredient.density ??= undefined;
+                newIngredient.mass_per_piece ??= undefined;
+
+                ingredient_id = (
+                  await transaction.one(
+                    `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names)
+                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>) 
+                RETURNING id;`,
+                    newIngredient
+                  )
+                ).id;
+              }
+
+              return transaction.none(
+                `INSERT INTO used_ingredients(ingredient, section, amount)
             VALUES ($1, $2, $3);`,
-              [
-                used_ingredient.ingredient.id,
-                db_section_id.id,
-                used_ingredient.amount,
-              ]
-            )
+                [ingredient_id, db_section_id.id, used_ingredient.amount]
+              );
+            })
           );
         })
       );

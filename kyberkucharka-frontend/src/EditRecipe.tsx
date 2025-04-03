@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
-import { DEFAULT_RECIPE, Recipe, Section } from "../../common-interfaces/interfaces";
+import {
+  DEFAULT_RECIPE,
+  Ingredient,
+  Recipe,
+  Section,
+} from "../../common-interfaces/interfaces";
 import { useNavigate, useParams } from "react-router-dom";
 import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
+import CreateIngredient from "./CreateIngredient";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -10,7 +16,7 @@ interface EditRecipeProps {
 }
 
 export function editSubmit(slug: string, recipe: Recipe) {
-  return fetch(`${serverURL}/api/recipes${slug}`, {
+  return fetch(`${serverURL}/api/recipes/${slug}`, {
     method: "PUT",
     body: JSON.stringify(recipe),
     headers: {
@@ -44,11 +50,22 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [nextSectionID, setNextSectionID] = useState<number>(0);
   const [sendingDisabled, setSendingDisabled] = useState<boolean>(true);
+  const [creatingNewIngredient, setCreatingNewIngredient] =
+    useState<boolean>(false);
+  const [possibleNewIngredientName, setPossibleNewIngredientName] =
+    useState<string>("");
+  const [newIngredientCallback, setNewIngredientCallback] = useState<
+    (i: Ingredient) => void
+  >(() => {}); // maybe it can be done in a different way, you are free to DM me somehow and voice your opinion
+  const [selectableIngredients, setSelectableIngredients] = useState<
+    Ingredient[]
+  >([]);
 
   const { slug = "" } = useParams();
 
   let navigate = useNavigate();
 
+  // fetch the recipe
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -88,6 +105,26 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     }
   }, []);
 
+  // fetch all ingredients
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          //`${serverURL}/api/ingredients/name/${debouncedText}`
+          `${serverURL}/api/ingredients`
+        );
+        const result = (await response.json()) as Ingredient[];
+
+        setSelectableIngredients(result);
+        console.log(result);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   function submitRecipe(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log(recipeData);
@@ -98,8 +135,10 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       .then((response: Response) => response.json())
       .then((json) => {
         console.log(json);
-        if (json.newID < 0) {
-          console.error("Unknown error");
+        if (json.newID == null) {
+          console.error(
+            `An error has occured while trying to add the new recipe: ${json.message}, ${json.error}`
+          );
         } else {
           navigate(`/recipes/${json.newID}`);
         }
@@ -188,53 +227,86 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     setRecipeData(newRecipe);
   }
 
+  function createNewIngredient(
+    possibleName: string,
+    thenCall: (i: Ingredient) => void
+  ) {
+    setCreatingNewIngredient(true);
+    setPossibleNewIngredientName(possibleName);
+    setNewIngredientCallback(() => thenCall); // WHY do I have to write it like this?? why the hell is React calling my functions??
+    // this is the programming equivalent of unsolicited catcalling
+  }
+
+  // this literally just closes the "window", nothing else
+  function doneCreating() {
+    setCreatingNewIngredient(false);
+  }
+
   return (
     <div className="edit-recipe">
       <title>{pageTitle}</title>
       {loading ? (
         <p>načítavam...</p>
       ) : (
-        <form onSubmit={submitRecipe}>
-          <div>
-            <label htmlFor="recipe-title">Názov receptu: </label>
-            {titleElement}
-          </div>
+        <>
+          <form onSubmit={submitRecipe}>
+            <div>
+              <label htmlFor="recipe-title">Názov receptu: </label>
+              {titleElement}
+            </div>
 
-          <div>
-            <label htmlFor="recipe-image">Obrázok k receptu: </label>
-            {imageLinkElement}
-          </div>
+            <div>
+              <label htmlFor="recipe-image">Obrázok k receptu: </label>
+              {imageLinkElement}
+            </div>
 
-          <p>autor: {recipeData?.author.display_name}</p>
+            <p>autor: {recipeData?.author.display_name}</p>
 
-          <label htmlFor="recipe-description">Popis: </label>
-          {descriptionElement}
+            <label htmlFor="recipe-description">Popis: </label>
+            {descriptionElement}
 
-          <div id="ingredients">
-            <h3>Ingrediencie</h3>
-            {recipeData?.sections.map((section, index) => (
-              <EditableSection
-                key={section.id}
-                section={section}
-                index={index}
-                deleteSection={() => {
-                  deleteSection(index);
-                }}
-                setSection={setSection}
-              />
-            ))}
-            <button type="button" onClick={addSection}>
-              Pridaj Sekciu
-            </button>
-          </div>
+            <div id="ingredients">
+              <h3>Ingrediencie</h3>
+              {recipeData?.sections.map((section, index) => (
+                <EditableSection
+                  key={section.id}
+                  section={section}
+                  index={index}
+                  deleteSection={() => {
+                    deleteSection(index);
+                  }}
+                  setSection={setSection}
+                  selectableIngredients={selectableIngredients}
+                  createNewIngredient={createNewIngredient}
+                />
+              ))}
+              <button type="button" onClick={addSection}>
+                Pridaj Sekciu
+              </button>
+            </div>
 
-          <label htmlFor="recipe-instructions">Inštrukcie: </label>
-          {instructionsElement}
+            <label htmlFor="recipe-instructions">Inštrukcie: </label>
+            {instructionsElement}
 
-          <div>
-            <input type="submit" disabled={sendingDisabled} value="Hotovo" />
-          </div>
-        </form>
+            <div>
+              <input type="submit" disabled={sendingDisabled} value="Hotovo" />
+            </div>
+          </form>
+          {creatingNewIngredient ? (
+            <div className="creatingNewIngredient">
+              <div className="creatingNewIngredientContent">
+                <CreateIngredient
+                  possibleName={possibleNewIngredientName}
+                  thenCall={newIngredientCallback}
+                  afterYouAreDone={doneCreating}
+                  existingIngredients={selectableIngredients}
+                />
+              </div>
+            </div>
+          ) : (
+            ""
+          )}
+        </>
       )}
     </div>
   );

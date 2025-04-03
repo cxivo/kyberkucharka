@@ -59,8 +59,12 @@ export interface Recipe extends PartialRecipe {
   sections: Section[];
 }
 
+////////////////////////////////////////////
+
+export const NONEXISTENT = -1;
+
 export const DEFAULT_RECIPE: Recipe = {
-  id: 0,
+  id: NONEXISTENT,
   author: {
     username: "",
     display_name: "",
@@ -76,7 +80,7 @@ export const DEFAULT_RECIPE: Recipe = {
 };
 
 export const DEFAULT_INGREDIENT: Ingredient = {
-  id: -1,
+  id: NONEXISTENT,
   name: "",
   primary_unit: "g",
   alt_names: "",

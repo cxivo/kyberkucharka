@@ -1,14 +1,18 @@
 import { ReactNode, useEffect, useState } from "react";
 import { Ingredient, Section, UsedIngredient } from "../../common-interfaces/interfaces";
 import EditableIngredient from "./EditableIngredient";
-import { serverURL } from "./main";
-import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
 interface EditableSectionProps {
   section: Section;
   index: number;
   deleteSection: (index: number) => void;
   setSection: (index: number, section: Section) => void;
+  selectableIngredients: Ingredient[];
+  createNewIngredient: (
+    possibleName: string,
+    thenCall: (i: Ingredient) => void
+  ) => void;
 }
 
 type OptionsList = {
@@ -21,12 +25,11 @@ export default function EditableSection({
   index,
   deleteSection,
   setSection,
+  selectableIngredients,
+  createNewIngredient,
 }: EditableSectionProps): ReactNode {
   const [nextUsedIngredientID, setNextUsedIngredientID] = useState<number>(0);
   //const [debouncedText] = useDebounce(searchText, 500);
-  const [selectableIngredients, setSelectableIngredients] = useState<
-    Ingredient[]
-  >([]);
 
   const [selectedOption, setSelectedOption] = useState<
     Ingredient | undefined
@@ -51,26 +54,8 @@ export default function EditableSection({
     );
   }, []);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          //`${serverURL}/api/ingredients/name/${debouncedText}`
-          `${serverURL}/api/ingredients`
-        );
-        const result = (await response.json()) as Ingredient[];
-
-        setSelectableIngredients(result);
-        console.log(result);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   function addIngredient(ingredient: Ingredient) {
+    console.log(ingredient);
     const newSection: Section = { ...section };
     newSection.used_ingredients.push({
       id: nextUsedIngredientID,
@@ -91,6 +76,7 @@ export default function EditableSection({
 
   // when user selects an igredient, add it
   function selectChange(newValue: OptionsList | null) {
+    console.log(newValue);
     const selected = selectableIngredients.find(
       (ingredient) => ingredient.id === newValue?.value
     );
@@ -144,10 +130,20 @@ export default function EditableSection({
           )
         )}
 
-        <Select
+        <CreatableSelect
           className="select-thing"
+          isLoading={optionsList.length === 0}
           options={optionsList}
           onChange={selectChange}
+          loadingMessage={() => `Načítavam...`}
+          noOptionsMessage={() => "...nič? divné"}
+          formatCreateLabel={(text: string) =>
+            `Vytvor novú ingredienciu: ${text}`
+          }
+          onCreateOption={(name: string) => {
+            createNewIngredient(name, addIngredient);
+          }}
+          placeholder="Vyber ingredienciu..."
           value={
             selectedOption
               ? {

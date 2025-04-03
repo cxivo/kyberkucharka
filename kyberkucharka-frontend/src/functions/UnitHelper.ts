@@ -16,3 +16,19 @@ export function getUnitName(unit: measurement_unit) {
             return "<neznáme>";
     }
 }
+
+export function mustHaveDensity(unit: measurement_unit) {
+  if (unit === "ml" || unit === "tsp") {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function mustHaveMassPerPiece(unit: measurement_unit) {
+  if (unit === "pack" || unit === "pc") {
+    return true;
+  } else {
+    return false;
+  }
+}
