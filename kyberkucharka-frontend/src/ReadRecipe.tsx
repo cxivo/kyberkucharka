@@ -3,11 +3,11 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
+import { formatAmount, gramsToAmountUsed } from "./functions/UnitHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
-
 
   const { slug = "0" } = useParams();
 
@@ -83,8 +83,10 @@ export default function ReadRecipe() {
               <ul>
                 {section.used_ingredients.map((used_ingredient) => (
                   <li key={used_ingredient.id}>
-                    {used_ingredient.ingredient.name}: {used_ingredient.amount}{" "}
-                    {used_ingredient.ingredient.primary_unit}
+                    {gramsToAmountUsed(used_ingredient)}&nbsp;
+                    {formatAmount(used_ingredient)}
+                    {" - "}
+                    {used_ingredient.ingredient.name}
                   </li>
                 ))}
               </ul>

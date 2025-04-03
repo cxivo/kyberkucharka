@@ -1,4 +1,9 @@
 import { UsedIngredient } from "../../common-interfaces/interfaces";
+import {
+  amountToGrams,
+  getUnitName,
+  gramsToAmountUsed,
+} from "./functions/UnitHelper";
 
 interface EditableIngredientProps {
   index: number;
@@ -17,15 +22,21 @@ export default function EditableIngredient({
     <div className="ingredient">
       <input
         type="number"
-        defaultValue={used_ingredient.amount}
+        step={0.05}
+        min={0}
+        defaultValue={gramsToAmountUsed(used_ingredient)}
         onInput={(x) => {
-          setAmount(index, +x.currentTarget.value);
+          setAmount(
+            index,
+            amountToGrams(+x.currentTarget.value, used_ingredient.ingredient)
+          );
         }}
         onBlur={(e) => {
           e.currentTarget.value = e.currentTarget.value || "0";
         }}
       />
-      {used_ingredient.ingredient.primary_unit} -
+      {getUnitName(used_ingredient.ingredient.primary_unit)}
+      {" - "}
       {used_ingredient.ingredient.name}
       <button
         type="button"

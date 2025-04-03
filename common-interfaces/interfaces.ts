@@ -86,3 +86,7 @@ export const DEFAULT_INGREDIENT: Ingredient = {
   alt_names: "",
   verified: false,
 };
+
+export const TEASPOON_ML = 5;
+export const TABLESPOON_ML = 15;
+export const CUP_ML = 250;
