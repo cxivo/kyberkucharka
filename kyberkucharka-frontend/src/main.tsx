@@ -12,6 +12,8 @@ import EditRecipe, {
   editSubmit,
   forkSubmit,
 } from "./EditRecipe.tsx";
+import Login from "./Login.tsx";
+import Register from "./Register.tsx";
 
 export const serverURL = "http://localhost:3000";
 
@@ -61,6 +63,22 @@ const router = createBrowserRouter([
     element: (
       <App>
         <EditRecipe submitAction={editSubmit} type="edit" />
+      </App>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <App>
+        <Login suggestRegistering={true}></Login>
+      </App>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <App>
+        <Register></Register>
       </App>
     ),
   },

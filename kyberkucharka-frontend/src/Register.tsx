@@ -1,0 +1,116 @@
+import { useEffect, useState } from "react";
+import { DEFAULT_USER, User } from "../../common-interfaces/interfaces";
+import { serverURL } from "./main";
+import { Link } from "react-router";
+
+
+export default function Register() {
+  const [user, setUSer] = useState<User>(DEFAULT_USER);
+  const [password2, setPassword2] = useState<string>("");
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
+  const [userExists, setUserExists] = useState<boolean>(false);
+
+  function updateFieldFromForm(
+    field: keyof User,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const newUser: User = { ...user, [field]: e.target.value };
+    setUSer(newUser);
+  }
+
+  function checkUsernameExists() {
+    fetch(`${serverURL}/auth/users/${user.username}`).then(x => {
+      setUserExists(x.ok);
+    }).catch(() => {
+      setUserExists(false);
+    })
+  }
+
+  useEffect(() => {
+    setPasswordsMatch(password2 === (user.password ?? ""));
+  }, [user, password2]);
+
+  function sendRegister(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    fetch(`${serverURL}/auth/register/`, {
+        method: "POST",
+        body: JSON.stringify(user),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      })
+      .then(async (response: Response) => {
+        const json = await response.json();
+
+        if (response.ok) {
+          console.log(json);
+        } else {
+          console.error(
+            `Error while registering: ${json.message}, ${json.error}`
+          );
+          // a quick and dirty way
+          // but it shouldn't happen anyway, unless the user is being a little beach [sic]
+          alert(json.message);
+        }  
+      })
+  }
+
+  return (
+    <div className="register-window">
+      <h1>Registrácia používateľa</h1>
+      <form onSubmit={sendRegister}>
+        <div>
+        <label htmlFor="username-input">Prihlasovacie meno (iba text, čísla, pomlčka a podčiarkovník): </label>
+        <input 
+          id="username-input" 
+          name="username-input" 
+          type="text" 
+          onChange={x => updateFieldFromForm("username", x)} 
+          onBlur={checkUsernameExists}
+          pattern="[a-zA-Z0-9\-_]{3,}"
+          title="Prihlasovacie meno musí mať aspoň 3 znaky, ktoré sú písmená bez diakritiky, číslice, pomlčka alebo podčiarkovník"
+          autoComplete="username"
+          required
+          />
+          {userExists ? <p className="form-error">Užívateľ s týmto menom už existuje.</p> : ""}
+        </div>
+
+        <div>
+        <label htmlFor="display-name-input">Meno, pod ktorým vás ostatní uvidia): </label>
+        <input id="display-name-input" name="display-name-input" type="text" onChange={x => updateFieldFromForm("display_name", x)}
+          pattern=".+"
+          title="Meno musí obsahovať aspoň 1 znak"
+          autoComplete="nickname"
+          required
+          />
+        </div>
+
+        <div>
+        <label htmlFor="password-input">Heslo: </label>
+        <input id="password-input" name="password-input" type="password" onChange={x => updateFieldFromForm("password", x)}
+          pattern=".{8,}"
+          title="Heslo musí mať aspoň 8 znakov"
+          autoComplete="new-password"
+          required
+          />
+        </div>
+
+        <div>
+        <label htmlFor="password2-input">Opäť heslo: </label>
+        <input id="password2-input" name="password2-input" type="password" onChange={x => setPassword2(x.target.value)}
+          pattern=".{8,}"
+          title="Heslo musí mať aspoň 8 znakov"
+          autoComplete="new-password"
+          required
+          />
+        { passwordsMatch ? "" : <p className="form-error">Heslá sa nerovnajú!</p>}
+        </div>
+
+        <input type="submit" disabled={!passwordsMatch || userExists}></input>
+      </form>
+      <p>Ak už máte účet, <Link to={"/login"}>prihláste sa</Link>.</p>
+    </div>
+  );
+}
+  

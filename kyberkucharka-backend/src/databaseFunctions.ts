@@ -8,6 +8,7 @@ import {
 } from "../../common-interfaces/interfaces";
 import { ingredients, recipes, users } from "./dummyData";
 import { readFileSync } from "fs";
+import bcrypt from "bcryptjs";
 
 dotenv.config();
 
@@ -253,9 +254,33 @@ export async function addOrUpdateRecipe(
 
 // users
 export async function addUser(user: User) {
-  const query = `INSERT INTO users(username, display_name, registered_on)
-    VALUES ($<username>, $<display_name>, NOW());`;
-  return db.none(query, user);
+  // TODO maybe move this somewhere else?
+  const hash = bcrypt.hashSync(user.password ?? "");
+  user.password = hash;
+
+  const query = `INSERT INTO users(username, display_name, password, registered_on)
+    VALUES ($<username>, $<display_name>, $<password>, NOW()) RETURNING username;`;
+  return db.one(query, user);
+}
+
+export async function checkUser(user: User) {
+  const query = `SELECT * FROM users WHERE username = $<username>`;
+  const queryResult = await db.one(query, user);
+
+  // check password... this will get more functionality later
+  if (bcrypt.compareSync(user.password ?? "", queryResult.password)) {
+    return true;
+  }
+  return false;
+}
+
+export async function usernameExists(name: string): Promise<boolean> {
+  const query = `SELECT * FROM users WHERE username = $1;`;
+  if ((await db.oneOrNone(query, name)) == null) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 // init

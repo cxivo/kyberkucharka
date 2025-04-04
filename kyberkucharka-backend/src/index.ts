@@ -11,6 +11,7 @@ import {
   initTables,
   printAllUsers,
 } from "./databaseFunctions";
+import authRoutes from "./routes/authRoutes";
 
 dotenv.config();
 
@@ -24,11 +25,11 @@ const port = process.env.PORT || 3000;
     const a = await getRecipesByName("raňajky");
     console.log(a);
   }); */
-  
 
 app.use(cors());
 app.use(express.json());
 app.use("/api", recipeRoutes);
+app.use("/auth", authRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("This is an API server. If you are seeing this message, you are not in the correct place. Use /api/<something> to interact with this server, or just use Postman or something similar.");

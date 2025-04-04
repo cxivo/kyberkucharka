@@ -1,18 +1,20 @@
 import { Ingredient, Recipe, User } from "../../common-interfaces/interfaces";
 
 export const users: User[] = [
-    {
-      username: "cxivo",
-      display_name: "ĉivo",
-      registered_on: new Date(Date.UTC(2025, 3, 20, 19, 8, 20)),
-      is_admin: true,
-    },
-    {
-      username: "cimrman",
-      display_name: "Jára Cimrman",
-      registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
-      is_admin: false,
-    },
+  {
+    username: "cxivo",
+    display_name: "ĉivo",
+    password: "cx",
+    registered_on: new Date(Date.UTC(2025, 3, 20, 19, 8, 20)),
+    is_admin: true,
+  },
+  {
+    username: "cimrman",
+    display_name: "Jára Cimrman",
+    password: "jj",
+    registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
+    is_admin: false,
+  },
 ];
 
 export const ingredients: Ingredient[] = [

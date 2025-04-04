@@ -8,8 +8,12 @@ function Header() {
         Kyberkuchárka
       </Link>
       <div id="userDiv">
-        <div>prihlásiť sa</div>
-        <div>registrovať sa</div>
+        <div>
+          <Link to={"/login"}>prihlásiť sa</Link>
+        </div>
+        <div>
+          <Link to={"/register"}>registrovať sa</Link>
+        </div>
       </div>
     </nav>
   );

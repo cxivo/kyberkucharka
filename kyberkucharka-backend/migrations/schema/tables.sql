@@ -3,7 +3,7 @@ CREATE TYPE measurement_unit AS ENUM ('g', 'ml', 'pc', 'tsp', 'pack');
 CREATE TABLE IF NOT EXISTS users (
     username varchar(64) PRIMARY KEY,
     display_name varchar(256) NOT NULL,
-    -- password somehow
+    password varchar(64) NOT NULL,
     registered_on timestamp,
     is_admin boolean NOT NULL DEFAULT false
 );

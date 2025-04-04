@@ -1,6 +1,7 @@
 export interface User {
   username: string;
   display_name: string;
+  password?: string;
   registered_on?: Date;
   is_admin: boolean;
 }
@@ -85,6 +86,12 @@ export const DEFAULT_INGREDIENT: Ingredient = {
   primary_unit: "g",
   alt_names: "",
   verified: false,
+};
+
+export const DEFAULT_USER: User = {
+  username: "",
+  display_name: "",
+  is_admin: false,
 };
 
 export const TEASPOON_ML = 5;
