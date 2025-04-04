@@ -20,26 +20,23 @@ export default function Login({suggestRegistering} : LoginProps) {
 
   function sendLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log(user); // TODO DELETE
 
     fetch(`${serverURL}/auth/login/`, {
-        method: "POST",
-        body: JSON.stringify(user),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      })
-      .then(async (response: Response) => {
-        const json = await response.json();
+      method: "POST",
+      body: JSON.stringify(user),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    }).then(async (response: Response) => {
+      const json = await response.json();
 
-        if (response.ok) {
-          console.log(json);
-        } else {
-        console.error(
-          `Error while logging in: ${json.message}, ${json.error}`
-        );
-        }  
-      })
+      if (response.ok) {
+        console.log(json);
+        document.cookie = `token=${json}`;
+      } else {
+        console.error(`Error while logging in: ${json.message}, ${json.error}`);
+      }
+    });
   }
 
   return (
@@ -47,18 +44,36 @@ export default function Login({suggestRegistering} : LoginProps) {
       <h1>Prihlásenie sa</h1>
       <form onSubmit={sendLogin}>
         <div>
-        <label htmlFor="username-input">Prihlasovacie meno: </label>
-        <input id="username-input" name="username-input" type="text" onChange={x => updateFieldFromForm("username", x)}/>
+          <label htmlFor="username-input">Prihlasovacie meno: </label>
+          <input
+            id="username-input"
+            name="username-input"
+            type="text"
+            onChange={(x) => updateFieldFromForm("username", x)}
+            autoComplete="username"
+          />
         </div>
 
         <div>
-        <label htmlFor="password-input">Heslo: </label>
-        <input id="password-input" name="password-input" type="password" onChange={x => updateFieldFromForm("password", x)}/>
+          <label htmlFor="password-input">Heslo: </label>
+          <input
+            id="password-input"
+            name="password-input"
+            type="password"
+            onChange={(x) => updateFieldFromForm("password", x)}
+            autoComplete="current-password"
+          />
         </div>
 
         <input type="submit"></input>
       </form>
-      {suggestRegistering ? <p>Alebo sa môžete <Link to={"/register"}>registrovať</Link>.</p> : ""}
+      {suggestRegistering ? (
+        <p>
+          Alebo sa môžete <Link to={"/register"}>registrovať</Link>.
+        </p>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

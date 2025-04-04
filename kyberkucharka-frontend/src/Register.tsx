@@ -19,11 +19,13 @@ export default function Register() {
   }
 
   function checkUsernameExists() {
-    fetch(`${serverURL}/auth/users/${user.username}`).then(x => {
-      setUserExists(x.ok);
-    }).catch(() => {
-      setUserExists(false);
-    })
+    fetch(`${serverURL}/auth/userexists/${user.username}`)
+      .then((x) => {
+        setUserExists(x.ok);
+      })
+      .catch(() => {
+        setUserExists(false);
+      });
   }
 
   useEffect(() => {

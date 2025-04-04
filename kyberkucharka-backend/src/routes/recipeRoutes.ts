@@ -15,6 +15,8 @@ import {
   getPartialRecipes,
   getRecipeByID,
 } from "../databaseFunctions";
+import { JsonWebTokenError } from "jsonwebtoken";
+import { authenticateToken } from "../auth";
 
 const router = Router();
 
@@ -42,7 +44,7 @@ router.get("/recipes/:id", (req: Request, res: Response) => {
 });
 
 // Create a new recipe
-router.post("/recipes", (req: Request, res: Response) => {
+router.post("/recipes", authenticateToken, (req: Request, res: Response) => {
   addOrUpdateRecipe(req.body)
     .then((newID) => {
       res.status(201).json({ newID });
