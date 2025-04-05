@@ -9,7 +9,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
 import CreateIngredient from "./CreateIngredient";
-import { getJWT } from "./functions/jwtHelper";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -22,8 +21,8 @@ export function editSubmit(slug: string, recipe: Recipe) {
     body: JSON.stringify(recipe),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      Authorization: `Bearer ${getJWT()}`,
     },
+    credentials: "include",
   });
 }
 
@@ -33,8 +32,8 @@ export function createSubmit(_slug: string, recipe: Recipe) {
     body: JSON.stringify(recipe),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      Authorization: `Bearer ${getJWT()}`,
     },
+    credentials: "include",
   });
 }
 
@@ -44,8 +43,8 @@ export function forkSubmit(_slug: string, recipe: Recipe) {
     body: JSON.stringify(recipe),
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      Authorization: `Bearer ${getJWT()}`,
     },
+    credentials: "include",
   });
 }
 

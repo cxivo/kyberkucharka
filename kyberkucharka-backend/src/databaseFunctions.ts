@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import {
   Ingredient,
   NONEXISTENT,
+  PartialRecipe,
   Recipe,
   User,
 } from "../../common-interfaces/interfaces";
@@ -138,6 +139,20 @@ function fixMissingRecipeTags(recipe: Recipe): Recipe {
   return recipe;
 }
 
+export async function getPartialRecipeByID(id: number): Promise<PartialRecipe> {
+  const query = `SELECT id, title, json_build_object(
+    'username', u.username,
+    'display_name', u.display_name,
+    'registered_on', u.registered_on,
+    'is_admin', u.is_admin
+  ) AS author
+  FROM recipes AS r
+  JOIN users AS u 
+  ON r.author = u.username
+  WHERE r.id = $1;`;
+  return db.one(query, [id]);
+}
+
 export async function getRecipeByID(id: number): Promise<Recipe> {
   const query = getRecipeQuery + `WHERE r.id = $1;`;
   return db.one(query, [id]).then(fixMissingRecipeTags);
@@ -263,15 +278,16 @@ export async function addUser(user: User) {
   return db.one(query, user);
 }
 
-export async function checkUser(user: User) {
+export async function checkUser(user: User): Promise<User | undefined> {
   const query = `SELECT * FROM users WHERE username = $<username>`;
   const queryResult = await db.one(query, user);
 
   // check password... this will get more functionality later
   if (bcrypt.compareSync(user.password ?? "", queryResult.password)) {
-    return true;
+    queryResult.password = undefined; // delete the password before giving the object to anyone
+    return queryResult;
   }
-  return false;
+  return undefined;
 }
 
 export async function usernameExists(name: string): Promise<boolean> {

@@ -1,7 +1,12 @@
 import { Router, Request, Response } from "express";
 import { addUser, checkUser, usernameExists } from "../databaseFunctions";
 import { User } from "../../../common-interfaces/interfaces";
-import { generateJWT, validateUser } from "../auth";
+import {
+  authenticateToken,
+  generateJWT,
+  TOKEN_EXPIRES_IN_SECONDS,
+  validateUser,
+} from "../auth";
 
 const router = Router();
 
@@ -29,18 +34,20 @@ router.post("/register", async (req: Request, res: Response) => {
 router.post("/login", (req: Request, res: Response) => {
   const user: User = req.body;
   checkUser(user)
-    .then((x) => {
-      if (x) {
-        res.status(200).json(generateJWT(user));
-        //res.status(200).setHeader("Set-Cookie", "hello=friend");
-        /* res
+    .then((u) => {
+      if (u != null) {
+        //res.status(200).json({ token: generateJWT(user), user: user });
+        res
           .status(200)
-          .cookie("secureCookie", generateJWT(user), {
-            secure: true,
+          .cookie("jwtoken", generateJWT(user), {
             httpOnly: true,
-            expires: new Date(new Date().getTime() + 30 * 24 * 60 * 60 * 1000),
+            expires: new Date(Date.now() + TOKEN_EXPIRES_IN_SECONDS * 1000),
           })
-          .json({}); */
+          .cookie("userData", JSON.stringify(u), {
+            // we want this one to be readable by the client
+            expires: new Date(Date.now() + TOKEN_EXPIRES_IN_SECONDS * 1000),
+          })
+          .json({});
       } else {
         res.status(401).json({ message: "Incorrect password", error: "" });
       }
@@ -48,6 +55,10 @@ router.post("/login", (req: Request, res: Response) => {
     .catch((e) => {
       res.status(400).json({ message: "User does not exist", error: e });
     });
+});
+
+router.post("/logout", (req: Request, res: Response) => {
+  res.status(200).clearCookie("jwtoken").clearCookie("userData").json({});
 });
 
 router.get("/userexists/:username", async (req: Request, res: Response) => {

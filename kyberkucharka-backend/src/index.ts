@@ -12,8 +12,19 @@ import {
   printAllUsers,
 } from "./databaseFunctions";
 import authRoutes from "./routes/authRoutes";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
+
+const whitelist = ["http://localhost:5173"];
+const corsOptions = {
+  credentials: true,
+  origin: (origin: any, callback: any) => {
+    if (whitelist.includes(origin)) return callback(null, true);
+
+    callback(new Error("Not allowed by CORS"));
+  },
+};
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -26,8 +37,9 @@ const port = process.env.PORT || 3000;
     console.log(a);
   }); */
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 app.use("/api", recipeRoutes);
 app.use("/auth", authRoutes);
 

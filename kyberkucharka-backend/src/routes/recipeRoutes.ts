@@ -12,10 +12,10 @@ import {
   getIngredientByID,
   getIngredients,
   getIngredientsByName,
+  getPartialRecipeByID,
   getPartialRecipes,
   getRecipeByID,
 } from "../databaseFunctions";
-import { JsonWebTokenError } from "jsonwebtoken";
 import { authenticateToken } from "../auth";
 
 const router = Router();
@@ -45,6 +45,9 @@ router.get("/recipes/:id", (req: Request, res: Response) => {
 
 // Create a new recipe
 router.post("/recipes", authenticateToken, (req: Request, res: Response) => {
+  // simply add the author
+  req.body.author = res.locals.user.username;
+
   addOrUpdateRecipe(req.body)
     .then((newID) => {
       res.status(201).json({ newID });
@@ -55,14 +58,25 @@ router.post("/recipes", authenticateToken, (req: Request, res: Response) => {
 });
 
 // Modify an existing recipe
-router.put("/recipes/:id", (req: Request, res: Response) => {
-  addOrUpdateRecipe(req.body, req.body.id)
-    .then((newID) => {
-      res.status(200).json({ newID });
-    })
-    .catch((e) => {
-      res.status(400).json({ message: "Could not add recipe", error: e });
-    });
+router.put("/recipes/:id", authenticateToken, (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  getPartialRecipeByID(id).then((r) => {
+    if (r.author.username === res.locals.user.username) {
+      addOrUpdateRecipe(req.body, id)
+        .then((newID) => {
+          res.status(200).json({ newID });
+        })
+        .catch((e) => {
+          res.status(400).json({ message: "Could not add recipe", error: e });
+        });
+    } else {
+      // someone tried to edit a recipe they shouldn't have!!
+      res.status(403).json({
+        message: "Did you just try to edit someone else's recipe??",
+        error: "",
+      });
+    }
+  });
 });
 
 // get all ingredients
@@ -92,39 +106,23 @@ router.get("/ingredients/name/:name", (req: Request, res: Response) => {
 });
 
 // Create a new ingredient
-router.post("/ingredients", (req: Request, res: Response) => {
+// we might not even need this one??
+/* router.post("/ingredients", (req: Request, res: Response) => {
   const ingredient: Ingredient = req.body;
   addIngredient(ingredient)
     .then((result) => res.status(201).json({ ...ingredient, id: result.id }))
     .catch((e) =>
       res.status(409).json({ message: "could not add ingredient", error: e })
     );
-});
-
-// Update a recipe by ID
-/* router.put("/recipes/:id", (req: Request, res: Response) => {
-    const recipeId = parseInt(req.params.id);
-    const recipeIndex = recipes.findIndex(b => b.id === recipeId);
-
-    if (recipeIndex !== -1) {
-        recipes[recipeIndex] = { id: recipeId, title: req.body.title, author: req.body.author };
-        res.json(recipes[recipeIndex]);
-    } else {
-        res.status(404).json({ message: "Recipe not found" });
-    }
 }); */
 
 // Delete a recipe by ID
-router.delete("/recipes/:id", (req: Request, res: Response) => {
-  const recipeId = parseInt(req.params.id);
-  const recipeIndex = recipes.findIndex((b) => b.id === recipeId);
-
-  if (recipeIndex !== -1) {
-    recipes.splice(recipeIndex, 1);
-    res.status(204).send();
-  } else {
-    res.status(404).json({ message: "Recipe not found" });
+router.delete(
+  "/recipes/:id",
+  authenticateToken,
+  (req: Request, res: Response) => {
+    // TODO
   }
-});
+);
 
 export default router;

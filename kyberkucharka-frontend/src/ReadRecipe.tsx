@@ -1,24 +1,21 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
 import { formatAmount, gramsToAmountUsed } from "./functions/UnitHelper";
+import { useCookies } from "react-cookie";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
+  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
+    ["userData"],
+    {}
+  );
 
   const { slug = "0" } = useParams();
 
   let navigate = useNavigate();
-
-  const apiCall = () => {
-    axios.get(`${serverURL}`).then((data) => {
-      //this console.log will be in our frontend console
-      console.log(data);
-    });
-  };
 
   // each time the slug (which is the recipe ID) gets updated, the site will soft-reload
   useEffect(() => {
@@ -58,12 +55,27 @@ export default function ReadRecipe() {
           ) : (
             ""
           )}
-          <button type="button" onClick={() => navigate(`/edit/${slug}`)}>
-            Uprav recept
-          </button>
-          <button type="button" onClick={() => navigate(`/fork/${slug}`)}>
-            Forkni recept
-          </button>
+          {
+            // môže si upraviť vlastný recept
+            userCookie.userData?.username === recipeData.author.username ? (
+              <button type="button" onClick={() => navigate(`/edit/${slug}`)}>
+                Uprav recept
+              </button>
+            ) : (
+              ""
+            )
+          }
+
+          {
+            // môže forknúť hocičí recept
+            userCookie.userData != null ? (
+              <button type="button" onClick={() => navigate(`/fork/${slug}`)}>
+                Forkni recept
+              </button>
+            ) : (
+              ""
+            )
+          }
           <h2>{recipeData?.title}</h2>
           {recipeData?.image_link ? (
             <img
@@ -96,7 +108,6 @@ export default function ReadRecipe() {
           <p>{recipeData?.instructions}</p>
         </div>
       )}
-      <button onClick={apiCall}>apikól</button>
     </div>
   );
 }

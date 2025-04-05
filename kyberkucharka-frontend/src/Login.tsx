@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { DEFAULT_USER, User } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginProps {
   suggestRegistering: boolean;
 }
 
-export default function Login({suggestRegistering} : LoginProps) {
+export default function Login({ suggestRegistering }: LoginProps) {
   const [user, setUSer] = useState<User>(DEFAULT_USER);
+
+  let navigate = useNavigate();
 
   function updateFieldFromForm(
     field: keyof User,
@@ -27,12 +29,14 @@ export default function Login({suggestRegistering} : LoginProps) {
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
+      credentials: "include", // this is VERY NEEDED, so the server sends us a cookie (we want cookies)
     }).then(async (response: Response) => {
+      console.log(response.headers.getSetCookie());
       const json = await response.json();
 
       if (response.ok) {
         console.log(json);
-        document.cookie = `token=${json}`;
+        navigate(`/`);
       } else {
         console.error(`Error while logging in: ${json.message}, ${json.error}`);
       }
@@ -51,6 +55,7 @@ export default function Login({suggestRegistering} : LoginProps) {
             type="text"
             onChange={(x) => updateFieldFromForm("username", x)}
             autoComplete="username"
+            required
           />
         </div>
 
@@ -62,6 +67,7 @@ export default function Login({suggestRegistering} : LoginProps) {
             type="password"
             onChange={(x) => updateFieldFromForm("password", x)}
             autoComplete="current-password"
+            required
           />
         </div>
 

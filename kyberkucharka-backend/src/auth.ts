@@ -10,6 +10,11 @@ type ValidationResult =
       status: number;
     };
 
+// note - apparently there is no upper limit for expiration for JWT
+// and the upper limit for cookies is like 400 days... so, you can set this to a year
+// (I now also understand why Wikipedia tells me I have to relog every year, lol)
+export const TOKEN_EXPIRES_IN_SECONDS = 1800;
+
 export async function validateUser(user: User): Promise<ValidationResult> {
   // username
   if (!user.username.match(/[a-zA-Z0-9\-_]{3,}/)) {
@@ -42,7 +47,9 @@ export function generateJWT(user: User) {
   if (process.env.TOKEN_SECRET == null) {
     return undefined;
   }
-  return sign(user, process.env.TOKEN_SECRET, { expiresIn: "1800s" });
+  return sign(user, process.env.TOKEN_SECRET, {
+    expiresIn: `${TOKEN_EXPIRES_IN_SECONDS}s`,
+  });
 }
 
 export function authenticateToken(
@@ -50,9 +57,7 @@ export function authenticateToken(
   res: Response,
   next: NextFunction
 ) {
-  const authHeader = req.headers.authorization;
-  console.log(req.headers);
-  const token = authHeader && authHeader.split(" ")[1];
+  const token = req.cookies.jwtoken;
 
   if (token == null) {
     res.sendStatus(401);
@@ -61,11 +66,32 @@ export function authenticateToken(
       console.error(err);
 
       if (err) {
-        res.sendStatus(403);
+        // invalid or expired token => remove the cookies!
+        res.clearCookie("jwtoken").clearCookie("userData").sendStatus(403);
       } else {
-        req.body.author = user;
+        res.locals.user = user;
         next();
       }
     });
   }
+}
+
+export function checkTokenAndMaybeLogout(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const token = req.cookies.jwtoken;
+
+  if (token != null) {
+    verify(token, process.env.TOKEN_SECRET as string, (err: any, user: any) => {
+      if (err) {
+        // invalid or expired token => remove the cookies!
+        res.clearCookie("jwtoken").clearCookie("userData");
+      }
+    });
+  }
+
+  // and then continue
+  next();
 }
