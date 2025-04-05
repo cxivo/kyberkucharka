@@ -1,6 +1,7 @@
 import "./App.css";
 import { Link } from "react-router-dom";
 import RecipeList from "./RecipeList";
+import { getUserFromCookies } from "./functions/cookieHelper";
 
 export default function MainPage() {
   return (
@@ -9,7 +10,11 @@ export default function MainPage() {
       <h1>Vitajte na hlavnej stránke!</h1>
       <div className="links">
         <Link to="/about">O projekte</Link>
-        <Link to="/create">Vytvor recept</Link>
+        {getUserFromCookies() == null ? (
+          ""
+        ) : (
+          <Link to="/create">Vytvor recept</Link>
+        )}
       </div>
       <h2>Zoznam všetkých receptov:</h2>
       <RecipeList></RecipeList>

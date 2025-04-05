@@ -3,15 +3,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
 import { formatAmount, gramsToAmountUsed } from "./functions/UnitHelper";
-import { useCookies } from "react-cookie";
+import { getUserFromCookies } from "./functions/cookieHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
-  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
-    ["userData"],
-    {}
-  );
 
   const { slug = "0" } = useParams();
 
@@ -57,7 +53,7 @@ export default function ReadRecipe() {
           )}
           {
             // môže si upraviť vlastný recept
-            userCookie.userData?.username === recipeData.author.username ? (
+            getUserFromCookies()?.username === recipeData.author.username ? (
               <button type="button" onClick={() => navigate(`/edit/${slug}`)}>
                 Uprav recept
               </button>
@@ -68,7 +64,7 @@ export default function ReadRecipe() {
 
           {
             // môže forknúť hocičí recept
-            userCookie.userData != null ? (
+            getUserFromCookies() != null ? (
               <button type="button" onClick={() => navigate(`/fork/${slug}`)}>
                 Forkni recept
               </button>

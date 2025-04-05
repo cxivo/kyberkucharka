@@ -1,19 +1,13 @@
 import "./App.css";
 import { Link } from "react-router-dom";
 import { User } from "../../common-interfaces/interfaces";
-import { useCookies, CookiesProvider } from "react-cookie";
 import { serverURL } from "./main";
+import { getUserFromCookies } from "./functions/cookieHelper";
 
 function Header() {
-  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
-    ["userData"],
-    {}
-  );
-
   function sendLogout() {
     fetch(`${serverURL}/auth/logout/`, {
       method: "POST",
-      body: JSON.stringify(userCookie.userData),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -23,6 +17,8 @@ function Header() {
 
       if (response.ok) {
         console.log(json);
+        // refresh, so the disappearance of cookies becomes visible
+        window.location.reload();
       } else {
         console.error(
           `Error while logging out somehow: ${json.message}, ${json.error}`
@@ -31,10 +27,10 @@ function Header() {
     });
   }
 
-  function createProfileCard(user: User) {
+  function createProfileCard(user: User | undefined) {
     return (
       <>
-        <div>{user.display_name}</div>
+        <div>{user?.display_name}</div>
         <div>
           <button type="button" onClick={sendLogout}>
             Odhlásiť sa
@@ -50,7 +46,7 @@ function Header() {
         Kyberkuchárka
       </Link>
       <div id="userDiv">
-        {userCookie.userData == null ? (
+        {getUserFromCookies() == null ? (
           <>
             <div>
               <Link to={"/login"}>prihlásiť sa</Link>
@@ -60,7 +56,7 @@ function Header() {
             </div>
           </>
         ) : (
-          <div>{createProfileCard(userCookie.userData as User)}</div>
+          <div>{createProfileCard(getUserFromCookies())}</div>
         )}
       </div>
     </nav>
@@ -69,10 +65,10 @@ function Header() {
 
 function App({ children }: any) {
   return (
-    <CookiesProvider>
+    <>
       <Header></Header>
       <div>{children}</div>
-    </CookiesProvider>
+    </>
   );
 }
 

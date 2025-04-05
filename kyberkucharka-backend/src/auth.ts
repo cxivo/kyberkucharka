@@ -60,7 +60,7 @@ export function authenticateToken(
   const token = req.cookies.jwtoken;
 
   if (token == null) {
-    res.sendStatus(401);
+    res.status(401).json({ message: "No token was provided", error: "" });
   } else {
     verify(token, process.env.TOKEN_SECRET as string, (err: any, user: any) => {
       console.error(err);
