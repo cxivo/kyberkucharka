@@ -14,6 +14,7 @@ import EditRecipe, {
 } from "./EditRecipe.tsx";
 import Login from "./Login.tsx";
 import Register from "./Register.tsx";
+import UserPage from "./userPages/UserPage.tsx";
 
 export const serverURL = "http://localhost:3000";
 
@@ -79,6 +80,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         <Register></Register>
+      </App>
+    ),
+  },
+  {
+    path: "/user/:slug",
+    element: (
+      <App>
+        <UserPage></UserPage>
       </App>
     ),
   },

@@ -6,18 +6,26 @@ import { serverURL } from "./main";
 export default function RecipeList() {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [invalid, setInvalid] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(`${serverURL}/api/recipes`);
-        const result = (await response.json()) as PartialRecipe[];
-        setRecipesList(result);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
+      await fetch(`${serverURL}/api/recipes`)
+        .then(async (response) => {
+          if (response.ok) {
+            const result = await response.json();
+            setRecipesList(result);
+            setLoading(false);
+          } else {
+            setInvalid(true);
+            setLoading(false);
+          }
+        })
+        .catch((e) => {
+          console.error("Error fetching data:", e);
+          setInvalid(true);
+          setLoading(false);
+        });
     };
 
     fetchData();
@@ -25,6 +33,8 @@ export default function RecipeList() {
 
   return loading ? (
     <p>načítavam...</p>
+  ) : invalid ? (
+    <p>Nastala neznáma chyba</p>
   ) : (
     <div>
       <ul>

@@ -246,7 +246,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   }
 
   return (
-    <div className="edit-recipe">
+    <div className="edit-recipe recipe">
       <title>{pageTitle}</title>
       {loading ? (
         <p>načítavam...</p>
@@ -262,8 +262,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
               <label htmlFor="recipe-image">Obrázok k receptu: </label>
               {imageLinkElement}
             </div>
-
-            <p>autor: {recipeData?.author.display_name}</p>
 
             <label htmlFor="recipe-description">Popis: </label>
             {descriptionElement}

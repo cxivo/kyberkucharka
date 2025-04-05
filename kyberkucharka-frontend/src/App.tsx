@@ -30,7 +30,9 @@ function Header() {
   function createProfileCard(user: User | undefined) {
     return (
       <>
-        <div>{user?.display_name}</div>
+        <div>
+          <Link to={`/user/${user?.username}`}>{user?.display_name}</Link>
+        </div>
         <div>
           <button type="button" onClick={sendLogout}>
             Odhlásiť sa

@@ -13,6 +13,8 @@ import {
 } from "./databaseFunctions";
 import authRoutes from "./routes/authRoutes";
 import cookieParser from "cookie-parser";
+import ingredientRoutes from "./routes/ingredientRoutes";
+import userRoutes from "./routes/userRoutes";
 
 dotenv.config();
 
@@ -40,7 +42,9 @@ const port = process.env.PORT || 3000;
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/api", recipeRoutes);
+app.use("/api/recipes", recipeRoutes);
+app.use("/api/ingredients", ingredientRoutes);
+app.use("/api/users", userRoutes);
 app.use("/auth", authRoutes);
 
 app.get("/", (req: Request, res: Response) => {

@@ -57,19 +57,15 @@ export async function addIngredient(ingredient: Ingredient) {
 
 // recipes
 
-export async function getPartialRecipes() {
-  // returns a list of PartialRecipes... or does it? i dont know
-  const query = `SELECT id, title, json_build_object(
-      'username', u.username,
-      'display_name', u.display_name,
-      'registered_on', u.registered_on,
-      'is_admin', u.is_admin
-    ) AS author
-    FROM recipes AS r
-    JOIN users AS u 
-    ON r.author = u.username;`;
-  return db.any(query);
-}
+const getPartialRecipeQuery = `SELECT id, title, json_build_object(
+  'username', u.username,
+  'display_name', u.display_name,
+  'registered_on', u.registered_on,
+  'is_admin', u.is_admin
+) AS author
+FROM recipes AS r
+JOIN users AS u 
+ON r.author = u.username`;
 
 // query for getting a formatted JSON Recipe object
 const getRecipeQuery = `
@@ -129,6 +125,22 @@ const getRecipeQuery = `
   JOIN users AS u ON u.username = r.author
 `;
 
+export async function getPartialRecipes() {
+  // returns a list of PartialRecipes... or does it? i dont know
+  const query = getPartialRecipeQuery + ` ORDER BY r.created_on DESC;`;
+  return db.any(query);
+}
+
+export async function getPartialRecipesByUser(
+  username: string
+): Promise<Recipe[]> {
+  const query =
+    getPartialRecipeQuery +
+    ` WHERE u.username = $1
+    ORDER BY r.created_on DESC;`;
+  return db.any(query, [username]);
+}
+
 function fixMissingRecipeTags(recipe: Recipe): Recipe {
   recipe.sections ??= [];
   recipe.sections.map((section) => {
@@ -159,7 +171,7 @@ export async function getRecipeByID(id: number): Promise<Recipe> {
 }
 
 export async function getRecipesByName(name: string): Promise<Recipe[]> {
-  const query = getRecipeQuery + `WHERE r.title LIKE $1;`;
+  const query = getRecipeQuery + ` WHERE r.title LIKE $1;`;
   return db
     .any(query, [`%${name}%`])
     .then((rs) => rs.map(fixMissingRecipeTags));
@@ -297,6 +309,23 @@ export async function usernameExists(name: string): Promise<boolean> {
   } else {
     return true;
   }
+}
+
+export async function getUsers(): Promise<User[]> {
+  return await db.any(`SELECT username, display_name, registered_on, is_admin 
+    FROM users
+    ORDER BY username ASC;`);
+}
+
+export async function getUserByUsername(
+  username: string
+): Promise<User | null> {
+  return await db.oneOrNone(
+    `SELECT username, display_name, registered_on, is_admin 
+    FROM users
+    WHERE username = $1;`,
+    [username]
+  );
 }
 
 // init
