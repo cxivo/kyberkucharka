@@ -280,13 +280,13 @@ export async function addOrUpdateRecipe(
 }
 
 // users
-export async function addUser(user: User) {
+export async function addUser(user: User): Promise<User> {
   // TODO maybe move this somewhere else?
   const hash = bcrypt.hashSync(user.password ?? "");
   user.password = hash;
 
   const query = `INSERT INTO users(username, display_name, password, registered_on)
-    VALUES ($<username>, $<display_name>, $<password>, NOW()) RETURNING username;`;
+    VALUES ($<username>, $<display_name>, $<password>, NOW()) RETURNING username, display_name, registered_on, is_admin;`;
   return db.one(query, user);
 }
 

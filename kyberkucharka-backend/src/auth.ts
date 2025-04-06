@@ -95,3 +95,17 @@ export function checkTokenAndMaybeLogout(
   // and then continue
   next();
 }
+
+export function sendJWTCookie(res: Response, u: User, status: number) {
+  res
+    .status(status)
+    .cookie("jwtoken", generateJWT(u), {
+      httpOnly: true,
+      expires: new Date(Date.now() + TOKEN_EXPIRES_IN_SECONDS * 1000),
+    })
+    .cookie("userData", JSON.stringify(u), {
+      // we want this one to be readable by the client
+      expires: new Date(Date.now() + TOKEN_EXPIRES_IN_SECONDS * 1000),
+    })
+    .json({});
+}

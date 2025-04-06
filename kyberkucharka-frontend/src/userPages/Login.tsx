@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { DEFAULT_USER, User } from "../../common-interfaces/interfaces";
-import { serverURL } from "./main";
+import { DEFAULT_USER, User } from "../../../common-interfaces/interfaces";
+import { serverURL } from "../main";
 import { Link, useNavigate } from "react-router-dom";
 
 interface LoginProps {
@@ -38,6 +38,7 @@ export default function Login({ suggestRegistering }: LoginProps) {
         console.log(json);
         navigate(`/`);
       } else {
+        alert(`Nepodarilo sa prihlásiť:\n${json.message}`);
         console.error(`Error while logging in: ${json.message}, ${json.error}`);
       }
     });

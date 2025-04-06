@@ -12,9 +12,9 @@ import EditRecipe, {
   editSubmit,
   forkSubmit,
 } from "./EditRecipe.tsx";
-import Login from "./Login.tsx";
-import Register from "./Register.tsx";
 import UserPage from "./userPages/UserPage.tsx";
+import Register from './userPages/Register.tsx';
+import Login from "./userPages/Login.tsx";
 
 export const serverURL = "http://localhost:3000";
 

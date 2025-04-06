@@ -139,6 +139,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       .then((json) => {
         console.log(json);
         if (json.newID == null) {
+          alert(`Nepodarilo sa pridať recept:\n${json.message}`);
           console.error(
             `An error has occured while trying to add the new recipe: ${json.message}, ${json.error}`
           );
