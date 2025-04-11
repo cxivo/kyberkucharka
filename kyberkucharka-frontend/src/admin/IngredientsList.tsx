@@ -38,61 +38,89 @@ export default function IngredientsList() {
       },
       credentials: "include",
     })
-    .then(async (response: Response) => {
-      if (!response.ok) {
-        const json = await response.json();        
+      .then(async (response: Response) => {
+        if (!response.ok) {
+          const json = await response.json();
 
-        // not an admin
-        if (response.status === 403)
-        {
-          alert("Na úpravu ingrediencií potrebujete administrátorské práva");
-        } else {
-          alert(`Nastala chyba: ${json.message}`);
+          // not an admin
+          if (response.status === 403) {
+            alert("Na úpravu ingrediencií potrebujete administrátorské práva");
+          } else if (response.status === 401) {
+            alert(
+              "Na úpravu ingrediencií potrebujete administrátorské práva (a vy nie ste ani prihlásení)"
+            );
+          } else {
+            alert(`Nastala chyba: ${json.message}`);
+          }
         }
-      }
-    }).then(fetchData);
+      })
+      .then(fetchData);
   }
-  
+
   return (
     <>
       <title>Správa ingrediencií</title>
       <h1>Zoznam ingrediencií</h1>
       <table className="ingredients-table">
         <thead>
-        <tr>
-          <th scope="col">Názov</th>
-          <th scope="col">ID</th>
-          <th scope="col">Čas vytvorenia</th>
-          <th scope="col">Vytvorené kým</th>
-          <th scope="col">Overené</th>
-        </tr>
+          <tr>
+            <th scope="col">Názov</th>
+            <th scope="col">ID</th>
+            <th scope="col">Čas vytvorenia</th>
+            <th scope="col">Vytvorené kým</th>
+            <th scope="col">Overené</th>
+          </tr>
         </thead>
         <tbody>
-          {ingredients.map(ingredient => 
-          <tr
-          className={ingredient.verified ? "tr-verified" : "tr-unverified"} 
-          key={ingredient.id} 
-          >
-            <td 
-              onClick={() => configIngredient(ingredient)}
-              className="td-clickable"
-            >{ingredient.name}</td>
-            <td>{ingredient.id}</td>
-            <td>{new Date(ingredient.created_on ?? "").toISOString().replace("T", " ")}</td>
-            <td>{ingredient.created_by && (<Link to={`/user/${ingredient.created_by}`}>{ingredient.created_by}</Link>)}</td>
-            <td>{ingredient.verified ? "áno" : "nie"}</td>
-          </tr>
-          )}
+          {ingredients.map((ingredient) => (
+            <tr
+              className={ingredient.verified ? "tr-verified" : "tr-unverified"}
+              key={ingredient.id}
+            >
+              <td
+                onClick={() => configIngredient(ingredient)}
+                className="td-clickable"
+              >
+                {ingredient.name}
+              </td>
+              <td>{ingredient.id}</td>
+              <td>
+                {new Date(ingredient.created_on ?? "")
+                  .toISOString()
+                  .replace("T", " ")}
+              </td>
+              <td>
+                {ingredient.created_by && (
+                  <Link to={`/user/${ingredient.created_by}`}>
+                    {ingredient.created_by}
+                  </Link>
+                )}
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  defaultChecked={ingredient.verified}
+                  onChange={(e) =>
+                    sendIngredient({
+                      ...ingredient,
+                      verified: e.target.checked,
+                    })
+                  }
+                ></input>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
       {configuring && (
-        <EditIngredientWindow 
+        <EditIngredientWindow
           titleText="Úprava ingrediencie"
           defaultIngredient={selectedIngredient!}
-          callbackSuccess={sendIngredient} 
-          callbackAny={() => setConfiguring(false)} 
-          existingIngredients={[]}>
-        </EditIngredientWindow>)}
+          callbackSuccess={sendIngredient}
+          callbackAny={() => setConfiguring(false)}
+          existingIngredients={[]}
+        ></EditIngredientWindow>
+      )}
     </>
   );
 }
