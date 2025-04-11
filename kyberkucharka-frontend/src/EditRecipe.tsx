@@ -10,6 +10,7 @@ import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
 import CreateIngredient from "./CreateIngredient";
 import Select from "react-select";
+import Login from "./userPages/Login";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -56,6 +57,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   const [sendingDisabled, setSendingDisabled] = useState<boolean>(true);
   const [creatingNewIngredient, setCreatingNewIngredient] =
     useState<boolean>(false);
+  const [loginNeeded, setLoginNeeded] = useState<boolean>(false);
   const [possibleNewIngredientName, setPossibleNewIngredientName] =
     useState<string>("");
   const [newIngredientCallback, setNewIngredientCallback] = useState<
@@ -104,6 +106,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     if (slug !== "") {
       fetchData();
     } else {
+      setRecipeData(DEFAULT_RECIPE);
       setLoading(false);
       setSendingDisabled(false);
     }
@@ -136,11 +139,18 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
 
     // either create a new recipe or modify the existing one
     submitAction(slug, recipeData)
-      .then((response: Response) => response.json())
-      .then((json) => {
+      .then(async (response: Response) => {
+        const json = await response.json();
+
         console.log(json);
         if (json.newID == null) {
-          alert(`Nepodarilo sa pridať recept:\n${json.message}`);
+          // auth failed => login needed
+          if (response.status === 401) {
+            setLoginNeeded(true);
+          } else {
+            alert(`Nepodarilo sa pridať recept:\n${json.message}`);
+          }
+
           console.error(
             `An error has occured while trying to add the new recipe: ${json.message}, ${json.error}`
           );
@@ -205,113 +215,114 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   }
 
   return (
-    <div className="edit-recipe recipe">
-      <title>{pageTitle}</title>
-      {loading ? (
-        <p>načítavam...</p>
-      ) : (
-        <>
-          <form className="recipe" onSubmit={submitRecipe}>
-            <div className="recipe-title">
-              <h1
-                id="recipe-title"
-                contentEditable="plaintext-only"
-                suppressContentEditableWarning={true}
-                onBlur={(e) => {
-                  updateFieldFromForm("title", e.target.innerText.trim());
-                }}
-              >
-                {recipeData?.title || "<Sem vložte názov receptu>"}
-              </h1>
-            </div>
-
-            <div className="recipe-body recipe-text recipe-edit-margin">
-              <div className="inliner">
-                <label htmlFor="recipe-image">Obrázok k receptu: </label>
-                <p
-                  id="recipe-image"
+    <>
+      <div className="edit-recipe recipe">
+        <title>{pageTitle}</title>
+        {loading ? (
+          <p>načítavam...</p>
+        ) : (
+          <>
+            <form className="recipe" onSubmit={submitRecipe}>
+              <div className="recipe-title">
+                <h1
+                  id="recipe-title"
                   contentEditable="plaintext-only"
                   suppressContentEditableWarning={true}
                   onBlur={(e) => {
-                    updateFieldFromForm(
-                      "image_link",
-                      e.target.innerText.trim()
-                    );
+                    updateFieldFromForm("title", e.target.innerText.trim());
                   }}
                 >
-                  {recipeData?.image_link ||
-                    "<Sem môžete vložiť URL obrázku k receptu>"}
-                </p>
+                  {recipeData?.title || "<Sem vložte názov receptu>"}
+                </h1>
               </div>
 
-              <div className="inliner">
-                <label htmlFor="recipe-description">Popis: </label>
-                <p
-                  id="recipe-description"
-                  contentEditable="plaintext-only"
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => {
-                    updateFieldFromForm(
-                      "description",
-                      e.target.innerText.trim()
-                    );
-                  }}
-                >
-                  {recipeData?.description || "<Sem vložte popis receptu>"}
-                </p>
-              </div>
-
-              <div className="nothing-doer">
-                <h2 className="ingredients-title">Ingrediencie</h2>
-                {recipeData?.sections?.map((section, index) => (
-                  <EditableSection
-                    key={section.id}
-                    section={section}
-                    index={index}
-                    deleteSection={() => {
-                      deleteSection(index);
+              <div className="recipe-body recipe-text recipe-edit-margin">
+                <div className="inliner">
+                  <label htmlFor="recipe-image">Obrázok k receptu: </label>
+                  <p
+                    id="recipe-image"
+                    contentEditable="plaintext-only"
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => {
+                      updateFieldFromForm(
+                        "image_link",
+                        e.target.innerText.trim()
+                      );
                     }}
-                    setSection={setSection}
-                    selectableIngredients={selectableIngredients}
-                    createNewIngredient={createNewIngredient}
+                  >
+                    {recipeData?.image_link ||
+                      "<Sem môžete vložiť URL obrázku k receptu>"}
+                  </p>
+                </div>
+
+                <div className="inliner">
+                  <label htmlFor="recipe-description">Popis: </label>
+                  <p
+                    id="recipe-description"
+                    contentEditable="plaintext-only"
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => {
+                      updateFieldFromForm(
+                        "description",
+                        e.target.innerText.trim()
+                      );
+                    }}
+                  >
+                    {recipeData?.description || "<Sem vložte popis receptu>"}
+                  </p>
+                </div>
+
+                <div className="nothing-doer">
+                  <h2 className="ingredients-title">Ingrediencie</h2>
+                  {recipeData?.sections?.map((section, index) => (
+                    <EditableSection
+                      key={section.id}
+                      section={section}
+                      index={index}
+                      deleteSection={() => {
+                        deleteSection(index);
+                      }}
+                      setSection={setSection}
+                      selectableIngredients={selectableIngredients}
+                      createNewIngredient={createNewIngredient}
+                    />
+                  ))}
+                  <button
+                    className="kyberbutton"
+                    type="button"
+                    onClick={addSection}
+                  >
+                    Pridaj Sekciu
+                  </button>
+                </div>
+
+                <div className="inliner">
+                  <label htmlFor="recipe-instructions">Inštrukcie: </label>
+                  <p
+                    id="recipe-instructions"
+                    contentEditable="plaintext-only"
+                    suppressContentEditableWarning={true}
+                    onBlur={(e) => {
+                      updateFieldFromForm(
+                        "instructions",
+                        e.target.innerText.trim()
+                      );
+                    }}
+                  >
+                    {recipeData?.instructions ||
+                      "<Sem vložte inštrukcie k receptu>"}
+                  </p>
+                </div>
+
+                <div>
+                  <input
+                    type="submit"
+                    disabled={sendingDisabled}
+                    value="Hotovo"
                   />
-                ))}
-                <button
-                  className="kyberbutton"
-                  type="button"
-                  onClick={addSection}
-                >
-                  Pridaj Sekciu
-                </button>
-              </div>
+                </div>
 
-              <div className="inliner">
-                <label htmlFor="recipe-instructions">Inštrukcie: </label>
-                <p
-                  id="recipe-instructions"
-                  contentEditable="plaintext-only"
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => {
-                    updateFieldFromForm(
-                      "instructions",
-                      e.target.innerText.trim()
-                    );
-                  }}
-                >
-                  {recipeData?.instructions ||
-                    "<Sem vložte inštrukcie k receptu>"}
-                </p>
-              </div>
-
-              <div>
-                <input
-                  type="submit"
-                  disabled={sendingDisabled}
-                  value="Hotovo"
-                />
-              </div>
-
-              {/*   <Select
+                {/*   <Select
               className="select-thing"
               isLoading={loading}
               options={optionsList}
@@ -328,20 +339,28 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                   : null
               }
             /> */}
-            </div>
-          </form>
-          {creatingNewIngredient ? (
-            <CreateIngredient
-              possibleName={possibleNewIngredientName}
-              thenCall={newIngredientCallback}
-              afterYouAreDone={doneCreating}
-              existingIngredients={selectableIngredients}
-            />
-          ) : (
-            ""
-          )}
-        </>
+              </div>
+            </form>
+          </>
+        )}
+      </div>
+      {creatingNewIngredient && (
+        <CreateIngredient
+          possibleName={possibleNewIngredientName}
+          thenCall={newIngredientCallback}
+          afterYouAreDone={doneCreating}
+          existingIngredients={selectableIngredients}
+        />
       )}
-    </div>
+      {loginNeeded && (
+        <Login
+          suggestRegistering={false}
+          customMessage="Vaše prihlásenie vypršalo; prosím prihláste sa znova"
+          closeCallback={() => {
+            setLoginNeeded(false);
+          }}
+        ></Login>
+      )}
+    </>
   );
 }
