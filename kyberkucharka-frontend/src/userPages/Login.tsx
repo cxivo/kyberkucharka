@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { DEFAULT_USER, User } from "../../../common-interfaces/interfaces";
 import { serverURL } from "../main";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface LoginProps {
   suggestRegistering: boolean;
+  customMessage?: string;
+  closeCallback: () => void;
 }
 
-export default function Login({ suggestRegistering }: LoginProps) {
+export default function Login({
+  suggestRegistering,
+  customMessage,
+  closeCallback,
+}: LoginProps) {
   const [user, setUSer] = useState<User>(DEFAULT_USER);
-
-  let navigate = useNavigate();
 
   function updateFieldFromForm(
     field: keyof User,
@@ -36,7 +40,8 @@ export default function Login({ suggestRegistering }: LoginProps) {
 
       if (response.ok) {
         console.log(json);
-        navigate(`/`);
+        closeCallback();
+        //navigate(`/`);
       } else {
         alert(`Nepodarilo sa prihlásiť:\n${json.message}`);
         console.error(`Error while logging in: ${json.message}, ${json.error}`);
@@ -45,42 +50,54 @@ export default function Login({ suggestRegistering }: LoginProps) {
   }
 
   return (
-    <div className="login-window">
-      <h1>Prihlásenie sa</h1>
-      <form onSubmit={sendLogin}>
-        <div>
-          <label htmlFor="username-input">Prihlasovacie meno: </label>
-          <input
-            id="username-input"
-            name="username-input"
-            type="text"
-            onChange={(x) => updateFieldFromForm("username", x)}
-            autoComplete="username"
-            required
-          />
-        </div>
+    <div className="floatingWindow">
+      <div className="floatingWindowContent">
+        <button className="button-cancel" type="button" onClick={closeCallback}>
+          Zrušiť
+        </button>
+        <h1>Prihlásenie sa</h1>
+        {customMessage != null ? <p>{customMessage}</p> : ""}
+        <form onSubmit={sendLogin}>
+          <div>
+            <label htmlFor="username-input">Prihlasovacie meno: </label>
+            <input
+              id="username-input"
+              name="username-input"
+              type="text"
+              onChange={(x) => updateFieldFromForm("username", x)}
+              autoComplete="username"
+              required
+            />
+          </div>
 
-        <div>
-          <label htmlFor="password-input">Heslo: </label>
-          <input
-            id="password-input"
-            name="password-input"
-            type="password"
-            onChange={(x) => updateFieldFromForm("password", x)}
-            autoComplete="current-password"
-            required
-          />
-        </div>
+          <div>
+            <label htmlFor="password-input">Heslo: </label>
+            <input
+              id="password-input"
+              name="password-input"
+              type="password"
+              onChange={(x) => updateFieldFromForm("password", x)}
+              autoComplete="current-password"
+              required
+            />
+          </div>
 
-        <input type="submit"></input>
-      </form>
-      {suggestRegistering ? (
-        <p>
-          Alebo sa môžete <Link to={"/register"}>registrovať</Link>.
-        </p>
-      ) : (
-        ""
-      )}
+          <div className="submit-button">
+            <input type="submit" value="Prihlásiť sa"></input>
+          </div>
+        </form>
+        {suggestRegistering ? (
+          <p>
+            Alebo sa môžete{" "}
+            <Link to={"/register"} onClick={closeCallback}>
+              registrovať
+            </Link>
+            .
+          </p>
+        ) : (
+          ""
+        )}
+      </div>
     </div>
   );
 }

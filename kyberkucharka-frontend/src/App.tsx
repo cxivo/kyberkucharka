@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import { User } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
 import { getUserFromCookies } from "./functions/cookieHelper";
+import { useState } from "react";
+import Login from "./userPages/Login";
 
 function Header() {
+  const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+
   function sendLogout() {
     fetch(`${serverURL}/auth/logout/`, {
       method: "POST",
@@ -30,38 +34,55 @@ function Header() {
   function createProfileCard(user: User | undefined) {
     return (
       <>
-        <div>
-          <Link to={`/user/${user?.username}`}>{user?.display_name}</Link>
-        </div>
-        <div>
-          <button type="button" onClick={sendLogout}>
-            Odhlásiť sa
-          </button>
-        </div>
+        <Link to={`/user/${user?.username}`}>{user?.display_name}</Link>
+
+        <button className="kyberbutton" type="button" onClick={sendLogout}>
+          Odhlásiť sa
+        </button>
       </>
     );
   }
 
   return (
-    <nav>
-      <Link className="mainLogo" to="/">
-        Kyberkuchárka
-      </Link>
-      <div id="userDiv">
-        {getUserFromCookies() == null ? (
-          <>
-            <div>
-              <Link to={"/login"}>prihlásiť sa</Link>
-            </div>
-            <div>
-              <Link to={"/register"}>registrovať sa</Link>
-            </div>
-          </>
-        ) : (
-          <div>{createProfileCard(getUserFromCookies())}</div>
-        )}
-      </div>
-    </nav>
+    <>
+      <nav>
+        <Link className="mainLogo" to="/">
+          Kyberkuchárka
+        </Link>
+        <div id="userDiv">
+          {getUserFromCookies() == null ? (
+            <>
+              <div>
+                <button
+                  className="kyberbutton-small"
+                  type="button"
+                  onClick={() => setIsLoggingIn(true)}
+                >
+                  prihlásiť sa
+                </button>
+              </div>
+              <div>
+                <div className="kyberbutton-small">
+                  <Link to={"/register"}>registrovať sa</Link>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>{createProfileCard(getUserFromCookies())}</>
+          )}
+        </div>
+      </nav>
+      {isLoggingIn ? (
+        <Login
+          suggestRegistering={true}
+          closeCallback={() => {
+            setIsLoggingIn(false);
+          }}
+        ></Login>
+      ) : (
+        ""
+      )}
+    </>
   );
 }
 

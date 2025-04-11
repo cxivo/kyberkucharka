@@ -1,7 +1,7 @@
 import { UsedIngredient } from "../../common-interfaces/interfaces";
 import {
   amountToGrams,
-  getUnitName,
+  formatAmount,
   gramsToAmountUsed,
 } from "./functions/UnitHelper";
 
@@ -19,33 +19,37 @@ export default function EditableIngredient({
   deleteIngredient,
 }: EditableIngredientProps) {
   return (
-    <div className="ingredient">
-      <input
-        type="number"
-        step={0.05}
-        min={0}
-        defaultValue={gramsToAmountUsed(used_ingredient)}
-        onInput={(x) => {
-          setAmount(
-            index,
-            amountToGrams(+x.currentTarget.value, used_ingredient.ingredient)
-          );
-        }}
-        onBlur={(e) => {
-          e.currentTarget.value = e.currentTarget.value || "0";
-        }}
-      />
-      {getUnitName(used_ingredient.ingredient.primary_unit)}
-      {" - "}
-      {used_ingredient.ingredient.name}
-      <button
-        type="button"
+    <li>
+      <span>
+        <input
+          className="p-like"
+          type="number"
+          step={0.05}
+          min={0}
+          defaultValue={gramsToAmountUsed(used_ingredient)}
+          onInput={(x) => {
+            setAmount(
+              index,
+              amountToGrams(+x.currentTarget.value, used_ingredient.ingredient)
+            );
+          }}
+          onBlur={(e) => {
+            e.currentTarget.value = e.currentTarget.value || "0";
+          }}
+        />
+        {formatAmount(used_ingredient)}
+        {" - "}
+        {used_ingredient.ingredient.name}
+      </span>
+      <img
+        src="/src/assets/x.png"
+        alt="Zmazať ingredienciu"
+        tabIndex={0}
+        className="cancel-x delete-ingredient"
         onClick={() => {
           deleteIngredient(index);
         }}
-      >
-        Zmaž
-      </button>
-    </div>
+      />
+    </li>
   );
 }

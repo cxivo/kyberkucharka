@@ -33,14 +33,14 @@ export default function ReadRecipe() {
   useEffect(() => console.log(recipeData), [recipeData]);
 
   return (
-    <div className="recipe">
+    <div>
       <title>
         {(recipeData.title ?? "načítavam recept") + " - Kyberkuchárka"}
       </title>
       {loading ? (
         <p>načítavam...</p>
       ) : (
-        <div key={recipeData.id}>
+        <div className="recipe" key={recipeData.id}>
           {recipeData.forked_from != null ? (
             <div>
               Forknuté z{" "}
@@ -72,36 +72,49 @@ export default function ReadRecipe() {
               ""
             )
           }
-          <h2>{recipeData?.title}</h2>
-          {recipeData?.image_link ? (
-            <img
-              src={recipeData?.image_link}
-              alt="Obrázok k receptu"
-              className="recipe_img"
-            />
-          ) : (
-            <></>
-          )}
-          <p>autor: {recipeData?.author.display_name}</p>
-          <p>{recipeData?.description}</p>
-          <h3>Ingrediencie</h3>
-          {recipeData?.sections.map((section) => (
-            <div key={section.id} className="section">
-              <h4>{section.name}</h4>
-              <ul>
-                {section.used_ingredients.map((used_ingredient) => (
-                  <li key={used_ingredient.id}>
-                    {gramsToAmountUsed(used_ingredient)}&nbsp;
-                    {formatAmount(used_ingredient)}
-                    {" - "}
-                    {used_ingredient.ingredient.name}
-                  </li>
-                ))}
-              </ul>
+          <div className="recipe-title">
+            <h1>{recipeData?.title}</h1>
+          </div>
+          <div className="recipe-body">
+            <p className="recipe-author">
+              (autor:{" "}
+              <Link to={`/user/${recipeData?.author?.username}`}>
+                {recipeData?.author?.display_name}
+              </Link>
+              )
+            </p>
+
+            {recipeData?.image_link && (
+              <img
+                src={recipeData?.image_link}
+                alt="Obrázok k receptu"
+                className="recipe-image"
+              />
+            )}
+
+            <div className="recipe-text">
+              <p>{recipeData?.description}</p>
+              <h2>Ingrediencie</h2>
+              {recipeData?.sections?.map((section) => (
+                <div key={section.id} className="recipe-section">
+                  <h3>{section.name}</h3>
+                  <ul className="ingredients-list">
+                    {section?.used_ingredients?.map((used_ingredient) => (
+                      <li key={used_ingredient.id}>
+                        {gramsToAmountUsed(used_ingredient)}&nbsp;
+                        {formatAmount(used_ingredient)}
+                        {" - "}
+                        {used_ingredient.ingredient.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+              <h2>Postup</h2>
+              <p>{recipeData?.instructions}</p>
+              <div className="recipe-text-afterspace">&nbsp;</div>
             </div>
-          ))}
-          <h3>Postup</h3>
-          <p>{recipeData?.instructions}</p>
+          </div>
         </div>
       )}
     </div>

@@ -48,7 +48,7 @@ export default function EditableSection({
 
   useEffect(() => {
     setNextUsedIngredientID(
-      section.used_ingredients.reduce((x, y) => (x && x.id > y.id ? x : y), {
+      section?.used_ingredients?.reduce((x, y) => (x && x.id > y.id ? x : y), {
         id: 0,
       }).id + 1
     );
@@ -67,10 +67,8 @@ export default function EditableSection({
   }
 
   // when the section is renamed
-  function changeTitle(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const newSection: Section = { ...section, name: e.target.value };
+  function changeTitle(title: string) {
+    const newSection: Section = { ...section, name: title };
     setSection(index, newSection);
   }
 
@@ -96,32 +94,39 @@ export default function EditableSection({
   function deleteIngredient(ingredientIndex: number) {
     const newSection: Section = { ...section };
     newSection.used_ingredients.splice(ingredientIndex, 1);
+    newSection.used_ingredients ??= [];
     setSection(index, newSection);
   }
 
   return (
     <div className="section">
-      <button
-        type="button"
-        onClick={() => {
-          deleteSection(index);
-        }}
-      >
-        Zmaž sekciu
-      </button>
-      <div>
-        <label htmlFor={`section ${index}`}>názov sekcie: </label>
-        <input
+      <div className="section-name">
+        <h3
           id={`section ${index}`}
-          type="text"
-          defaultValue={section.name ?? ""}
-          onChange={changeTitle}
+          contentEditable="plaintext-only"
+          suppressContentEditableWarning={true}
+          onBlur={(e) => changeTitle(e.target.innerText.trim())}
+        >
+          {section.name || "<Sem môžete vložiť názov sekcie>"}
+        </h3>
+        <img
+          src="/src/assets/x.png"
+          alt="Zmazať sekciu"
+          tabIndex={0}
+          className="cancel-x delete-section"
+          onClick={() => {
+            deleteSection(index);
+          }}
         />
+      </div>
 
-        {section.used_ingredients.map(
+      <ul className="ingredients-list editable-ingredients-list nothing-doer">
+        {section?.used_ingredients?.map(
           (usedIngredient: UsedIngredient, index) => (
             <EditableIngredient
-              key={section.id.toString() + "-" + usedIngredient.id.toString()}
+              key={
+                section?.id?.toString() + "-" + usedIngredient?.id?.toString()
+              }
               index={index}
               setAmount={setIngredientAmount}
               used_ingredient={usedIngredient}
@@ -129,31 +134,31 @@ export default function EditableSection({
             />
           )
         )}
+      </ul>
 
-        <CreatableSelect
-          className="select-thing"
-          isLoading={optionsList.length === 0}
-          options={optionsList}
-          onChange={selectChange}
-          loadingMessage={() => `Načítavam...`}
-          noOptionsMessage={() => "...nič? divné"}
-          formatCreateLabel={(text: string) =>
-            `Vytvor novú ingredienciu: ${text}`
-          }
-          onCreateOption={(name: string) => {
-            createNewIngredient(name, addIngredient);
-          }}
-          placeholder="Vyber ingredienciu..."
-          value={
-            selectedOption
-              ? {
-                  value: selectedOption?.id ?? 0,
-                  label: selectedOption?.name ?? "",
-                }
-              : null
-          }
-        />
-      </div>
+      <CreatableSelect
+        className="select-thing"
+        isLoading={optionsList.length === 0}
+        options={optionsList}
+        onChange={selectChange}
+        loadingMessage={() => `Načítavam...`}
+        noOptionsMessage={() => "...nič? divné"}
+        formatCreateLabel={(text: string) =>
+          `Vytvor novú ingredienciu: ${text}`
+        }
+        onCreateOption={(name: string) => {
+          createNewIngredient(name, addIngredient);
+        }}
+        placeholder="Vyber ingredienciu..."
+        value={
+          selectedOption
+            ? {
+                value: selectedOption?.id ?? 0,
+                label: selectedOption?.name ?? "",
+              }
+            : null
+        }
+      />
     </div>
   );
 }

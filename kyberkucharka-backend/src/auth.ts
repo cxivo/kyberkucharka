@@ -3,17 +3,17 @@ import { User } from "../../common-interfaces/interfaces";
 import { usernameExists } from "./databaseFunctions";
 import { Request, Response, NextFunction } from "express";
 
+// note - apparently there is no upper limit for expiration for JWT
+// and the upper limit for cookies is like 400 days... so, you can set this to a year
+// (I now also understand why Wikipedia tells me I have to relog every year, lol)
+export const TOKEN_EXPIRES_IN_SECONDS = 1800;
+
 type ValidationResult =
   | undefined
   | {
       message: string;
       status: number;
     };
-
-// note - apparently there is no upper limit for expiration for JWT
-// and the upper limit for cookies is like 400 days... so, you can set this to a year
-// (I now also understand why Wikipedia tells me I have to relog every year, lol)
-export const TOKEN_EXPIRES_IN_SECONDS = 1800;
 
 export async function validateUser(user: User): Promise<ValidationResult> {
   // username

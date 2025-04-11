@@ -9,6 +9,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
 import CreateIngredient from "./CreateIngredient";
+import Select from "react-select";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -150,11 +151,10 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       .then(() => setSendingDisabled(false));
   }
 
-  function updateFieldFromForm(
-    field: keyof Recipe,
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) {
-    const newRecipe: Recipe = { ...recipeData, [field]: e.target.value };
+  useEffect(() => console.log(recipeData), [recipeData]);
+
+  function updateFieldFromForm(field: keyof Recipe, val: any) {
+    const newRecipe: Recipe = { ...recipeData, [field]: val };
     setRecipeData(newRecipe);
   }
 
@@ -165,48 +165,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       : type == "edit"
       ? `Úprava receptu ${recipeData.title}`
       : `Forkovanie receptu ${recipeData.title}`;
-
-  // form elements
-  const titleElement = (
-    <input
-      type="text"
-      id="recipe-title"
-      defaultValue={recipeData?.title ?? ""}
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-        updateFieldFromForm("title", e);
-      }}
-    />
-  );
-  const imageLinkElement = (
-    <input
-      type="text"
-      id="recipe-image"
-      defaultValue={recipeData?.image_link ?? ""}
-      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-        updateFieldFromForm("image_link", e);
-      }}
-    />
-  );
-  const descriptionElement = (
-    <textarea
-      name="recipe-description"
-      id="recipe-description"
-      defaultValue={recipeData?.description ?? ""}
-      onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        updateFieldFromForm("description", e);
-      }}
-    />
-  );
-  const instructionsElement = (
-    <textarea
-      name="recipe-instructions"
-      id="recipe-instructions"
-      defaultValue={recipeData?.instructions ?? ""}
-      onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        updateFieldFromForm("instructions", e);
-      }}
-    />
-  );
 
   function addSection() {
     const newRecipe: Recipe = { ...recipeData };
@@ -253,58 +211,132 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
         <p>načítavam...</p>
       ) : (
         <>
-          <form onSubmit={submitRecipe}>
-            <div>
-              <label htmlFor="recipe-title">Názov receptu: </label>
-              {titleElement}
+          <form className="recipe" onSubmit={submitRecipe}>
+            <div className="recipe-title">
+              <h1
+                id="recipe-title"
+                contentEditable="plaintext-only"
+                suppressContentEditableWarning={true}
+                onBlur={(e) => {
+                  updateFieldFromForm("title", e.target.innerText.trim());
+                }}
+              >
+                {recipeData?.title || "<Sem vložte názov receptu>"}
+              </h1>
             </div>
 
-            <div>
-              <label htmlFor="recipe-image">Obrázok k receptu: </label>
-              {imageLinkElement}
-            </div>
-
-            <label htmlFor="recipe-description">Popis: </label>
-            {descriptionElement}
-
-            <div id="ingredients">
-              <h3>Ingrediencie</h3>
-              {recipeData?.sections.map((section, index) => (
-                <EditableSection
-                  key={section.id}
-                  section={section}
-                  index={index}
-                  deleteSection={() => {
-                    deleteSection(index);
+            <div className="recipe-body recipe-text recipe-edit-margin">
+              <div className="inliner">
+                <label htmlFor="recipe-image">Obrázok k receptu: </label>
+                <p
+                  id="recipe-image"
+                  contentEditable="plaintext-only"
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => {
+                    updateFieldFromForm(
+                      "image_link",
+                      e.target.innerText.trim()
+                    );
                   }}
-                  setSection={setSection}
-                  selectableIngredients={selectableIngredients}
-                  createNewIngredient={createNewIngredient}
+                >
+                  {recipeData?.image_link ||
+                    "<Sem môžete vložiť URL obrázku k receptu>"}
+                </p>
+              </div>
+
+              <div className="inliner">
+                <label htmlFor="recipe-description">Popis: </label>
+                <p
+                  id="recipe-description"
+                  contentEditable="plaintext-only"
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => {
+                    updateFieldFromForm(
+                      "description",
+                      e.target.innerText.trim()
+                    );
+                  }}
+                >
+                  {recipeData?.description || "<Sem vložte popis receptu>"}
+                </p>
+              </div>
+
+              <div className="nothing-doer">
+                <h2 className="ingredients-title">Ingrediencie</h2>
+                {recipeData?.sections?.map((section, index) => (
+                  <EditableSection
+                    key={section.id}
+                    section={section}
+                    index={index}
+                    deleteSection={() => {
+                      deleteSection(index);
+                    }}
+                    setSection={setSection}
+                    selectableIngredients={selectableIngredients}
+                    createNewIngredient={createNewIngredient}
+                  />
+                ))}
+                <button
+                  className="kyberbutton"
+                  type="button"
+                  onClick={addSection}
+                >
+                  Pridaj Sekciu
+                </button>
+              </div>
+
+              <div className="inliner">
+                <label htmlFor="recipe-instructions">Inštrukcie: </label>
+                <p
+                  id="recipe-instructions"
+                  contentEditable="plaintext-only"
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => {
+                    updateFieldFromForm(
+                      "instructions",
+                      e.target.innerText.trim()
+                    );
+                  }}
+                >
+                  {recipeData?.instructions ||
+                    "<Sem vložte inštrukcie k receptu>"}
+                </p>
+              </div>
+
+              <div>
+                <input
+                  type="submit"
+                  disabled={sendingDisabled}
+                  value="Hotovo"
                 />
-              ))}
-              <button type="button" onClick={addSection}>
-                Pridaj Sekciu
-              </button>
-            </div>
+              </div>
 
-            <label htmlFor="recipe-instructions">Inštrukcie: </label>
-            {instructionsElement}
-
-            <div>
-              <input type="submit" disabled={sendingDisabled} value="Hotovo" />
+              {/*   <Select
+              className="select-thing"
+              isLoading={loading}
+              options={optionsList}
+              onChange={selectChange}
+              loadingMessage={() => `Načítavam...`}
+              noOptionsMessage={() => "...žiadne tagy s takýmto názvom"}
+              placeholder="Pridaj tagy k receptu..."
+              value={
+                selectedOption
+                  ? {
+                      value: selectedOption?.id ?? 0,
+                      label: selectedOption?.name ?? "",
+                    }
+                  : null
+              }
+            /> */}
             </div>
           </form>
           {creatingNewIngredient ? (
-            <div className="creatingNewIngredient">
-              <div className="creatingNewIngredientContent">
-                <CreateIngredient
-                  possibleName={possibleNewIngredientName}
-                  thenCall={newIngredientCallback}
-                  afterYouAreDone={doneCreating}
-                  existingIngredients={selectableIngredients}
-                />
-              </div>
-            </div>
+            <CreateIngredient
+              possibleName={possibleNewIngredientName}
+              thenCall={newIngredientCallback}
+              afterYouAreDone={doneCreating}
+              existingIngredients={selectableIngredients}
+            />
           ) : (
             ""
           )}
