@@ -1,4 +1,3 @@
-import "./App.css";
 import { Link } from "react-router-dom";
 import { User } from "../../common-interfaces/interfaces";
 import { serverURL } from "./main";
@@ -36,7 +35,11 @@ function Header() {
       <>
         <Link to={`/user/${user?.username}`}>{user?.display_name}</Link>
 
-        <button className="kyberbutton" type="button" onClick={sendLogout}>
+        <button
+          className="kyberbutton-small"
+          type="button"
+          onClick={sendLogout}
+        >
           Odhlásiť sa
         </button>
       </>

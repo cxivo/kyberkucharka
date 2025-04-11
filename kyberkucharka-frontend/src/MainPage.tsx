@@ -1,4 +1,3 @@
-import "./App.css";
 import { Link } from "react-router-dom";
 import RecipeList from "./RecipeList";
 import { getUserFromCookies } from "./functions/cookieHelper";
