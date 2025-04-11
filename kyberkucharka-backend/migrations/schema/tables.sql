@@ -15,12 +15,21 @@ CREATE TABLE IF NOT EXISTS ingredients (
     density real,
     mass_per_piece real,
     alt_names text NOT NULL DEFAULT '',
-    verified boolean NOT NULL DEFAULT false
+    verified boolean NOT NULL DEFAULT false,
+    created_on timestamp,
+    created_by varchar(64),
+    CONSTRAINT fk_author
+        FOREIGN KEY(created_by)
+            REFERENCES users(username)
+            ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS tags (
-    id SERIAL PRIMARY KEY,
-    name TEXT UNIQUE NOT NULL
+CREATE TABLE IF NOT EXISTS ingredient_tags (
+    id varchar(64) PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS recipe_tags (
+    id varchar(64) PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS recipes (
@@ -69,19 +78,33 @@ CREATE TABLE IF NOT EXISTS used_ingredients (
             ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS recipe_tags (
-    tag INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS used_recipe_tags (
+    tag varchar(64) NOT NULL,
     recipe INTEGER NOT NULL,
     PRIMARY KEY (tag, recipe),
     CONSTRAINT fk_tag
         FOREIGN KEY(tag)
-            REFERENCES tags(id)
+            REFERENCES recipe_tags(id)
             ON DELETE CASCADE,
     CONSTRAINT fk_recipe
         FOREIGN KEY(recipe)
             REFERENCES recipes(id)
             ON DELETE CASCADE
-)
+);
+
+CREATE TABLE IF NOT EXISTS used_ingredient_tags (
+    tag varchar(64) NOT NULL,
+    ingredient INTEGER NOT NULL,
+    PRIMARY KEY (tag, ingredient),
+    CONSTRAINT fk_tag
+        FOREIGN KEY(tag)
+            REFERENCES ingredient_tags(id)
+            ON DELETE CASCADE,
+    CONSTRAINT fk_ingredient
+        FOREIGN KEY(ingredient)
+            REFERENCES ingredients(id)
+            ON DELETE CASCADE
+);
 
 /* 
 SELECT row_to_json(

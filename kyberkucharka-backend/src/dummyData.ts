@@ -26,6 +26,7 @@ export const ingredients: Ingredient[] = [
     density: 1,
     mass_per_piece: 0.0001,
     verified: true,
+    created_on: new Date(),
   },
   {
     id: 2,
@@ -34,6 +35,7 @@ export const ingredients: Ingredient[] = [
     primary_unit: "pc",
     mass_per_piece: 50,
     verified: true,
+    created_on: new Date(),
   },
   {
     id: 3,
@@ -42,6 +44,7 @@ export const ingredients: Ingredient[] = [
     primary_unit: "ml",
     density: 1,
     verified: true,
+    created_on: new Date(),
   },
   {
     id: 4,
@@ -50,6 +53,7 @@ export const ingredients: Ingredient[] = [
     primary_unit: "pc",
     mass_per_piece: 50,
     verified: false,
+    created_on: new Date(),
   },
   {
     id: 5,
@@ -58,6 +62,7 @@ export const ingredients: Ingredient[] = [
     primary_unit: "g",
     density: 1,
     verified: false,
+    created_on: new Date(),
   },
 ];
 

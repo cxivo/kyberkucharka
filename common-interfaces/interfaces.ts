@@ -29,6 +29,8 @@ export interface Ingredient {
   mass_per_piece?: number; // in grams, undefined in things not (practically) measurable in pieces
   alt_names: string;
   verified: boolean;
+  created_on: Date;
+  created_by?: string;
 }
 
 export interface UsedIngredient {
@@ -86,6 +88,7 @@ export const DEFAULT_INGREDIENT: Ingredient = {
   primary_unit: "g",
   alt_names: "",
   verified: false,
+  created_on: new Date(),
 };
 
 export const DEFAULT_USER: User = {

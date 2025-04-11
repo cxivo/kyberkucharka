@@ -25,32 +25,34 @@ export async function printAllUsers() {
 
 // ingredients
 
-export async function getIngredients() {
+export async function getIngredients(): Promise<Ingredient[]> {
   const query = `SELECT * FROM ingredients;`;
   const result = await db.any(query);
   return result;
 }
 
-export async function getIngredientsByName(name: string) {
+export async function getIngredientsByName(
+  name: string
+): Promise<Ingredient[]> {
   const query = `SELECT * FROM ingredients WHERE name LIKE $1 OR alt_names LIKE $1;`;
   const result = await db.any(query, [`%${name}%`]);
   return result;
 }
 
-export async function getIngredientByID(id: number) {
+export async function getIngredientByID(id: number): Promise<Ingredient> {
   const query = "SELECT * FROM ingredients WHERE id = $1;";
   const result = await db.one(query, [id]);
   return result;
 }
 
-export async function addIngredient(ingredient: Ingredient) {
+export async function addIngredient(ingredient: Ingredient): Promise<number> {
   // this is ugly as hell, might revisit it later (likely won't)
   const i2 = { ...ingredient };
   i2.density ??= undefined;
   i2.mass_per_piece ??= undefined;
 
-  const query = `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, verified) 
-    VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, $<verified>)
+  const query = `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, verified, created_on) 
+    VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, $<verified>, NOW())
     RETURNING id;`;
   return db.one(query, i2);
 }
@@ -125,7 +127,7 @@ const getRecipeQuery = `
   JOIN users AS u ON u.username = r.author
 `;
 
-export async function getPartialRecipes() {
+export async function getPartialRecipes(): Promise<PartialRecipe[]> {
   // returns a list of PartialRecipes... or does it? i dont know
   const query = getPartialRecipeQuery + ` ORDER BY r.created_on DESC;`;
   return db.any(query);
@@ -133,7 +135,7 @@ export async function getPartialRecipes() {
 
 export async function getPartialRecipesByUser(
   username: string
-): Promise<Recipe[]> {
+): Promise<PartialRecipe[]> {
   const query =
     getPartialRecipeQuery +
     ` WHERE u.username = $1
@@ -177,6 +179,7 @@ export async function getRecipesByName(name: string): Promise<Recipe[]> {
     .then((rs) => rs.map(fixMissingRecipeTags));
 }
 
+// TODO add recipe validation... maybe using zod
 // this works both for adding a new recipe and forking an existing one
 export async function addOrUpdateRecipe(
   recipe: Recipe,
@@ -244,11 +247,12 @@ export async function addOrUpdateRecipe(
                 };
                 newIngredient.density ??= undefined;
                 newIngredient.mass_per_piece ??= undefined;
+                newIngredient.created_by = recipe.author.username;
 
                 ingredient_id = (
                   await transaction.one(
-                    `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names)
-                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>) 
+                    `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, created_on, created_by)
+                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, NOW(), $<created_by>) 
                 RETURNING id;`,
                     newIngredient
                   )
@@ -292,13 +296,19 @@ export async function addUser(user: User): Promise<User> {
 
 export async function checkUser(user: User): Promise<User | undefined> {
   const query = `SELECT * FROM users WHERE username = $<username>`;
-  const queryResult = await db.one(query, user);
+  const queryResult = await db.oneOrNone(query, user);
 
-  // check password... this will get more functionality later
+  // no user with this name
+  if (queryResult == null) {
+    return undefined;
+  }
+
   if (bcrypt.compareSync(user.password ?? "", queryResult.password)) {
     queryResult.password = undefined; // delete the password before giving the object to anyone
     return queryResult;
   }
+
+  // password incorrect
   return undefined;
 }
 
@@ -332,7 +342,7 @@ export async function getUserByUsername(
 
 export async function initTables() {
   const ingredientsPromises = ingredients.map((i) => addIngredient(i));
-  const usersPromises = users.map((u) => addUser(u));
+  const usersPromises: Promise<any>[] = users.map((u) => addUser(u));
 
   await Promise.all(ingredientsPromises.concat(usersPromises))
     .then(() => {

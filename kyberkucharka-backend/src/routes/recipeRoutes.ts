@@ -7,6 +7,7 @@ import {
   getRecipeByID,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
+import { Recipe } from "../../../common-interfaces/interfaces";
 
 const router = Router();
 
@@ -53,9 +54,10 @@ router.get("/by/:username", (req: Request, res: Response) => {
 // Create a new recipe
 router.post("/", authenticateToken, (req: Request, res: Response) => {
   // simply add the author
-  req.body.author = res.locals.user.username;
+  const recipe: Recipe = req.body;
+  recipe.author.username = res.locals.user.username;
 
-  addOrUpdateRecipe(req.body)
+  addOrUpdateRecipe(recipe)
     .then((newID) => {
       res.status(201).json({ newID });
     })

@@ -89,6 +89,7 @@ export default function ReadRecipe() {
                 src={recipeData?.image_link}
                 alt="Obrázok k receptu"
                 className="recipe-image"
+                onError={(e) => (e.currentTarget.style = "display: none;")}
               />
             )}
 

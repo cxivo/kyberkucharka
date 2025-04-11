@@ -40,11 +40,18 @@ router.post("/login", (req: Request, res: Response) => {
       if (u != null) {
         sendJWTCookie(res, u, 200);
       } else {
-        res.status(401).json({ message: "Incorrect password", error: "" });
+        res
+          .status(401)
+          .json({ message: "Incorrect username or password", error: "" });
       }
     })
     .catch((e) => {
-      res.status(400).json({ message: "User does not exist", error: e });
+      res
+        .status(400)
+        .json({
+          message: "An error has occured, please try again later",
+          error: e,
+        });
     });
 });
 
