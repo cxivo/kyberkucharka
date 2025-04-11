@@ -50,11 +50,31 @@ export async function addIngredient(ingredient: Ingredient): Promise<number> {
   const i2 = { ...ingredient };
   i2.density ??= undefined;
   i2.mass_per_piece ??= undefined;
+  i2.created_by ??= undefined;
 
-  const query = `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, verified, created_on) 
-    VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, $<verified>, NOW())
+  const query = `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, verified, created_on, created_by) 
+    VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, $<verified>, NOW(), $<created_by>)
     RETURNING id;`;
   return db.one(query, i2);
+}
+
+export async function modifyIngredient(ingredient: Ingredient) {
+  const i2 = { ...ingredient };
+  i2.density ??= undefined;
+  i2.mass_per_piece ??= undefined;
+  i2.created_by ??= undefined;
+
+  const query = `UPDATE ingredients
+  SET name = $<name>, 
+    primary_unit = $<primary_unit>, 
+    density = $<density>, 
+    mass_per_piece = $<mass_per_piece>, 
+    alt_names = $<alt_names>, 
+    verified = $<verified>
+  WHERE id = $<id>
+  RETURNING id;`;
+
+  db.one(query, i2);
 }
 
 // recipes

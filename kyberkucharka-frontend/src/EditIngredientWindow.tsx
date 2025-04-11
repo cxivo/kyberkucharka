@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  DEFAULT_INGREDIENT,
   Ingredient,
   measurement_unit,
   measurement_unit_list,
@@ -11,28 +10,31 @@ import {
   mustHaveMassPerPiece,
 } from "./functions/UnitHelper";
 
-interface CreateIngredientProps {
-  possibleName: string;
-  thenCall: (i: Ingredient) => void;
-  afterYouAreDone: () => void;
+interface EditIngredientWindowProps {
+  titleText: string;
+  defaultIngredient: Ingredient;
+  callbackSuccess: (i: Ingredient) => void;
+  callbackAny: () => void;
   existingIngredients: Ingredient[];
 }
 
 const DEFAULT_DENSITY = 1.0;
 const DEFAULT_MASS_PER_PIECE = 50;
 
-export default function CreateIngredient({
-  possibleName,
-  thenCall,
-  afterYouAreDone,
+export default function EditIngredientWindow({
+  titleText,
+  defaultIngredient,
+  callbackSuccess,
+  callbackAny,
   existingIngredients,
-}: CreateIngredientProps) {
-  const [ingredient, setIngredient] = useState<Ingredient>({
-    ...DEFAULT_INGREDIENT,
-    name: possibleName,
-  });
-  const [hasDensity, setHasDensity] = useState<boolean>(false);
-  const [hasPieces, setHasPieces] = useState<boolean>(false);
+}: EditIngredientWindowProps) {
+  const [ingredient, setIngredient] = useState<Ingredient>(defaultIngredient);
+  const [hasDensity, setHasDensity] = useState<boolean>(
+    defaultIngredient.density != null
+  );
+  const [hasPieces, setHasPieces] = useState<boolean>(
+    defaultIngredient.mass_per_piece != null
+  );
   const [nameIsDuplicate, setNameIsDuplicate] = useState<boolean>(false);
 
   function updateFieldFromForm(field: keyof Ingredient, value: any) {
@@ -43,7 +45,7 @@ export default function CreateIngredient({
   // if the user is evil and decided to create another ingredient with the same name
   useEffect(() => {
     setNameIsDuplicate(
-      existingIngredients.find((i) => i.name === possibleName) != null
+      existingIngredients.find((i) => i.name === defaultIngredient.name) != null
     );
   }, []);
 
@@ -58,8 +60,8 @@ export default function CreateIngredient({
     const formJSON = Object.fromEntries(formData.entries());
     console.log(formJSON);
 
-    thenCall(ingredient);
-    afterYouAreDone();
+    callbackSuccess(ingredient);
+    callbackAny();
   }
 
   return (
@@ -70,10 +72,10 @@ export default function CreateIngredient({
           alt="Zrušiť"
           tabIndex={0}
           className="cancel-x cancel-ingredient-creation"
-          onClick={afterYouAreDone}
+          onClick={callbackAny}
         />
 
-        <h1>Vytvorenie novej ingrediencie</h1>
+        <h1>{titleText}</h1>
         <form onSubmit={submitIngredient}>
           <div>
             <div>
@@ -82,7 +84,7 @@ export default function CreateIngredient({
                 type="text"
                 id="ingredient-name"
                 name="ingredient-name"
-                defaultValue={possibleName}
+                defaultValue={defaultIngredient.name}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                   // check whether the name is duplicate
                   setNameIsDuplicate(
@@ -252,6 +254,7 @@ export default function CreateIngredient({
               id="alt-names"
               rows={4}
               cols={80}
+              defaultValue={defaultIngredient.alt_names}
               onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                 updateFieldFromForm("alt_names", e.target.value);
               }}

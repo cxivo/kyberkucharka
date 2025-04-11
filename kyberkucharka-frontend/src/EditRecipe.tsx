@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import {
+  DEFAULT_INGREDIENT,
   DEFAULT_RECIPE,
   Ingredient,
   Recipe,
@@ -8,9 +9,9 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
-import CreateIngredient from "./CreateIngredient";
 import Select from "react-select";
 import Login from "./userPages/Login";
+import EditIngredientWindow from "./EditIngredientWindow";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -345,10 +346,14 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
         )}
       </div>
       {creatingNewIngredient && (
-        <CreateIngredient
-          possibleName={possibleNewIngredientName}
-          thenCall={newIngredientCallback}
-          afterYouAreDone={doneCreating}
+        <EditIngredientWindow
+          titleText="Vytvorenie novej ingrediencie"
+          defaultIngredient={{
+            ...DEFAULT_INGREDIENT,
+            name: possibleNewIngredientName,
+          }}
+          callbackSuccess={newIngredientCallback}
+          callbackAny={doneCreating}
           existingIngredients={selectableIngredients}
         />
       )}
