@@ -71,7 +71,7 @@ export default function EditIngredientWindow({
           src="/src/assets/x-white.png"
           alt="Zrušiť"
           tabIndex={0}
-          className="cancel-x cancel-ingredient-creation"
+          className="cancel-x cancel-button"
           onClick={callbackAny}
         />
 

@@ -400,7 +400,7 @@ img.recipe-image {
   height: calc(2vw * var(--main-recipe-size));
 }
 
-.cancel-ingredient-creation {
+.cancel-button {
   margin-left: auto;
   margin-right: 0;
   margin-bottom: 1vw;
@@ -517,6 +517,7 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 0 2vw;
+  background-color: rgba(245, 222, 179, 0.5);
 }
 
 .tr-unverified {

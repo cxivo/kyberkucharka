@@ -52,9 +52,13 @@ export default function Login({
   return (
     <div className="floatingWindow">
       <div className="floatingWindowContent">
-        <button className="button-cancel" type="button" onClick={closeCallback}>
-          Zrušiť
-        </button>
+        <img
+          src="/src/assets/x-white.png"
+          alt="Zrušiť"
+          tabIndex={0}
+          className="cancel-x cancel-button"
+          onClick={closeCallback}
+        />
         <h1>Prihlásenie sa</h1>
         {customMessage != null ? <p>{customMessage}</p> : ""}
         <form onSubmit={sendLogin}>
