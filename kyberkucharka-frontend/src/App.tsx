@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { User } from "../../common-interfaces/interfaces";
-import { serverURL } from "./main";
 import { getUserFromCookies } from "./functions/cookieHelper";
 import { useState } from "react";
 import Login from "./userPages/Login";
@@ -9,7 +8,7 @@ function Header() {
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
 
   function sendLogout() {
-    fetch(`${serverURL}/auth/logout/`, {
+    fetch(`/api/auth/logout/`, {
       method: "POST",
       headers: {
         "Content-type": "application/json; charset=UTF-8",

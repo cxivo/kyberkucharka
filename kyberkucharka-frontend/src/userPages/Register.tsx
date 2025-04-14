@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_USER, User } from "../../../common-interfaces/interfaces";
 import { Link, useNavigate } from "react-router";
-import { serverURL } from "../main";
 
 export default function Register() {
   const [user, setUSer] = useState<User>(DEFAULT_USER);
@@ -21,7 +20,7 @@ export default function Register() {
   }
 
   function checkUsernameExists() {
-    fetch(`${serverURL}/auth/userexists/${user.username}`)
+    fetch(`/api/auth/userexists/${user.username}`)
       .then((x) => {
         setUserExists(x.ok);
       })
@@ -38,7 +37,7 @@ export default function Register() {
     event.preventDefault();
     setSendingDisabled(true);
 
-    fetch(`${serverURL}/auth/register/`, {
+    fetch(`/api/auth/register/`, {
       method: "POST",
       body: JSON.stringify(user),
       headers: {

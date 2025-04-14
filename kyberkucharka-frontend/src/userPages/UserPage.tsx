@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { DEFAULT_USER, PartialRecipe, User } from "../../../common-interfaces/interfaces";
 import { useEffect, useState } from "react";
-import { serverURL } from "../main";
 
 export default function UserPage() {
   const [user, setUser] = useState<User>(DEFAULT_USER);
@@ -14,24 +13,23 @@ export default function UserPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`${serverURL}/api/users/page/${slug}`).then(async response => {
-        if (response.ok) {
-          const result = await (response.json());
-          setUser(result.user);
-          setRecipes(result.recipes);
-          setLoading(false);
-
-          
-        } else {
+      await fetch(`/api/users/page/${slug}`)
+        .then(async (response) => {
+          if (response.ok) {
+            const result = await response.json();
+            setUser(result.user);
+            setRecipes(result.recipes);
+            setLoading(false);
+          } else {
+            setInvalid(true);
+            setLoading(false);
+          }
+        })
+        .catch((e) => {
+          console.error("Error fetching data:", e);
           setInvalid(true);
           setLoading(false);
-        }
-      }).catch(e => {
-        console.error("Error fetching data:", e);
-        setInvalid(true);
-        setLoading(false);
-      }
-  )};
+        });};
 
     fetchData();
   }, [slug]);

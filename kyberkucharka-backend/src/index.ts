@@ -18,7 +18,7 @@ import userRoutes from "./routes/userRoutes";
 
 dotenv.config();
 
-const whitelist = ["http://localhost:5173"];
+/* const whitelist = ["http://localhost:5173"];
 const corsOptions = {
   credentials: true,
   origin: (origin: any, callback: any) => {
@@ -26,7 +26,7 @@ const corsOptions = {
 
     callback(new Error("Not allowed by CORS"));
   },
-};
+}; */
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
@@ -39,13 +39,13 @@ const port = process.env.PORT || 3000;
     console.log(a);
   }); */
 
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/recipes", recipeRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/users", userRoutes);
-app.use("/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("This is an API server. If you are seeing this message, you are not in the correct place. Use /api/<something> to interact with this server, or just use Postman or something similar.");

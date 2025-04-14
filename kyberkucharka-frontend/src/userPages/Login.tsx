@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { DEFAULT_USER, User } from "../../../common-interfaces/interfaces";
-import { serverURL } from "../main";
 import { Link } from "react-router-dom";
 
 interface LoginProps {
@@ -27,7 +26,7 @@ export default function Login({
   function sendLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    fetch(`${serverURL}/auth/login/`, {
+    fetch(`/api/auth/login/`, {
       method: "POST",
       body: JSON.stringify(user),
       headers: {

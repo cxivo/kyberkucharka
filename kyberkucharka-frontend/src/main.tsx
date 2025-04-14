@@ -17,7 +17,7 @@ import Register from './userPages/Register.tsx';
 import Login from "./userPages/Login.tsx";
 import IngredientsList from "./admin/IngredientsList.tsx";
 
-export const serverURL = "http://localhost:3000";
+//export const serverURL = "http://localhost:3000";
 
 const router = createBrowserRouter([
   {

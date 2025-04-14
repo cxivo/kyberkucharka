@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { PartialRecipe } from "../../common-interfaces/interfaces";
 import { Link } from "react-router-dom";
-import { serverURL } from "./main";
 
 export default function RecipeList() {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
@@ -10,7 +9,7 @@ export default function RecipeList() {
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`${serverURL}/api/recipes`)
+      await fetch(`/api/recipes`)
         .then(async (response) => {
           if (response.ok) {
             const result = await response.json();

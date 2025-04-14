@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { serverURL } from "../main";
 import { Ingredient } from "../../../common-interfaces/interfaces";
 import { Link } from "react-router-dom";
 import EditIngredientWindow from "../EditIngredientWindow";
@@ -11,16 +10,19 @@ export default function IngredientsList() {
 
   async function fetchData() {
     try {
-      const response = await fetch(`${serverURL}/api/ingredients/`);
+      const response = await fetch(`/api/ingredients/`);
       const result = (await response.json()) as Ingredient[];
-      result.sort((a,b) => new Date(b.created_on).getTime() - new Date(a.created_on).getTime())
+      result.sort(
+        (a, b) =>
+          new Date(b.created_on).getTime() - new Date(a.created_on).getTime()
+      );
       setIngredients(result);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }
 
-  useEffect(() => {    
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -30,7 +32,7 @@ export default function IngredientsList() {
   }
 
   function sendIngredient(ingredient: Ingredient) {
-    fetch(`${serverURL}/api/ingredients/`, {
+    fetch(`/api/ingredients/`, {
       method: "PUT",
       body: JSON.stringify(ingredient),
       headers: {

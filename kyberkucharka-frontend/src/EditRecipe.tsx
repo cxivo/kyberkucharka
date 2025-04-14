@@ -7,7 +7,6 @@ import {
   Section,
 } from "../../common-interfaces/interfaces";
 import { useNavigate, useParams } from "react-router-dom";
-import { serverURL } from "./main";
 import EditableSection from "./EditableSection";
 import Select from "react-select";
 import Login from "./userPages/Login";
@@ -19,7 +18,7 @@ interface EditRecipeProps {
 }
 
 export function editSubmit(slug: string, recipe: Recipe) {
-  return fetch(`${serverURL}/api/recipes/${slug}`, {
+  return fetch(`/api/recipes/${slug}`, {
     method: "PUT",
     body: JSON.stringify(recipe),
     headers: {
@@ -30,7 +29,7 @@ export function editSubmit(slug: string, recipe: Recipe) {
 }
 
 export function createSubmit(_slug: string, recipe: Recipe) {
-  return fetch(`${serverURL}/api/recipes`, {
+  return fetch(`/api/recipes`, {
     method: "POST",
     body: JSON.stringify(recipe),
     headers: {
@@ -41,7 +40,7 @@ export function createSubmit(_slug: string, recipe: Recipe) {
 }
 
 export function forkSubmit(_slug: string, recipe: Recipe) {
-  return fetch(`${serverURL}/api/recipes`, {
+  return fetch(`/api/recipes`, {
     method: "POST",
     body: JSON.stringify(recipe),
     headers: {
@@ -76,7 +75,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${serverURL}/api/recipes/${slug}`);
+        const response = await fetch(`/api/recipes/${slug}`);
         const result = (await response.json()) as Recipe;
 
         // what the next section ID will be
@@ -119,7 +118,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       try {
         const response = await fetch(
           //`${serverURL}/api/ingredients/name/${debouncedText}`
-          `${serverURL}/api/ingredients`
+          `/api/ingredients`
         );
         const result = (await response.json()) as Ingredient[];
 

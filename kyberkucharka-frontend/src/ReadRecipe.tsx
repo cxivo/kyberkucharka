@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
-import { serverURL } from "./main";
 import { formatAmount, gramsToAmountUsed } from "./functions/UnitHelper";
 import { getUserFromCookies } from "./functions/cookieHelper";
 
@@ -17,7 +16,7 @@ export default function ReadRecipe() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`${serverURL}/api/recipes/${slug}`);
+        const response = await fetch(`/api/recipes/${slug}`);
         const result = (await response.json()) as Recipe;
         setRecipeData(result);
         setLoading(false);
