@@ -8,7 +8,6 @@ import {
 } from "../../common-interfaces/interfaces";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableSection from "./EditableSection";
-import Select from "react-select";
 import Login from "./userPages/Login";
 import EditIngredientWindow from "./EditIngredientWindow";
 
