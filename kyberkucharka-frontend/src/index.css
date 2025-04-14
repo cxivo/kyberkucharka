@@ -284,12 +284,16 @@ nav * {
   position: absolute;
   bottom: calc(1vw * var(--main-recipe-size));
 
+  max-width: calc(55vw * var(--main-recipe-size));
+  max-height: calc(8vw * var(--main-recipe-size));
+
   text-align: center;
 
   margin-bottom: 0;
   padding-bottom: 0;
 
-  font-size: calc(4vw * var(--main-recipe-size));
+  font-size: calc(3vw * var(--main-recipe-size));
+  text-overflow: ellipsis;
 }
 
 .recipe-body {
@@ -450,7 +454,7 @@ input.p-like {
 
 .kyberbutton-small {
   height: calc(3vw * var(--main-recipe-size));
-  width: calc(12vw * var(--main-recipe-size));
+  width: calc(11.7vw * var(--main-recipe-size));
 
   background-color: transparent;
   background-image: url("./assets/box.png");
@@ -473,7 +477,6 @@ input.p-like {
   color: #1a1a1a;
 
   /* ain't nobody got time for this, just budge it */
-  transform: translateY(calc(0.4vw * var(--main-recipe-size)));
 }
 
 .kyberbutton-small *:hover {

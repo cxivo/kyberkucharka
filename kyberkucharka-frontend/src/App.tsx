@@ -65,7 +65,17 @@ function Header() {
               </div>
               <div>
                 <div className="kyberbutton-small">
-                  <Link to={"/register"}>registrovať sa</Link>
+                  <Link
+                    style={{
+                      marginLeft: 0,
+                      display: "block",
+                      transform:
+                        "translateY(calc(0.4vw * var(--main-recipe-size)))",
+                    }}
+                    to={"/register"}
+                  >
+                    registrovať sa
+                  </Link>
                 </div>
               </div>
             </>

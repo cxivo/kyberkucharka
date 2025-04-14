@@ -7,6 +7,7 @@ import { getUserFromCookies } from "./functions/cookieHelper";
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isInvalidImage, setIsInvalidImage] = useState<boolean>(false);
 
   const { slug = "0" } = useParams();
 
@@ -88,7 +89,8 @@ export default function ReadRecipe() {
                 src={recipeData?.image_link}
                 alt="Obrázok k receptu"
                 className="recipe-image"
-                onError={(e) => (e.currentTarget.style = "display: none;")}
+                style={{ display: isInvalidImage ? "none" : "block" }}
+                onError={() => setIsInvalidImage(true)}
               />
             )}
 
