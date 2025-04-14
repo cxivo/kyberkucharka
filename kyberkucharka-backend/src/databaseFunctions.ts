@@ -5,6 +5,8 @@ import {
   NONEXISTENT,
   PartialRecipe,
   Recipe,
+  Section,
+  UsedIngredient,
   User,
 } from "../../common-interfaces/interfaces";
 import { ingredients, recipes, users } from "./dummyData";
@@ -165,7 +167,7 @@ export async function getPartialRecipesByUser(
 
 function fixMissingRecipeTags(recipe: Recipe): Recipe {
   recipe.sections ??= [];
-  recipe.sections.map((section) => {
+  recipe.sections.map((section: Section) => {
     const s2 = { ...section };
     s2.used_ingredients ??= [];
     return s2;
@@ -248,7 +250,7 @@ export async function addOrUpdateRecipe(
 
       // add each section of the recipe and its used_ingredients
       await Promise.all(
-        recipe.sections.map(async (section, i) => {
+        recipe.sections.map(async (section: Section, i: number) => {
           const db_section_id = await transaction.one(
             `INSERT INTO sections(name, recipe, ordering)
           VALUES ($1, $2, $3)
@@ -257,34 +259,36 @@ export async function addOrUpdateRecipe(
           );
 
           await Promise.all(
-            section.used_ingredients.map(async (used_ingredient) => {
-              let ingredient_id = used_ingredient.ingredient.id;
+            section.used_ingredients.map(
+              async (used_ingredient: UsedIngredient) => {
+                let ingredient_id = used_ingredient.ingredient.id;
 
-              // add the ingredient if it was newly created
-              if (used_ingredient.ingredient.id === NONEXISTENT) {
-                const newIngredient: Ingredient = {
-                  ...used_ingredient.ingredient,
-                };
-                newIngredient.density ??= undefined;
-                newIngredient.mass_per_piece ??= undefined;
-                newIngredient.created_by = recipe.author.username;
+                // add the ingredient if it was newly created
+                if (used_ingredient.ingredient.id === NONEXISTENT) {
+                  const newIngredient: Ingredient = {
+                    ...used_ingredient.ingredient,
+                  };
+                  newIngredient.density ??= undefined;
+                  newIngredient.mass_per_piece ??= undefined;
+                  newIngredient.created_by = recipe.author.username;
 
-                ingredient_id = (
-                  await transaction.one(
-                    `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, created_on, created_by)
+                  ingredient_id = (
+                    await transaction.one(
+                      `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, created_on, created_by)
                 VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, NOW(), $<created_by>) 
                 RETURNING id;`,
-                    newIngredient
-                  )
-                ).id;
-              }
+                      newIngredient
+                    )
+                  ).id;
+                }
 
-              return transaction.none(
-                `INSERT INTO used_ingredients(ingredient, section, amount)
+                return transaction.none(
+                  `INSERT INTO used_ingredients(ingredient, section, amount)
             VALUES ($1, $2, $3);`,
-                [ingredient_id, db_section_id.id, used_ingredient.amount]
-              );
-            })
+                  [ingredient_id, db_section_id.id, used_ingredient.amount]
+                );
+              }
+            )
           );
         })
       );
