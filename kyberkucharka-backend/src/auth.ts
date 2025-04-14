@@ -100,7 +100,9 @@ export function sendJWTCookie(res: Response, u: User, status: number) {
   res
     .status(status)
     .cookie("jwtoken", generateJWT(u), {
+      secure: process.env.STATUS === "production",
       httpOnly: true,
+      sameSite: process.env.STATUS === "production" ? "none" : "lax",
       expires: new Date(Date.now() + TOKEN_EXPIRES_IN_SECONDS * 1000),
     })
     .cookie("userData", JSON.stringify(u), {

@@ -1,6 +1,5 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
-import cors from "cors";
 import recipeRoutes from "./routes/recipeRoutes";
 import {
   createTables,
@@ -46,6 +45,13 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+
+if (process.env.STATUS === "production") {
+  // trust proxy needed for secure cookie to work on render.com
+  // because render.com uses a reverse proxy to handle HTTPS requests
+  // and forwards the requests to the backend server over HTTP
+  app.set("trust proxy", 1);
+}
 
 app.get("/", (req: Request, res: Response) => {
   res.send("This is an API server. If you are seeing this message, you are not in the correct place. Use /api/<something> to interact with this server, or just use Postman or something similar.");
