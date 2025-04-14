@@ -89,7 +89,7 @@ export default function ReadRecipe() {
                 src={recipeData?.image_link}
                 alt="Obrázok k receptu"
                 className="recipe-image"
-                style={{ display: isInvalidImage ? "none" : "block" }}
+                style={{ display: isInvalidImage ? "none" : "inline" }}
                 onError={() => setIsInvalidImage(true)}
               />
             )}
