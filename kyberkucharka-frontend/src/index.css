@@ -3,20 +3,20 @@
 @font-face {
   font-family: KyberFontSimple;
   font-weight: normal;
-  src: url("./assets/KyberFontSimple-Regular.ttf");
+  src: url("/KyberFontSimple-Regular.ttf");
 }
 
 @font-face {
   font-family: KyberFontSimple;
   font-weight: bold;
-  src: url("./assets/KyberFontSimple-Bold.ttf");
+  src: url("/KyberFontSimple-Bold.ttf");
 }
 
 @font-face {
   font-family: KyberFontSimple;
   font-weight: normal;
   font-style: italic;
-  src: url("./assets/KyberFontSimple-Italic.ttf");
+  src: url("/KyberFontSimple-Italic.ttf");
 }
 
 
@@ -30,7 +30,7 @@
   /* color: rgba(255, 255, 255, 0.87); */
   color: #1a1a1a;
  /*  background-color: #242424; */
-  background-image: url("./assets/table_texture.jpg");
+  background-image: url("/table-texture.jpg");
   background-repeat: repeat-y;
   background-size: 200vh; /* no idea if it's correct, buuut it does seem to work? */
 
@@ -269,7 +269,7 @@ nav * {
   width: calc(70vw * var(--main-recipe-size));
 
 
-  background-image: url("./assets/zosit_top2.png");
+  background-image: url("/zosit_top2.png");
   background-repeat: no-repeat;
   background-size: calc(70vw * var(--main-recipe-size));
   background-position-y: bottom;
@@ -301,7 +301,7 @@ nav * {
   max-width: calc(70vw * var(--main-recipe-size));
   position: relative;
 
-  background-image: url("./assets/zosit_middle2.png");
+  background-image: url("/zosit_middle2.png");
   background-repeat: repeat-y;
   background-size: calc(70vw * var(--main-recipe-size));
 
@@ -352,7 +352,7 @@ img.recipe-image {
 .ingredients-list li {
   list-style: none;
   padding-left: calc(2vw * var(--main-recipe-size));
-	background-image: url("./assets/bullet-points/point3.png");
+	background-image: url("/bullet-points/point3.png");
 	background-repeat: no-repeat;
 	background-position-x: left;
   background-position-y: calc(0.5vw * var(--main-recipe-size));
@@ -433,7 +433,7 @@ input.p-like {
   width: calc(15vw * var(--main-recipe-size));
 
   background-color: transparent;
-  background-image: url("./assets/box.png");
+  background-image: url("/box.png");
   background-size: contain;
 
   border: none;
@@ -457,7 +457,7 @@ input.p-like {
   width: calc(11.7vw * var(--main-recipe-size));
 
   background-color: transparent;
-  background-image: url("./assets/box.png");
+  background-image: url("/box.png");
   background-size: contain;
 
   border: none;
@@ -494,7 +494,7 @@ input.p-like {
   width: 15vw;
 
   background-color: transparent;
-  background-image: url("./assets/box-white.png");
+  background-image: url("/box-white.png");
   background-size: contain;
 
   border: none;
