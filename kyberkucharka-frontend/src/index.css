@@ -3,25 +3,25 @@
 @font-face {
   font-family: KyberFontSimple;
   font-weight: normal;
-  src: url("/KyberFontSimple-Regular.ttf");
+  src: url("/fonts/KyberFontSimple-Regular.ttf");
 }
 
 @font-face {
   font-family: KyberFontSimple;
   font-weight: bold;
-  src: url("/KyberFontSimple-Bold.ttf");
+  src: url("/fonts/KyberFontSimple-Bold.ttf");
 }
 
 @font-face {
   font-family: KyberFontSimple;
   font-weight: normal;
   font-style: italic;
-  src: url("/KyberFontSimple-Italic.ttf");
+  src: url("/fonts/KyberFontSimple-Italic.ttf");
 }
 
 
 :root {
-  font-family: KyberFontSimple, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: KyberFontSimple, sans-serif;
   line-height: 1.5;
   font-weight: 400;
   font-size: large;
@@ -40,6 +40,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --main-recipe-size: 1.0;
+  --card-size: 1.0;
 }
 
 a {
@@ -312,6 +313,8 @@ nav * {
   text-align: left;
   padding-left: 12%;
   padding-right: 8%;
+
+  padding-bottom: calc(0.5vw * var(--main-recipe-size));
   /* line-height: 42.7px; */
   line-height: calc(3.449vw * var(--main-recipe-size));
 }
@@ -428,6 +431,8 @@ input.p-like {
   text-shadow: 0px 0px calc(0.05vw * var(--main-recipe-size)) #2a2a2a;
 }
 
+/* BUTTONS */
+
 .kyberbutton {
   height: calc(4vw * var(--main-recipe-size));
   width: calc(15vw * var(--main-recipe-size));
@@ -475,8 +480,6 @@ input.p-like {
   font-weight: bold;
   font-family: inherit;
   color: #1a1a1a;
-
-  /* ain't nobody got time for this, just budge it */
 }
 
 .kyberbutton-small *:hover {
@@ -516,6 +519,8 @@ input.p-like {
   display: inline;
 }
 
+/* TABLES */
+
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
@@ -529,4 +534,67 @@ table, th, td {
 
 .td-clickable:hover {
   text-decoration: underline;
+}
+
+/* CARD */
+
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.card {
+  background-image: url("/stickers/sticker-yellow.png");
+  background-size: cover;
+  opacity: 0.95;
+
+  display: block;
+
+  height: calc(300px * var(--card-size));
+  width: calc(300px * var(--card-size));
+  font-size: calc(24px * var(--card-size));
+
+  color: #1a1a1a;
+  text-shadow: 0px 0px calc(0.1vw * var(--main-recipe-size)) #2a2a2a;
+}
+
+.card:hover {
+  color: #1a1a1a;
+}
+
+.card:nth-child(5n+1) {
+  background-image: url("/stickers/sticker-yellow.png");
+  transform: rotate(-0.5deg);
+}
+
+
+.card:nth-child(5n+2) {
+  background-image: url("/stickers/sticker-pink.png");
+  transform: rotate(2deg) translateX(5px);
+}
+
+.card:nth-child(5n+3) {
+  background-image: url("/stickers/sticker-orange.png");
+  transform: rotate(-0.5deg) translateX(-2px);
+}
+
+.card:nth-child(5n+4) {
+  background-image: url("/stickers/sticker-blue.png");
+  transform: rotate(1deg) translateX(5px);
+}
+
+.card:nth-child(5n+5) {
+  background-image: url("/stickers/sticker-lime.png");
+  transform: rotate(-1deg) translateX(-5px);
+}
+
+.card p {
+  max-height: calc(10vw * var(--card-size));
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 4;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
 }

@@ -1,9 +1,9 @@
-import { UsedIngredient } from "../../common-interfaces/interfaces";
+import { UsedIngredient } from "../../../common-interfaces/interfaces";
 import {
   amountToGrams,
   formatAmount,
   gramsToAmountUsed,
-} from "./functions/UnitHelper";
+} from "../functions/UnitHelper";
 
 interface EditableIngredientProps {
   index: number;
@@ -42,7 +42,7 @@ export default function EditableIngredient({
         {used_ingredient.ingredient.name}
       </span>
       <img
-        src="/src/assets/x.png"
+        src="/x.png"
         alt="Zmazať ingredienciu"
         tabIndex={0}
         className="cancel-x delete-ingredient"

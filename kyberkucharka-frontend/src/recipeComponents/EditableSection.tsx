@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from "react";
-import { Ingredient, Section, UsedIngredient } from "../../common-interfaces/interfaces";
+import { Ingredient, Section, UsedIngredient } from "../../../common-interfaces/interfaces";
 import EditableIngredient from "./EditableIngredient";
 import CreatableSelect from "react-select/creatable";
 
@@ -110,7 +110,7 @@ export default function EditableSection({
           {section.name || "<Sem môžete vložiť názov sekcie>"}
         </h3>
         <img
-          src="/src/assets/x.png"
+          src="/x.png"
           alt="Zmazať sekciu"
           tabIndex={0}
           className="cancel-x delete-section"

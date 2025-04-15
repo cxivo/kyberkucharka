@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { DEFAULT_RECIPE, Recipe } from "../../common-interfaces/interfaces";
-import { formatAmount, gramsToAmountUsed } from "./functions/UnitHelper";
-import { getUserFromCookies } from "./functions/cookieHelper";
+import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
+import { formatAmount, gramsToAmountUsed } from "../functions/UnitHelper";
+import { getUserFromCookies } from "../functions/cookieHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);

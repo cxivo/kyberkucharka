@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PartialRecipe } from "../../common-interfaces/interfaces";
-import { Link } from "react-router-dom";
+import RecipeCard from "./recipeComponents/RecipeCard";
 
 export default function RecipeList() {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
@@ -35,15 +35,10 @@ export default function RecipeList() {
   ) : invalid ? (
     <p>Nastala neznáma chyba</p>
   ) : (
-    <div>
-      <ul>
-        {recipesList.map((recipe) => (
-          <li key={recipe.id} className="recipeCard">
-            <Link to={`/recipes/${recipe.id}`}>{recipe.title}</Link> (autor:{" "}
-            {recipe.author.display_name})
-          </li>
-        ))}
-      </ul>
+    <div className="card-container">
+      {recipesList.map((recipe) => (
+        <RecipeCard key={recipe.id} recipe={recipe}></RecipeCard>
+      ))}
     </div>
   );
 }

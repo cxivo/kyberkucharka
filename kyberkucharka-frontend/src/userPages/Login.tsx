@@ -52,7 +52,7 @@ export default function Login({
     <div className="floatingWindow">
       <div className="floatingWindowContent">
         <img
-          src="/src/assets/x-white.png"
+          src="/x-white.png"
           alt="Zrušiť"
           tabIndex={0}
           className="cancel-x cancel-button"

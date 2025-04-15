@@ -4,20 +4,19 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
 import About from "./About.tsx";
-import ReadRecipe from "./ReadRecipe.tsx";
+import ReadRecipe from "./recipeComponents/ReadRecipe.tsx";
 import NoPage from "./NoPage.tsx";
 import MainPage from "./MainPage.tsx";
 import EditRecipe, {
   createSubmit,
   editSubmit,
   forkSubmit,
-} from "./EditRecipe.tsx";
+} from "./recipeComponents/EditRecipe.tsx";
 import UserPage from "./userPages/UserPage.tsx";
-import Register from './userPages/Register.tsx';
+import Register from "./userPages/Register.tsx";
 import Login from "./userPages/Login.tsx";
 import IngredientsList from "./admin/IngredientsList.tsx";
 
-//export const serverURL = "http://localhost:3000";
 
 const router = createBrowserRouter([
   {

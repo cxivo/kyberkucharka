@@ -63,21 +63,12 @@ function Header() {
                   prihlásiť sa
                 </button>
               </div>
-              <div>
-                <div className="kyberbutton-small">
-                  <Link
-                    style={{
-                      marginLeft: 0,
-                      display: "block",
-                      transform:
-                        "translateY(calc(0.4vw * var(--main-recipe-size)))",
-                    }}
-                    to={"/register"}
-                  >
-                    registrovať sa
-                  </Link>
-                </div>
-              </div>
+
+              <Link to={"/register"}>
+                <button className="kyberbutton-small" type="button">
+                  registrovať sa
+                </button>
+              </Link>
             </>
           ) : (
             <>{createProfileCard(getUserFromCookies())}</>

@@ -6,6 +6,7 @@
     { "path": "../common-interfaces" }
   ],
   "compilerOptions": {
+    "lib": ["ES2024.String"],
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,

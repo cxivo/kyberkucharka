@@ -5,11 +5,11 @@ import {
   Ingredient,
   Recipe,
   Section,
-} from "../../common-interfaces/interfaces";
+} from "../../../common-interfaces/interfaces";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableSection from "./EditableSection";
-import Login from "./userPages/Login";
-import EditIngredientWindow from "./EditIngredientWindow";
+import Login from "../userPages/Login";
+import EditIngredientWindow from "../EditIngredientWindow";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -228,7 +228,10 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                   contentEditable="plaintext-only"
                   suppressContentEditableWarning={true}
                   onBlur={(e) => {
-                    updateFieldFromForm("title", e.target.innerText.trim());
+                    updateFieldFromForm(
+                      "title",
+                      e.target.innerText.trim().replaceAll("\n", " ")
+                    );
                   }}
                 >
                   {recipeData?.title || "<Sem vložte názov receptu>"}
@@ -314,11 +317,13 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                 </div>
 
                 <div>
-                  <input
+                  <button
+                    className="kyberbutton"
                     type="submit"
                     disabled={sendingDisabled}
-                    value="Hotovo"
-                  />
+                  >
+                    Hotovo
+                  </button>
                 </div>
 
                 {/*   <Select

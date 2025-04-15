@@ -49,13 +49,13 @@ export interface PartialRecipe {
   id: number;
   title: string;
   author: User;
+  description?: string;
+  image_link?: string;
 }
 
 export interface Recipe extends PartialRecipe {
   created_on?: Date;
   forked_from?: PartialRecipe;
-  description?: string;
-  image_link?: string;
   preparation_time: number; // in minutes
   instructions: string;
   tags: Tag[];

@@ -81,7 +81,12 @@ export async function modifyIngredient(ingredient: Ingredient) {
 
 // recipes
 
-const getPartialRecipeQuery = `SELECT id, title, json_build_object(
+const getPartialRecipeQuery = `SELECT 
+id, 
+title, 
+description, 
+image_link, 
+json_build_object(
   'username', u.username,
   'display_name', u.display_name,
   'registered_on', u.registered_on,
@@ -150,7 +155,6 @@ const getRecipeQuery = `
 `;
 
 export async function getPartialRecipes(): Promise<PartialRecipe[]> {
-  // returns a list of PartialRecipes... or does it? i dont know
   const query = getPartialRecipeQuery + ` ORDER BY r.created_on DESC;`;
   return db.any(query);
 }
@@ -176,16 +180,7 @@ function fixMissingRecipeTags(recipe: Recipe): Recipe {
 }
 
 export async function getPartialRecipeByID(id: number): Promise<PartialRecipe> {
-  const query = `SELECT id, title, json_build_object(
-    'username', u.username,
-    'display_name', u.display_name,
-    'registered_on', u.registered_on,
-    'is_admin', u.is_admin
-  ) AS author
-  FROM recipes AS r
-  JOIN users AS u 
-  ON r.author = u.username
-  WHERE r.id = $1;`;
+  const query = getPartialRecipeQuery + ` WHERE r.id = $1;`;
   return db.one(query, [id]);
 }
 
