@@ -111,7 +111,11 @@ const getRecipeQuery = `
   (
     SELECT row_to_json(z) FROM
     (
-      SELECT r2.id, r2.title, 
+      SELECT 
+      r2.id, 
+      r2.title, 
+      r2.description, 
+      r2.image_link,
       json_build_object(
         'username', u2.username,
         'display_name', u2.display_name,
