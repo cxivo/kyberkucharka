@@ -49,8 +49,8 @@ export default function Login({
   }
 
   return (
-    <div className="floatingWindow">
-      <div className="floatingWindowContent">
+    <div className="floating-window">
+      <div className="floating-window-content">
         <img
           src="/x-white.png"
           alt="Zrušiť"
@@ -85,11 +85,11 @@ export default function Login({
             />
           </div>
 
-          <div className="submit-button">
-            <input type="submit" value="Prihlásiť sa"></input>
-          </div>
+          <button className="kyberbutton-white" type="submit">
+            <span>Prihlásiť sa</span>
+          </button>
         </form>
-        {suggestRegistering ? (
+        {suggestRegistering && (
           <p>
             Alebo sa môžete{" "}
             <Link to={"/register"} onClick={closeCallback}>
@@ -97,8 +97,6 @@ export default function Login({
             </Link>
             .
           </p>
-        ) : (
-          ""
         )}
       </div>
     </div>

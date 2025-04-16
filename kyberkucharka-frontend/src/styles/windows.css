@@ -1,4 +1,4 @@
-.floatingWindow {
+.floating-window {
   position: fixed;
   top: 0;
   left: 0;
@@ -12,7 +12,7 @@
   z-index: 1;
 }
 
-.floatingWindowContent {
+.floating-window-content {
   background: black;
   padding: 20px;
   border-radius: 5px;
@@ -20,28 +20,39 @@
   display: flex;
   flex-direction: column;
   font-size: larger;
+
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
-.floatingWindowContent > * {
+.floating-window-content > * {
   margin-top: 20px;
   margin: auto;
 }
 
-.floatingWindowContent form > * {
+.floating-window-content form > * {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.floatingWindowContent p {
+.floating-window-content p {
   margin-top: 20px;
 }
 
-.floatingWindowContent input {
-  margin: 10px;
+.floating-window-content label {
+  font-size: 24px;
 }
 
-.floatingWindowContent textarea {
+.floating-window-content input, .floating-window-content select, .floating-window-content textarea   {
+  margin: 10px;
+  font-size: 24px;
+  font-family: KyberFontSimple;
+}
+
+.floating-window-content textarea {
   resize: none;
+  width: 15em;
 }

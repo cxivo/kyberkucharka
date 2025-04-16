@@ -48,8 +48,8 @@ function Header() {
   return (
     <>
       <nav>
-        <Link className="logo" to="/">
-          <img src="/logo.png" alt="Kyberkuchárka" height={"120px"}></img>
+        <Link to="/">
+          <img src="/logo.png" alt="Kyberkuchárka" className="logo"></img>
         </Link>
         <div className="user-div">
           {getUserFromCookies() == null ? (

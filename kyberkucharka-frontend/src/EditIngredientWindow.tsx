@@ -65,8 +65,8 @@ export default function EditIngredientWindow({
   }
 
   return (
-    <div className="floatingWindow">
-      <div className="floatingWindowContent">
+    <div className="floating-window">
+      <div className="floating-window-content">
         <img
           src="/x-white.png"
           alt="Zrušiť"
@@ -253,7 +253,6 @@ export default function EditIngredientWindow({
             <textarea
               id="alt-names"
               rows={4}
-              cols={80}
               defaultValue={defaultIngredient.alt_names}
               onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                 updateFieldFromForm("alt_names", e.target.value);
@@ -263,13 +262,14 @@ export default function EditIngredientWindow({
           {nameIsDuplicate && (
             <p className="form-error">Ingrediencia s týmto názvom už existue</p>
           )}
-          <div>
-            <input
-              className="kyberbutton-send"
-              type="submit"
-              disabled={nameIsDuplicate}
-            ></input>
-          </div>
+
+          <button
+            className="kyberbutton-white"
+            type="submit"
+            disabled={nameIsDuplicate}
+          >
+            <span>Hotovo</span>
+          </button>
         </form>
       </div>
     </div>

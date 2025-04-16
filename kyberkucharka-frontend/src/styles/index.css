@@ -19,7 +19,6 @@
   src: url("/fonts/KyberFontSimple-Italic.ttf");
 }
 
-
 :root {
   font-family: KyberFontSimple, sans-serif;
   line-height: 1.5;
@@ -29,7 +28,7 @@
   color-scheme: light dark;
   /* color: rgba(255, 255, 255, 0.87); */
   color: #1a1a1a;
- /*  background-color: #242424; */
+  /*  background-color: #242424; */
   background-image: url("/table-texture.jpg");
   background-repeat: repeat-y;
   background-size: 200vh; /* no idea if it's correct, buuut it does seem to work? */
@@ -39,8 +38,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --main-recipe-size: 1.0;
-  --card-size: 1.0;
+  --scale: 1;
+  --main-recipe-size: 1;
+  --card-size: 1;
   --fork-card-size: 0.7;
 }
 
@@ -70,9 +70,8 @@ h1 {
   line-height: 1.1;
 }
 
-
 #root {
-/*   max-width: 1280px; */
+  /*   max-width: 1280px; */
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -86,14 +85,14 @@ nav {
 
   display: flex;
   flex-direction: row;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: space-between;
   text-align: center;
 
   background-image: url("/top.png");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position:bottom;
+  background-position: bottom;
   opacity: 0.95;
 
   padding-top: 0vw;
@@ -102,28 +101,31 @@ nav {
   padding-bottom: 10px;
 }
 
-.logo {
-  margin: 0;
-  padding-top: 0;
-}
-
-.logo:hover {
-  transform: rotate(1deg) scale(1.02);
-}
-
 nav * {
   display: inline-block;
   margin-top: auto;
   margin-bottom: auto;
 }
 
+.logo {
+  margin: 0;
+  padding-top: 0;
+  height: calc(120px * var(--scale));
+}
+
+.logo:hover {
+  transform: rotate(1deg) scale(1.02);
+}
+
 .user-div {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
 
 .user-div * {
-  margin-left: 10pt;
+  margin-left: 5pt;
+  margin-right: 5pt;
 }
 
 .links {
@@ -135,13 +137,6 @@ nav * {
   margin: auto;
 }
 
-
-
-/* .button-cancel {
-  margin-left: 0px;
-  margin-bottom: 20px;
-} */
-
 .form-error {
   color: orange;
 }
@@ -151,7 +146,6 @@ nav * {
   margin-right: 0;
   margin-bottom: 1vw;
   height: 50px;
-
 }
 
 .cancel-x:hover {
@@ -163,7 +157,9 @@ nav * {
 }
 
 /* TABLES */
-table, th, td {
+table,
+th,
+td {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 0 2vw;
@@ -176,4 +172,22 @@ table, th, td {
 
 .td-clickable:hover {
   text-decoration: underline;
+}
+
+@media only screen and (max-width: 600px) {
+  :root {
+    --scale: 0.6;
+  }
+
+  nav {
+    flex-direction: column;
+  }
+
+  .user-div {
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 2em;
+  }
 }
