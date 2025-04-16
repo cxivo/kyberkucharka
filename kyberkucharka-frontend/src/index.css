@@ -61,6 +61,7 @@ body {
 
   /* always show scrollbar */
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 h1 {
@@ -112,19 +113,6 @@ button:focus-visible {
   min-height: 100vh;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -148,14 +136,32 @@ button:focus-visible {
 
 nav {
   margin: auto;
-  width: 70vw;
+  width: 96vw;
+
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: space-between;
-  top: 0px;
-  margin-top: 20px;
   text-align: center;
+
+  background-image: url("/top.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position:bottom;
+
+  padding-top: 0vw;
+  padding-left: 2vw;
+  padding-right: 1vw;
+  padding-bottom: 10px;
+}
+
+.logo {
+  margin: 0;
+  padding-top: 0;
+}
+
+.logo:hover {
+  transform: rotate(1deg) scale(1.02);
 }
 
 nav * {
@@ -411,7 +417,7 @@ img.recipe-image {
   margin-left: auto;
   margin-right: 0;
   margin-bottom: 1vw;
-  height: 4vw;
+  height: 50px;
 
 }
 
@@ -434,12 +440,15 @@ input.p-like {
 /* BUTTONS */
 
 .kyberbutton {
-  height: calc(4vw * var(--main-recipe-size));
-  width: calc(15vw * var(--main-recipe-size));
+/*   height: calc(4vw * var(--main-recipe-size));
+  width: calc(15vw * var(--main-recipe-size)); */
+  height: 50px;
+  width: 200px;
 
   background-color: transparent;
   background-image: url("/box.png");
   background-size: contain;
+  background-repeat: no-repeat;
 
   border: none;
   font-size: calc(1.5vw * var(--main-recipe-size));
@@ -458,15 +467,18 @@ input.p-like {
 }
 
 .kyberbutton-small {
-  height: calc(3vw * var(--main-recipe-size));
-  width: calc(11.7vw * var(--main-recipe-size));
+/*   height: calc(3vw * var(--main-recipe-size));
+  width: calc(11.7vw * var(--main-recipe-size)); */
+  height: 80px;
+  width: 240px;
 
   background-color: transparent;
   background-image: url("/box.png");
   background-size: contain;
+  background-repeat: no-repeat;
 
   border: none;
-  font-size: calc(1.3vw * var(--main-recipe-size));
+  font-size: 24px;
   font-weight: bold;
   font-family: inherit;
   color: #1a1a1a;
@@ -476,10 +488,10 @@ input.p-like {
 }
 
 .kyberbutton-small * {
-  font-size: calc(1.3vw * var(--main-recipe-size));
   font-weight: bold;
   font-family: inherit;
   color: #1a1a1a;
+  padding-bottom: 20px;
 }
 
 .kyberbutton-small *:hover {
@@ -499,6 +511,7 @@ input.p-like {
   background-color: transparent;
   background-image: url("/box-white.png");
   background-size: contain;
+  background-repeat: no-repeat;
 
   border: none;
   font-size: 1.5vw;
@@ -559,9 +572,7 @@ table, th, td {
   text-shadow: 0px 0px calc(0.1vw * var(--main-recipe-size)) #2a2a2a;
 }
 
-.card:hover {
-  color: #1a1a1a;
-}
+
 
 .card:nth-child(5n+1) {
   background-image: url("/stickers/sticker-yellow.png");
@@ -587,6 +598,11 @@ table, th, td {
 .card:nth-child(5n+5) {
   background-image: url("/stickers/sticker-lime.png");
   transform: rotate(-1deg) translateX(-5px);
+}
+
+.card:hover {
+  color: #1a1a1a;
+  transform: rotate(0deg);
 }
 
 .card p {

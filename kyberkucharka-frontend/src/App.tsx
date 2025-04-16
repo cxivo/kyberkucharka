@@ -48,8 +48,8 @@ function Header() {
   return (
     <>
       <nav>
-        <Link className="mainLogo" to="/">
-          Kyberkuchárka
+        <Link className="logo" to="/">
+          <img src="/logo.png" alt="Kyberkuchárka" height={"120px"}></img>
         </Link>
         <div id="userDiv">
           {getUserFromCookies() == null ? (
@@ -60,13 +60,13 @@ function Header() {
                   type="button"
                   onClick={() => setIsLoggingIn(true)}
                 >
-                  prihlásiť sa
+                  <span>prihlásiť sa</span>
                 </button>
               </div>
 
               <Link to={"/register"}>
                 <button className="kyberbutton-small" type="button">
-                  registrovať sa
+                  <span>registrovať sa</span>
                 </button>
               </Link>
             </>
