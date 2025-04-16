@@ -1,0 +1,47 @@
+.floatingWindow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  color: rgba(255, 255, 255, 0.87);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.floatingWindowContent {
+  background: black;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: larger;
+}
+
+.floatingWindowContent > * {
+  margin-top: 20px;
+  margin: auto;
+}
+
+.floatingWindowContent form > * {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.floatingWindowContent p {
+  margin-top: 20px;
+}
+
+.floatingWindowContent input {
+  margin: 10px;
+}
+
+.floatingWindowContent textarea {
+  resize: none;
+}

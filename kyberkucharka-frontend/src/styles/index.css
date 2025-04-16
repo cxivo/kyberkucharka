@@ -1,0 +1,179 @@
+/* @import "tailwindcss"; */
+
+@font-face {
+  font-family: KyberFontSimple;
+  font-weight: normal;
+  src: url("/fonts/KyberFontSimple-Regular.ttf");
+}
+
+@font-face {
+  font-family: KyberFontSimple;
+  font-weight: bold;
+  src: url("/fonts/KyberFontSimple-Bold.ttf");
+}
+
+@font-face {
+  font-family: KyberFontSimple;
+  font-weight: normal;
+  font-style: italic;
+  src: url("/fonts/KyberFontSimple-Italic.ttf");
+}
+
+
+:root {
+  font-family: KyberFontSimple, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: large;
+
+  color-scheme: light dark;
+  /* color: rgba(255, 255, 255, 0.87); */
+  color: #1a1a1a;
+ /*  background-color: #242424; */
+  background-image: url("/table-texture.jpg");
+  background-repeat: repeat-y;
+  background-size: 200vh; /* no idea if it's correct, buuut it does seem to work? */
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --main-recipe-size: 1.0;
+  --card-size: 1.0;
+  --fork-card-size: 0.7;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+
+  /* always show scrollbar */
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+
+#root {
+/*   max-width: 1280px; */
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  padding: 0;
+  min-height: 100vh;
+}
+
+nav {
+  margin: auto;
+  width: 96vw;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  text-align: center;
+
+  background-image: url("/top.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position:bottom;
+  opacity: 0.95;
+
+  padding-top: 0vw;
+  padding-left: 2vw;
+  padding-right: 1vw;
+  padding-bottom: 10px;
+}
+
+.logo {
+  margin: 0;
+  padding-top: 0;
+}
+
+.logo:hover {
+  transform: rotate(1deg) scale(1.02);
+}
+
+nav * {
+  display: inline-block;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.user-div {
+  display: flex;
+  flex-direction: row;
+}
+
+.user-div * {
+  margin-left: 10pt;
+}
+
+.links {
+  display: flex;
+  align-content: center;
+}
+
+.links * {
+  margin: auto;
+}
+
+
+
+/* .button-cancel {
+  margin-left: 0px;
+  margin-bottom: 20px;
+} */
+
+.form-error {
+  color: orange;
+}
+
+.cancel-button {
+  margin-left: auto;
+  margin-right: 0;
+  margin-bottom: 1vw;
+  height: 50px;
+
+}
+
+.cancel-x:hover {
+  transform: rotate(5deg) scale(1.1);
+}
+
+.inlined {
+  display: inline;
+}
+
+/* TABLES */
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 0 2vw;
+  background-color: rgba(245, 222, 179, 0.5);
+}
+
+.tr-unverified {
+  color: red;
+}
+
+.td-clickable:hover {
+  text-decoration: underline;
+}

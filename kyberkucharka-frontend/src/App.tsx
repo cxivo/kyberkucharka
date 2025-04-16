@@ -51,7 +51,7 @@ function Header() {
         <Link className="logo" to="/">
           <img src="/logo.png" alt="Kyberkuchárka" height={"120px"}></img>
         </Link>
-        <div id="userDiv">
+        <div className="user-div">
           {getUserFromCookies() == null ? (
             <>
               <div>

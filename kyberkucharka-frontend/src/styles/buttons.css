@@ -1,0 +1,86 @@
+.kyberbutton {
+  /*   height: calc(4vw * var(--main-recipe-size));
+      width: calc(15vw * var(--main-recipe-size)); */
+  height: 50px;
+  width: 200px;
+
+  background-color: transparent;
+  background-image: url("/box.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  border: none;
+  font-size: calc(1.5vw * var(--main-recipe-size));
+  font-weight: bold;
+  font-family: inherit;
+  color: #1a1a1a;
+  cursor: pointer;
+
+  display: block;
+  margin: auto;
+  margin-bottom: calc(4vw * var(--main-recipe-size));
+}
+
+.kyberbutton:hover {
+  transform: rotate(1deg) scale(1.02);
+}
+
+.kyberbutton-small {
+  /*   height: calc(3vw * var(--main-recipe-size));
+      width: calc(11.7vw * var(--main-recipe-size)); */
+  height: 80px;
+  width: 240px;
+
+  background-color: transparent;
+  background-image: url("/box.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  font-family: inherit;
+  color: #1a1a1a;
+  cursor: pointer;
+
+  text-align: center;
+}
+
+.kyberbutton-small * {
+  font-weight: bold;
+  font-family: inherit;
+  color: #1a1a1a;
+  padding-bottom: 20px;
+}
+
+.kyberbutton-small *:hover {
+  color: #1a1a1a;
+}
+
+.kyberbutton-small:hover {
+  color: #1a1a1a;
+  transform: rotate(1deg) scale(1.02);
+}
+
+.kyberbutton-send {
+  height: 4vw;
+  width: 15vw;
+
+  background-color: transparent;
+  background-image: url("/box-white.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+
+  border: none;
+  font-size: 1.5vw;
+  font-weight: bold;
+  font-family: inherit;
+  color: white;
+  cursor: pointer;
+
+  display: block;
+}
+
+.kyberbutton-send:hover {
+  transform: rotate(1deg) scale(1.02);
+}

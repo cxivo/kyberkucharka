@@ -1,0 +1,163 @@
+.recipe {
+  color: #1a1a1a;
+  text-shadow: 0px 0px calc(0.05vw * var(--main-recipe-size)) #2a2a2a;
+}
+
+.recipe-title {
+  display: block;
+  position: relative;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: calc(70vw * var(--main-recipe-size));
+
+  background-image: url("/zosit_top2.png");
+  background-repeat: no-repeat;
+  background-size: calc(70vw * var(--main-recipe-size));
+  background-position-y: bottom;
+
+  margin-bottom: 0;
+  padding-bottom: 0;
+
+  height: calc(10vw * var(--main-recipe-size));
+}
+
+.recipe-title h1 {
+  position: absolute;
+  bottom: calc(1vw * var(--main-recipe-size));
+
+  max-width: calc(55vw * var(--main-recipe-size));
+  max-height: calc(8vw * var(--main-recipe-size));
+
+  text-align: center;
+
+  margin-bottom: 0;
+  padding-bottom: 0;
+
+  font-size: calc(3vw * var(--main-recipe-size));
+  text-overflow: ellipsis;
+}
+
+.recipe-body {
+  margin-top: 0px;
+  max-width: calc(70vw * var(--main-recipe-size));
+  position: relative;
+
+  background-image: url("/zosit_middle2.png");
+  background-repeat: repeat-y;
+  background-size: calc(70vw * var(--main-recipe-size));
+
+  font-size: calc(2vw * var(--main-recipe-size));
+  /* min-height: 100vh; */
+
+  padding-top: calc(0.7vw * var(--main-recipe-size));
+  text-align: left;
+  padding-left: 12%;
+  padding-right: 8%;
+
+  padding-bottom: calc(0.5vw * var(--main-recipe-size));
+  /* line-height: 42.7px; */
+  line-height: calc(3.449vw * var(--main-recipe-size));
+}
+
+.recipe-author {
+  margin-top: calc(2vw * var(--main-recipe-size));
+  margin-bottom: calc(3.45vw * var(--main-recipe-size));
+}
+
+img.recipe-image {
+  height: calc(31.4vw * var(--main-recipe-size));
+  transform: rotate(-2deg);
+  box-shadow: 2px 2px 8px black;
+}
+
+.recipe-text > * {
+  margin-top: calc(2vw * var(--main-recipe-size));
+  margin-bottom: calc(3.45vw * var(--main-recipe-size));
+}
+
+.recipe-text h2 {
+  transform: translateY(calc(-0.3vw * var(--main-recipe-size)));
+}
+
+.recipe-text h3 {
+  transform: translateY(calc(-0.15vw * var(--main-recipe-size)));
+}
+
+.recipe-section > * {
+  margin-top: calc(2vw * var(--main-recipe-size));
+  margin-bottom: calc(3.45vw * var(--main-recipe-size));
+}
+
+.recipe-body-afterspace {
+  margin-top: calc(4vw * var(--main-recipe-size));
+}
+
+.ingredients-list li {
+  list-style: none;
+  padding-left: calc(2vw * var(--main-recipe-size));
+  background-image: url("/bullet-points/point3.png");
+  background-repeat: no-repeat;
+  background-position-x: left;
+  background-position-y: calc(0.5vw * var(--main-recipe-size));
+  background-size: calc(1.5vw * var(--main-recipe-size));
+}
+
+.editable-ingredients-list {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.editable-ingredients-list li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.select-thing {
+  margin-top: 0;
+  margin-bottom: calc(1.3vw * var(--main-recipe-size));
+  height: calc(4.3vw * var(--main-recipe-size));
+
+  color: #1a1a1a;
+}
+
+.inliner * {
+  display: inline;
+}
+
+.nothing-doer {
+  margin: 0;
+}
+
+.section-name {
+  display: flex;
+  align-content: flex-start;
+  justify-content: space-between;
+  margin-bottom: calc(1.18vw * var(--main-recipe-size));
+}
+
+.section-name h3 {
+  margin-top: calc(1.2vw * var(--main-recipe-size));
+}
+
+.delete-section {
+  height: calc(4vw * var(--main-recipe-size));
+}
+
+.delete-ingredient {
+  height: calc(2vw * var(--main-recipe-size));
+}
+
+input.p-like {
+    border: none;
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
+    background: transparent;
+    width: calc(8vw * var(--main-recipe-size));
+    color: inherit;
+    padding: 0;
+    text-shadow: 0px 0px calc(0.05vw * var(--main-recipe-size)) #2a2a2a;
+  }

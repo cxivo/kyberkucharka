@@ -1,7 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import "./index.css";
 import App from "./App.tsx";
 import About from "./About.tsx";
 import ReadRecipe from "./recipeComponents/ReadRecipe.tsx";
@@ -16,6 +15,11 @@ import UserPage from "./userPages/UserPage.tsx";
 import Register from "./userPages/Register.tsx";
 import Login from "./userPages/Login.tsx";
 import IngredientsList from "./admin/IngredientsList.tsx";
+import "./styles/index.css";
+import "./styles/buttons.css";
+import "./styles/cards.css";
+import "./styles/recipe.css";
+import "./styles/windows.css";
 
 
 const router = createBrowserRouter([
