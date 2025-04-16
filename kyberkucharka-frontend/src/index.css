@@ -41,6 +41,7 @@
 
   --main-recipe-size: 1.0;
   --card-size: 1.0;
+  --fork-card-size: 0.7;
 }
 
 a {
@@ -180,10 +181,6 @@ nav * {
   margin-left: 10pt;
 }
 
-/* .recipe {
-  border-style: solid;
-
-} */
 
 .recipeCard {
   border-style: outset;
@@ -612,11 +609,11 @@ table, th, td {
   transform: rotate(0deg);
 }
 
-.card * {
+.card *, .fork-card * {
   margin: 0;
 }
 
-.card h3 {
+.card h3, .fork-card h3 {
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box;
@@ -625,22 +622,82 @@ table, th, td {
   -webkit-box-orient: vertical;
 }
 
-.card img {
+.card img, .fork-card img {
   display: block;
-  height: 150px;
-  max-width: 250px;
   box-shadow: 2px 2px 8px black;
+  opacity: 1;
+}
 
-  margin: 10px;
+.card img {
+  height: calc(150px * var(--card-size));
+  max-width: calc(250px * var(--card-size));
+  margin: calc(10px * var(--card-size));
+
   transform: rotate(-2.5deg);
 }
 
-.card p {
-  max-height: calc(100px * var(--card-size));
+.fork-card img {
+  height: calc(150px * var(--fork-card-size));
+  max-width: calc(250px * var(--fork-card-size));
+  margin: calc(10px * var(--fork-card-size));
+
+  transform: rotate(2deg);
+}
+
+.card p, .fork-card p {
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box;
   line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+.card p {
+  max-height: calc(100px * var(--card-size));
+}
+
+.fork-card p {
+  max-height: calc(100px * var(--fork-card-size));
+}
+
+/* FORK */
+.fork {
+  background-image: url("/fork-link.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  width: 1000px;
+  height: 305px;
+}
+
+.fork-card {
+  margin-right: 0;
+  margin-left: auto;
+
+  padding: calc(48px * var(--main-recipe-size));
+  padding-top: calc(30px * var(--main-recipe-size));
+  padding-bottom: calc(40px * var(--main-recipe-size));
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+
+  height: calc(326px * var(--fork-card-size));
+  width: calc(300px * var(--fork-card-size));
+  font-size: calc(20px * var(--fork-card-size));
+
+  color: #1a1a1a;
+  text-shadow: 0px 0px calc(2px * var(--main-recipe-size)) #2a2a2a;
+  align-items: center;
+
+  transform: rotate(2deg);
+}
+
+.fork-card:hover {
+  color: #1a1a1a;
+}
+
+.fork:hover {
+  transform: rotate(0.5deg) translateY(-3px);
 }

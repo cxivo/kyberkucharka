@@ -39,7 +39,7 @@ function Header() {
           type="button"
           onClick={sendLogout}
         >
-          Odhlásiť sa
+          <span>odhlásiť sa</span>
         </button>
       </>
     );
