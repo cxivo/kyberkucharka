@@ -4,11 +4,14 @@ import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
 import { formatAmount, gramsToAmountUsed } from "../functions/UnitHelper";
 import { getUserFromCookies } from "../functions/cookieHelper";
 import ForkCard from "./ForkCard";
+import AreYouSureWindow from "../AreYouSureWindow";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
   const [isInvalidImage, setIsInvalidImage] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("načítavam...");
 
   const { slug = "0" } = useParams();
 
@@ -17,15 +20,27 @@ export default function ReadRecipe() {
   // each time the slug (which is the recipe ID) gets updated, the site will soft-reload
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/recipes/${slug}`);
-        const result = (await response.json()) as Recipe;
-        setRecipeData(result);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-      }
+      fetch(`/api/recipes/${slug}`)
+        .then(async (response) => {
+          const result = await response.json();
+
+          if (response.ok) {
+            setRecipeData(result);
+            setLoading(false);
+          } else {
+            console.error(result.message);
+            if (response.status === 404) {
+              setMessage(`Recept nenájdený.`);
+              navigate("/");
+            } else {
+              setMessage(`Nepodarilo sa načítať recept: ${result.message}`);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          setMessage(`Nastala neznáma chyba: ${error}`);
+        });
     };
 
     fetchData();
@@ -33,20 +48,40 @@ export default function ReadRecipe() {
 
   useEffect(() => console.log(recipeData), [recipeData]);
 
+  function deleteRecipe() {
+    setLoading(true);
+    setIsDeleting(false);
+    fetch(`/api/recipes/${recipeData.id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      credentials: "include",
+    }).then(async (response: Response) => {
+      if (response.ok) {
+        alert("Recept úspešne zmazaný.");
+        navigate("/");
+      } else {
+        alert("Nepodarilo sa zmazať recept.");
+        setLoading(false);
+      }
+    });
+  }
+
   return (
     <div>
       <title>
         {(recipeData.title ?? "načítavam recept") + " - Kyberkuchárka"}
       </title>
       {loading ? (
-        <p>načítavam...</p>
+        <p>{message}</p>
       ) : (
         <div className="recipe" key={recipeData.id}>
           {recipeData.forked_from != null && (
             <ForkCard recipe={recipeData.forked_from}></ForkCard>
           )}
           {
-            // môže si upraviť vlastný recept
+            // can edit own recipe
             getUserFromCookies()?.username === recipeData.author.username && (
               <button type="button" onClick={() => navigate(`/edit/${slug}`)}>
                 Uprav recept
@@ -55,13 +90,21 @@ export default function ReadRecipe() {
           }
 
           {
-            // môže forknúť hocičí recept
-            getUserFromCookies() != null ? (
+            // can fork anyone's recipe
+            getUserFromCookies() != null && (
               <button type="button" onClick={() => navigate(`/fork/${slug}`)}>
                 Forkni recept
               </button>
-            ) : (
-              ""
+            )
+          }
+
+          {
+            // can delete own recipe
+            (getUserFromCookies()?.username === recipeData.author.username ||
+              getUserFromCookies()?.is_admin) && (
+              <button type="button" onClick={() => setIsDeleting(true)}>
+                Zmaž recept
+              </button>
             )
           }
           <div className="recipe-title">
@@ -112,6 +155,14 @@ export default function ReadRecipe() {
             </div>
           </div>
         </div>
+      )}
+      {isDeleting && (
+        <AreYouSureWindow
+          mainText="Naozaj zmazať tento recept?"
+          confirmText="Zmazať!"
+          successCallback={deleteRecipe}
+          closeCallback={() => setIsDeleting(false)}
+        ></AreYouSureWindow>
       )}
     </div>
   );

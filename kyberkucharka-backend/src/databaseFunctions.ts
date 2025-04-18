@@ -323,9 +323,23 @@ export async function addOrUpdateRecipe(
       return db_recipe_id;
     })
     .catch((e) => {
-      console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
+      //console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
       return -1;
     });
+}
+
+// deletes a recipe if the person who wants to delete it is the author or an admin
+export async function deleteRecipe(id: number, deleterUsername: string) {
+  const query = `DELETE FROM recipes
+    WHERE id = $1 
+    AND 
+    (
+      recipes.author = $2
+      OR 
+      EXISTS (SELECT 1 FROM users WHERE is_admin = true AND username = $2)
+    )
+    RETURNING id;`;
+  db.one(query, [id, deleterUsername]);
 }
 
 // users

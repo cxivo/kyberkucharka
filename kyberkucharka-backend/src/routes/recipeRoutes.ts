@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import {
   addOrUpdateRecipe,
+  deleteRecipe,
   getPartialRecipeByID,
   getPartialRecipes,
   getPartialRecipesByUser,
@@ -86,6 +87,21 @@ router.put("/:id", authenticateToken, (req: Request, res: Response) => {
       });
     }
   });
+});
+
+router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+
+  deleteRecipe(id, res.locals.user.username)
+    .then(() => {
+      res.sendStatus(204);
+    })
+    .catch((e) => {
+      res.status(403).json({
+        message: "You are not permitted to delete this recipe.",
+        error: "",
+      });
+    });
 });
 
 // Delete a recipe by ID
