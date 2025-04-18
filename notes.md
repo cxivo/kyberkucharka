@@ -4,3 +4,4 @@
   - https://stackoverflow.com/questions/47729344/how-to-share-code-between-typescript-projects
   - https://stackoverflow.com/questions/55115705/typescript-project-with-references
 - Postgresql JSON https://stackoverflow.com/questions/13227142/using-row-to-json-with-nested-joins
+- @media print - optimize how the printed recipe looks

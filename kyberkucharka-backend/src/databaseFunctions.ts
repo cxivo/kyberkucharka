@@ -79,6 +79,28 @@ export async function modifyIngredient(ingredient: Ingredient) {
   db.one(query, i2);
 }
 
+export async function deleteIngredient(id: number) {
+  const query = `DELETE FROM ingredients
+    WHERE id = $1;`;
+  db.none(query, [id]);
+}
+
+export async function deleteIngredientAndRecipes(id: number) {
+  const query = `DELETE FROM recipes
+    WHERE EXISTS 
+    (
+      SELECT 1 FROM sections
+      WHERE sections.recipe = recipes.id 
+      AND EXISTS
+      (
+        SELECT 1 FROM used_ingredients
+        WHERE used_ingredients.section = sections.id
+        AND used_ingredients.ingredient = $1
+      )
+    );`;
+  db.none(query, [id]).then(() => deleteIngredient(id));
+}
+
 // recipes
 
 const getPartialRecipeQuery = `SELECT 
@@ -297,7 +319,7 @@ export async function addOrUpdateRecipe(
       //return transaction.batch(queries);
     })
     .then(() => {
-      console.log("Row inserted successfully!");
+      console.log(`Modified recipe with id ${db_recipe_id}`);
       return db_recipe_id;
     })
     .catch((e) => {

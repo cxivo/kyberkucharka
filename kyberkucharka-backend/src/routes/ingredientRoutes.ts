@@ -4,6 +4,7 @@ import {
   getIngredientByID,
   getIngredientsByName,
   modifyIngredient,
+  deleteIngredientAndRecipes,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 
@@ -22,6 +23,24 @@ router.get("/:id", (req: Request, res: Response) => {
   getIngredientByID(ingredientId)
     .then((result) => {
       res.json(result);
+    })
+    .catch(() => {
+      res.status(404).json({ message: "Ingredient not found" });
+    });
+});
+
+// get ingredient by id
+router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
+  const ingredientId = parseInt(req.params.id);
+
+  if (res.locals.user.is_admin !== true) {
+    res.status(403).json({ message: "Only admins can delete ingredients." });
+    return;
+  }
+
+  deleteIngredientAndRecipes(ingredientId)
+    .then((result) => {
+      res.sendStatus(204);
     })
     .catch(() => {
       res.status(404).json({ message: "Ingredient not found" });
