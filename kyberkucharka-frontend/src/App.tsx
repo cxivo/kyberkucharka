@@ -29,11 +29,37 @@ function Header() {
     });
   }
 
+  function loginRegisterCard() {
+    return (
+      <>
+        <div>
+          <button
+            className="kyberbutton-small"
+            type="button"
+            onClick={() => setIsLoggingIn(true)}
+          >
+            <span>prihlásiť sa</span>
+          </button>
+        </div>
+
+        <Link to={"/register"}>
+          <button className="kyberbutton-small" type="button">
+            <span>registrovať sa</span>
+          </button>
+        </Link>
+      </>
+    );
+  }
+
   function createProfileCard(user: User | undefined) {
     return (
       <>
-        <Link to={`/user/${user?.username}`}>{user?.display_name}</Link>
-
+        <div className="userpage-link">
+          <Link to={`/user/${user?.username}`}>
+            <img src="/user.png" alt="ikona používateľa" height="40px"></img>
+            <p>{user?.display_name}</p>
+          </Link>
+        </div>
         <button
           className="kyberbutton-small"
           type="button"
@@ -48,28 +74,17 @@ function Header() {
   return (
     <>
       <nav>
-        <Link to="/">
+        <Link to="/" className="logo-link">
           <img src="/logo.png" alt="Kyberkuchárka" className="logo"></img>
         </Link>
-        <div className="user-div">
-          {getUserFromCookies() == null ? (
-            <>
-              <div>
-                <button
-                  className="kyberbutton-small"
-                  type="button"
-                  onClick={() => setIsLoggingIn(true)}
-                >
-                  <span>prihlásiť sa</span>
-                </button>
-              </div>
+        <div className="links">
+          <Link to="/about">O projekte</Link>
+          {getUserFromCookies() != null && (
+            <Link to="/create">Vytvor recept</Link>
+          )}
 
-              <Link to={"/register"}>
-                <button className="kyberbutton-small" type="button">
-                  <span>registrovať sa</span>
-                </button>
-              </Link>
-            </>
+          {getUserFromCookies() == null ? (
+            <>{loginRegisterCard()}</>
           ) : (
             <>{createProfileCard(getUserFromCookies())}</>
           )}
