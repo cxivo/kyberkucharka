@@ -42,7 +42,7 @@ function Header() {
           </button>
         </div>
 
-        <Link to={"/register"}>
+        <Link to={"/register"} className="no-rotate">
           <button className="kyberbutton-small" type="button">
             <span>registrovať sa</span>
           </button>
@@ -78,11 +78,19 @@ function Header() {
           <img src="/logo.png" alt="Kyberkuchárka" className="logo"></img>
         </Link>
         <div className="links">
+          {getUserFromCookies()?.is_admin && (
+            <Link to="/ingredient-list">
+              <img
+                src="/ingredients-list.png"
+                alt="Správa ingrediencií"
+                height="40px"
+              ></img>
+            </Link>
+          )}
           <Link to="/about">O projekte</Link>
           {getUserFromCookies() != null && (
             <Link to="/create">Vytvor recept</Link>
           )}
-
           {getUserFromCookies() == null ? (
             <>{loginRegisterCard()}</>
           ) : (

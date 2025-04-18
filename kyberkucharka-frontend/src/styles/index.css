@@ -166,6 +166,11 @@ nav * {
 }
 
 /* TABLES */
+.ingredients-table {
+  margin: auto;
+  margin-bottom: 20px;
+}
+
 table,
 th,
 td {
@@ -181,6 +186,19 @@ td {
 
 .td-clickable:hover {
   text-decoration: underline;
+}
+
+.plus {
+  margin-bottom: 20px;
+}
+
+.plus:hover {
+  transform: rotate(5deg) scale(1.1);
+  cursor: pointer;
+}
+
+.no-rotate:hover {
+  transform: none;
 }
 
 @media only screen and (max-width: 600px) {

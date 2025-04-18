@@ -5,8 +5,10 @@ import {
   getIngredientsByName,
   modifyIngredient,
   deleteIngredientAndRecipes,
+  addIngredient,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
+import { Ingredient } from "../../../common-interfaces/interfaces";
 
 const router = Router();
 
@@ -54,14 +56,29 @@ router.put("/", authenticateToken, (req: Request, res: Response) => {
     return;
   }
 
-  modifyIngredient(req.body)
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch((e) => {
-      console.error(e);
-      res.status(400).json({ message: "An unknown error has occured" });
-    });
+  const ingredient: Ingredient = req.body;
+
+  if (ingredient.id < 0) {
+    // add new
+    addIngredient(ingredient)
+      .then(() => {
+        res.sendStatus(201);
+      })
+      .catch((e) => {
+        console.error(e);
+        res.status(400).json({ message: "An unknown error has occured" });
+      });
+  } else {
+    // modify existing
+    modifyIngredient(ingredient)
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch((e) => {
+        console.error(e);
+        res.status(400).json({ message: "An unknown error has occured" });
+      });
+  }
 });
   
   // get ingredients by name

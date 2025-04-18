@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import { Ingredient } from "../../../common-interfaces/interfaces";
+import {
+  DEFAULT_INGREDIENT,
+  Ingredient,
+} from "../../../common-interfaces/interfaces";
 import { Link } from "react-router-dom";
 import EditIngredientWindow from "../EditIngredientWindow";
 import AreYouSureWindow from "../AreYouSureWindow";
@@ -9,6 +12,9 @@ export default function IngredientsList() {
   const [configuring, setConfiguring] = useState<boolean>(false);
   const [selectedIngredient, setSelectedIngredient] = useState<Ingredient>();
   const [deletingIngredient, setDeletingIngredient] = useState<boolean>(false);
+  const [configuringTitle, setConfiguringTitle] = useState<string>(
+    "Úprava ingrediencie"
+  );
 
   async function fetchData() {
     try {
@@ -30,6 +36,13 @@ export default function IngredientsList() {
 
   function configIngredient(ingredient: Ingredient) {
     setSelectedIngredient(ingredient);
+    setConfiguringTitle("Úprava ingrediencie");
+    setConfiguring(true);
+  }
+
+  function createIngredient() {
+    setSelectedIngredient(DEFAULT_INGREDIENT);
+    setConfiguringTitle("Vytvoriť novú ingredienciu");
     setConfiguring(true);
   }
 
@@ -94,6 +107,13 @@ export default function IngredientsList() {
     <>
       <title>Správa ingrediencií</title>
       <h1>Zoznam ingrediencií</h1>
+      <img
+        src="/plus.png"
+        alt="Pridať ingredienciu"
+        className="plus"
+        height="50px"
+        onClick={createIngredient}
+      ></img>
       <table className="ingredients-table">
         <thead>
           <tr>
@@ -160,11 +180,13 @@ export default function IngredientsList() {
       </table>
       {configuring && (
         <EditIngredientWindow
-          titleText="Úprava ingrediencie"
+          titleText={configuringTitle}
           defaultIngredient={selectedIngredient!}
           callbackSuccess={sendIngredient}
           callbackAny={() => setConfiguring(false)}
-          existingIngredients={[]}
+          existingIngredients={ingredients.filter(
+            (i) => i.id !== selectedIngredient?.id
+          )}
         ></EditIngredientWindow>
       )}
       {deletingIngredient && (
