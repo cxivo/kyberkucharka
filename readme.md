@@ -1,7 +1,7 @@
 # Na čo sa pozerám?
-Na KyberKuchárku, same-generation aplikáciu na recepty! (nikdy neviem pochopiť čo ako je ten "next-gen", keď to vzniklo v cirka rovnakom čase ako stále updatovaná konkurencia a zas až také prevratné veci tu nie sú)
+Na ***KyberKuchárku***, same-generation aplikáciu na recepty! (nikdy neviem pochopiť čo ako je ten "next-gen", keď to vzniklo v cirka rovnakom čase ako stále updatovaná konkurencia a zas až také prevratné veci tu nie sú)
 
-Môžete recepty čítať/písať~~/počítať~~ a forkovať - predstavte si to isté, ako forkovanie na GitHube, že vytvoríte odvodeninu niečieho receptu. To je užitočná fičúra, ktorá mi na mnohých stránkach chýbala.
+Môžete recepty čítať/písať/počítať a forkovať - predstavte si to isté, ako forkovanie na GitHube, že vytvoríte odvodeninu niečieho receptu. To je užitočná fičúra, ktorá mi na mnohých stránkach chýbala.
 
 # Ako si rozbehať vývojové prostredie u seba doma
 Ako povedal raz jeden môj profesor, buildovanie je ako pečenie, takže nedivím sa, že si aj vy chcete tento projekt upiecť doma. Ten istý profesor nám síce potom poslal recept na koláč, v ktorom bolo smrteľne veľké množstvo muškátového oriešku, takže to bolo trochu divné, ale my sme mu to už odpustili. Anyway, návod:
@@ -36,4 +36,4 @@ Názov vznikol, lebo som chcel "byť prvým človekom v tomto desaťročí, čo 
 
 - *Boli nejaké iné nápady na názov?*
 
-Pár dobrých od kamarátov: *Nom-nom-nom*, *Gutmeal*, *GutHib* (ako [spoonerizmus](https://en.wikipedia.org/wiki/Spoonerism) GitHubu), *GrubFood*, *Kitchenly* (aby to znelo startupovsky), *YARFeD* (Yet Another Recipe Food Database, paródia na YAML), *OKK* (ako OKK Kyber Kuchárka) či *RRR rekurzívny receptár* (paródia na všetky (rekurzívne akronymy)[https://en.wikipedia.org/wiki/Recursive_acronym] ako "GNU"), ℝ³ (z predošlého)...
+Pár dobrých od kamarátov: *Nom-nom-nom*, *Gutmeal*, *GutHib* (ako [spoonerizmus](https://en.wikipedia.org/wiki/Spoonerism) GitHubu), *GrubFood*, *Kitchenly* (aby to znelo startupovsky), *YARFeD* (Yet Another Recipe Food Database, paródia na YAML), *OKK* (ako OKK Kyber Kuchárka) či *RRR rekurzívny receptár* (paródia na všetky [rekurzívne akronymy](https://en.wikipedia.org/wiki/Recursive_acronym) ako "GNU"), ℝ³ (z predošlého)...
