@@ -4,7 +4,7 @@
 - Link na repozitár: https://github.com/cxivo/kyberkucharka
 
 # Info o reportovanej verzii:  
-- Tag: week8
+- Tag: week9
 - Obdobie: 9. týždeň, 14.4.2025 - 20.4.2025
 
 # Plán: 
@@ -40,7 +40,7 @@ Presne vešanie na hosting bolo mojim programom na tento týždeň.
 Rozdiely vlastne ani nie sú, tiež sa divím, ako sa toľko podarilo spraviť.
 
 # Plán na ďalší týždeň:
-Tentokrát je plán jasný - tagy a vyhľadávanie. 
+Tentokrát je plán jasný - príprava na beta verziu, potom tagy a vyhľadávanie. 
 
 # Problémy:
 Prekvapivo som sa z vešania stránky na hosting ani nechcela zavesiť (hoci znepokojuje ma, ako veľa problémov som vyriešila vďaka informácii napísanej na nejakom jednom, stredne skytom mieste, a tú informáciu nie je možné zohnať inde... ako také hľadanie veľkonočných vajíčok). So štýlovaním je problém vždy, hlavne v mojom prípade, keď to chcem mať echt realistické a čeče.
