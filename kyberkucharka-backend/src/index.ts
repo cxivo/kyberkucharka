@@ -1,15 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 import recipeRoutes from "./routes/recipeRoutes";
-import {
-  createTables,
-  dropTables,
-  getIngredients,
-  getPartialRecipes,
-  getRecipesByName,
-  initTables,
-  printAllUsers,
-} from "./databaseFunctions";
 import authRoutes from "./routes/authRoutes";
 import cookieParser from "cookie-parser";
 import ingredientRoutes from "./routes/ingredientRoutes";
@@ -30,12 +21,6 @@ const corsOptions = {
 const app: Express = express();
 const port = process.env.PORT || 3000;
 
-/* dropTables()
-  .then(() => createTables())
-  .then(() => initTables())
-  .then(async () => {
-    const a = await getRecipesByName("raňajky");
-  }); */
 
 //app.use(cors(corsOptions));
 app.use(express.json());

@@ -7,6 +7,7 @@
     "build": "npx tsc --build tsconfig.json",
     "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
+    "for-your-life-oh-god-it-is-gaining-on-us": "nodemon src/initTables.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "cxivo",
