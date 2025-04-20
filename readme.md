@@ -1,7 +1,7 @@
 # Na čo sa pozerám?
 Na KyberKuchárku, same-generation aplikáciu na recepty! (nikdy neviem pochopiť čo ako je ten "next-gen", keď to vzniklo v cirka rovnakom čase ako stále updatovaná konkurencia a zas až také prevratné veci tu nie sú)
 
-Môžete recepty čítať/písať~~/počítať~~ a forkovať - predstavte si to isté, ako forkovanie na GitHube, že vytvoríte odvodeninu niečieho receptu. To je užitočná fičúra, ktorá mi na mnohých stránkach chýbala.
+Môžete recepty čítať/písať/počítať a forkovať - predstavte si to isté, ako forkovanie na GitHube, že vytvoríte odvodeninu niečieho receptu. To je užitočná fičúra, ktorá mi na mnohých stránkach chýbala.
 
 # Ako si rozbehať vývojové prostredie u seba doma
 Ako povedal raz jeden môj profesor, buildovanie je ako pečenie, takže nedivím sa, že si aj vy chcete tento projekt upiecť doma. Ten istý profesor nám síce potom poslal recept na koláč, v ktorom bolo smrteľne veľké množstvo muškátového oriešku, takže to bolo trochu divné, ale my sme mu to už odpustili. Anyway, návod:
