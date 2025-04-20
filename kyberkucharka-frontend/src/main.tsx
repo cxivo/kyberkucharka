@@ -75,7 +75,7 @@ const router = createBrowserRouter([
     path: "/login",
     element: (
       <App>
-        <Login suggestRegistering={true} closeCallback={() => {}}></Login>
+        <Login suggestRegistering={true} closeCallback={undefined}></Login>
       </App>
     ),
   },

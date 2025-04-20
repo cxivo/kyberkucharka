@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { DEFAULT_USER, User } from "../../../common-interfaces/interfaces";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface LoginProps {
   suggestRegistering: boolean;
   customMessage?: string;
-  closeCallback: () => void;
+  closeCallback?: () => void;
 }
 
 export default function Login({
@@ -15,12 +15,22 @@ export default function Login({
 }: LoginProps) {
   const [user, setUSer] = useState<User>(DEFAULT_USER);
 
+  let navigate = useNavigate();
+
   function updateFieldFromForm(
     field: keyof User,
     e: React.ChangeEvent<HTMLInputElement>
   ) {
     const newUser: User = { ...user, [field]: e.target.value };
     setUSer(newUser);
+  }
+
+  function close() {
+    if (closeCallback != null) {
+      closeCallback();
+    } else {
+      navigate(`/`);
+    }
   }
 
   function sendLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -39,8 +49,7 @@ export default function Login({
 
       if (response.ok) {
         console.log(json);
-        closeCallback();
-        //navigate(`/`);
+        close();
       } else {
         alert(`Nepodarilo sa prihlásiť:\n${json.message}`);
         console.error(`Error while logging in: ${json.message}, ${json.error}`);
@@ -56,7 +65,7 @@ export default function Login({
           alt="Zrušiť"
           tabIndex={0}
           className="cancel-x cancel-button"
-          onClick={closeCallback}
+          onClick={close}
         />
         <h1>Prihlásenie sa</h1>
         {customMessage != null ? <p>{customMessage}</p> : ""}
@@ -92,7 +101,7 @@ export default function Login({
         {suggestRegistering && (
           <p>
             Alebo sa môžete{" "}
-            <Link to={"/register"} onClick={closeCallback}>
+            <Link to={"/register"} onClick={close}>
               registrovať
             </Link>
             .
