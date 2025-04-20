@@ -15,6 +15,13 @@ export const users: User[] = [
     registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
     is_admin: false,
   },
+  {
+    username: "admin",
+    display_name: "Admin",
+    password: "admin",
+    registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
+    is_admin: true,
+  },
 ];
 
 export const ingredients: Ingredient[] = [

@@ -419,6 +419,9 @@ export async function initTables() {
     .catch((e) => {
       console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
     });
+
+  // give admin powers to the, well, admin
+  await db.none("UPDATE users SET is_admin = true WHERE username = 'admin';");
 }
 
 export async function dropTables() {
