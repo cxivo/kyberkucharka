@@ -39,9 +39,9 @@
   -moz-osx-font-smoothing: grayscale;
 
   --scale: 1;
-  --main-recipe-size: 1;
-  --card-size: 1;
-  --fork-card-size: 0.7;
+  --main-recipe-size: 0.8;
+  --card-size: 1.2;
+  --fork-card-size: 1.2;
 }
 
 a {
@@ -127,6 +127,7 @@ nav * {
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
+  margin-top: 20px;
   margin-bottom: 30px;
 }
 
@@ -201,9 +202,22 @@ td {
   transform: none;
 }
 
+@media only screen and (max-width: 1500px) {
+  :root {
+    --main-recipe-size: 1.0;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  :root {
+    --main-recipe-size: 1.4;
+  }
+}
+
 @media only screen and (max-width: 600px) {
   :root {
     --scale: 0.6;
+    --card-size: 0.7;
   }
 
   nav {
@@ -222,3 +236,4 @@ td {
     flex-direction: column;
   }
 }
+

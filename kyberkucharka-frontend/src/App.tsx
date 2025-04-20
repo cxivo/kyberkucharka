@@ -34,17 +34,17 @@ function Header() {
       <>
         <div>
           <button
-            className="kyberbutton-small"
+            className="kyberbutton"
             type="button"
             onClick={() => setIsLoggingIn(true)}
           >
-            <span>prihlásiť sa</span>
+            prihlásiť sa
           </button>
         </div>
 
         <Link to={"/register"} className="no-rotate">
-          <button className="kyberbutton-small" type="button">
-            <span>registrovať sa</span>
+          <button className="kyberbutton" type="button">
+            registrovať sa
           </button>
         </Link>
       </>
@@ -60,12 +60,8 @@ function Header() {
             <p>{user?.display_name}</p>
           </Link>
         </div>
-        <button
-          className="kyberbutton-small"
-          type="button"
-          onClick={sendLogout}
-        >
-          <span>odhlásiť sa</span>
+        <button className="kyberbutton" type="button" onClick={sendLogout}>
+          odhlásiť sa
         </button>
       </>
     );

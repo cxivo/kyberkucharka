@@ -110,26 +110,29 @@
 }
 
 .fork-card p {
-  max-height: calc(100px * var(--fork-card-size));
+  max-height: calc(100px * var(--fork-card-size ));
 }
 
 /* FORK */
 .fork {
-  background-image: url("/fork-link.png");
-  background-size: cover;
-  background-repeat: no-repeat;
+  margin-right: 15%;
 
-  width: 1000px;
-  height: 305px;
+  background-image: url("/fork-link.png");
+  background-position:right;
+  background-size: 1500px;
+  background-repeat: no-repeat;
 }
 
 .fork-card {
   margin-right: 0;
   margin-left: auto;
 
-  padding: calc(48px * var(--main-recipe-size));
-  padding-top: calc(30px * var(--main-recipe-size));
-  padding-bottom: calc(40px * var(--main-recipe-size));
+  padding: calc(52px * var(--fork-card-size));
+  padding-top: calc(36px * var(--fork-card-size));
+  padding-bottom: calc(40px * var(--fork-card-size));
+
+  padding-right: calc(40px * var(--fork-card-size));
+  padding-left: calc(40px * var(--fork-card-size));
 
   display: flex;
   flex-direction: column;
@@ -148,8 +151,25 @@
 
 .fork-card:hover {
   color: #1a1a1a;
+  transform: rotate(2deg);
 }
 
 .fork:hover {
   transform: rotate(0.5deg) translateY(-3px);
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+@media only screen and (max-width: 1650px) {
+  .flex-column {
+    flex-direction: row;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .fork {
+    margin-right: 0%;
+  }
 }

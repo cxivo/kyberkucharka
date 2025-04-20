@@ -290,7 +290,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                     />
                   ))}
                   <button
-                    className="kyberbutton"
+                    className="kyberbutton-scaled add-section-button"
                     type="button"
                     onClick={addSection}
                   >

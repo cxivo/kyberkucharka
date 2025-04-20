@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import { PartialRecipe } from "../../common-interfaces/interfaces";
 import RecipeCard from "./recipeComponents/RecipeCard";
 
-export default function RecipeList() {
+interface RecipeListProps {
+  flexColumn?: boolean;
+}
+
+export default function RecipeList({ flexColumn }: RecipeListProps) {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [invalid, setInvalid] = useState<boolean>(false);
@@ -35,7 +39,7 @@ export default function RecipeList() {
   ) : invalid ? (
     <p>Nastala neznáma chyba</p>
   ) : (
-    <div className="card-container">
+    <div className={`card-container ${flexColumn && "flex-column"}`}>
       {recipesList.map((recipe) => (
         <RecipeCard key={recipe.id} recipe={recipe}></RecipeCard>
       ))}

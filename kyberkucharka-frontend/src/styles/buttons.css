@@ -38,9 +38,11 @@
   transform: rotate(1deg) scale(1.02);
 }
 
-.kyberbutton-small {
+.kyberbutton-scaled {
+  height: calc(4.5vw * var(--main-recipe-size));
+  width: calc(20vw * var(--main-recipe-size));
 
-  width: 240px;
+  display: block;
 
   background-color: transparent;
   background-image: url("/box.png");
@@ -49,28 +51,29 @@
   background-position: center;
 
   border: none;
-  font-size: 24px;
+  font-size: calc(1.5vw * var(--main-recipe-size));
   font-weight: bold;
   font-family: inherit;
   color: #1a1a1a;
   cursor: pointer;
 
   text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.kyberbutton-small * {
+.kyberbutton-scaled * {
   font-weight: bold;
   font-family: inherit;
   color: #1a1a1a;
-  padding: 20px;
 }
 
-.kyberbutton-small *:hover {
-  color: #1a1a1a;
-}
-
-.kyberbutton-small:hover {
+.kyberbutton-scaled:hover {
   color: #1a1a1a;
   transform: rotate(1deg) scale(1.02);
 }
 
+.kyberbutton-scaled *:hover {
+  color: #1a1a1a;
+}

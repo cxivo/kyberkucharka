@@ -35,7 +35,6 @@ const port = process.env.PORT || 3000;
   .then(() => initTables())
   .then(async () => {
     const a = await getRecipesByName("raňajky");
-    console.log(a);
   }); */
 
 //app.use(cors(corsOptions));

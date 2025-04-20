@@ -56,3 +56,13 @@
   resize: none;
   width: 15em;
 }
+
+.floating-window-content a {
+  display: inline-block;
+  color: rgba(255, 255, 255, 0.87);
+  font-weight: 500;
+}
+
+.floating-window-content a:hover { 
+  transform: rotate(4deg) scale(1.05);
+}
