@@ -17,17 +17,28 @@ export default function IngredientsList() {
   );
 
   async function fetchData() {
-    try {
-      const response = await fetch(`/api/ingredients/`);
-      const result = (await response.json()) as Ingredient[];
-      result.sort(
-        (a, b) =>
-          new Date(b.created_on).getTime() - new Date(a.created_on).getTime()
-      );
-      setIngredients(result);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    fetch(`/api/ingredients/`)
+      .then(async (response) => {
+        const result = await response.json();
+
+        if (response.ok) {
+          const ingredients = result as Ingredient[];
+          ingredients.sort(
+            (a, b) =>
+              new Date(b.created_on).getTime() -
+              new Date(a.created_on).getTime()
+          );
+          setIngredients(ingredients);
+        } else {
+          alert(
+            `Nepodarilo sa získať ingrediencie: HTTP status kód ${response.status}, ${result.message}`
+          );
+        }
+      })
+      .catch((error) => {
+        alert(`Nepodarilo sa získať ingrediencie: ${error}`);
+        console.error("Error fetching data:", error);
+      });
   }
 
   useEffect(() => {

@@ -52,6 +52,7 @@ export function forkSubmit(_slug: string, recipe: Recipe) {
 export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
   const [loading, setLoading] = useState<boolean>(true);
+  const [message, setMessage] = useState<string>("načítavam...");
   const [nextSectionID, setNextSectionID] = useState<number>(0);
   const [sendingDisabled, setSendingDisabled] = useState<boolean>(true);
   const [creatingNewIngredient, setCreatingNewIngredient] =
@@ -73,32 +74,43 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   // fetch the recipe
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(`/api/recipes/${slug}`);
-        const result = (await response.json()) as Recipe;
+      fetch(`/api/recipes/${slug}`)
+        .then(async (response) => {
+          const result = await response.json();
+          if (response.ok) {
+            const newRecipe: Recipe = { ...result };
 
-        // what the next section ID will be
-        setNextSectionID(
-          result.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
-            id: 0,
-          }).id + 1
-        );
+            // what the next section ID will be
+            setNextSectionID(
+              newRecipe.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
+                id: 0,
+              }).id + 1
+            );
 
-        const newRecipe = { ...result };
+            // this will make sure that the new recipe will have the old one as the reference
+            if (type == "fork") {
+              const forkedFrom: Recipe = { ...newRecipe };
+              newRecipe.forked_from = forkedFrom;
+            }
 
-        // this will make sure that the new recipe will have the old one as the reference
-        if (type == "fork") {
-          newRecipe.forked_from = result;
-        }
-
-        setRecipeData(newRecipe);
-        setLoading(false);
-        setSendingDisabled(false);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        setLoading(false);
-        setSendingDisabled(false);
-      }
+            setRecipeData(newRecipe);
+            setLoading(false);
+            setSendingDisabled(false);
+          } else {
+            console.error(result.message);
+            if (response.status === 404) {
+              setMessage(`Recept nenájdený.`);
+            } else {
+              setMessage(`Nepodarilo sa načítať recept: ${result.message}`);
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          setMessage(
+            `Úprava receptu je aktuálne nedostupná, skúste to neskôr.\nNastala neznáma chyba: ${error}`
+          );
+        });
     };
 
     // if creating a new recipe, no data will be loaded
@@ -114,25 +126,33 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   // fetch all ingredients
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const response = await fetch(
-          //`${serverURL}/api/ingredients/name/${debouncedText}`
-          `/api/ingredients`
-        );
-        const result = (await response.json()) as Ingredient[];
+      fetch(
+        //`${serverURL}/api/ingredients/name/${debouncedText}`
+        `/api/ingredients`
+      )
+        .then(async (response) => {
+          const result = await response.json();
 
-        setSelectableIngredients(result);
-        console.log(result);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
+          if (response.ok) {
+            setSelectableIngredients(result);
+          } else {
+            console.error(
+              `A problem (HTTPS status code ${response.status}) has occured when fetching ingredients: ${result.message}`
+            );
+          }
+
+          console.log(result);
+        })
+        .catch((error) => {
+          console.error("Error fetching list of ingredients:", error);
+        });
     };
 
     fetchData();
   }, []);
 
-  function submitRecipe(event: React.SyntheticEvent<HTMLFormElement>) {
-    event.preventDefault();
+  function submitRecipe(event?: React.SyntheticEvent<HTMLFormElement>) {
+    event?.preventDefault();
     console.log(recipeData);
     setSendingDisabled(true);
 
@@ -218,7 +238,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       <div className="edit-recipe recipe">
         <title>{pageTitle}</title>
         {loading ? (
-          <p>načítavam...</p>
+          <p>{message}</p>
         ) : (
           <>
             <form className="recipe" onSubmit={submitRecipe}>
@@ -367,6 +387,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
           closeCallback={() => {
             setLoginNeeded(false);
           }}
+          successCallback={submitRecipe}
         ></Login>
       )}
     </>

@@ -6,12 +6,14 @@ interface LoginProps {
   suggestRegistering: boolean;
   customMessage?: string;
   closeCallback?: () => void;
+  successCallback?: () => void;
 }
 
 export default function Login({
   suggestRegistering,
   customMessage,
   closeCallback,
+  successCallback,
 }: LoginProps) {
   const [user, setUSer] = useState<User>(DEFAULT_USER);
 
@@ -49,6 +51,9 @@ export default function Login({
 
       if (response.ok) {
         console.log(json);
+        if (successCallback) {
+          successCallback();
+        }
         close();
       } else {
         alert(`Nepodarilo sa prihlásiť:\n${json.message}`);

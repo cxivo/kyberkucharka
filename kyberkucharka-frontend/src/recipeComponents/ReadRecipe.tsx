@@ -32,7 +32,6 @@ export default function ReadRecipe() {
             console.error(result.message);
             if (response.status === 404) {
               setMessage(`Recept nenájdený.`);
-              navigate("/");
             } else {
               setMessage(`Nepodarilo sa načítať recept: ${result.message}`);
             }
