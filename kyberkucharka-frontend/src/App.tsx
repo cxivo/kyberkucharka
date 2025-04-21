@@ -75,13 +75,22 @@ function Header() {
         </Link>
         <div className="links">
           {getUserFromCookies()?.is_admin && (
-            <Link to="/ingredient-list">
-              <img
-                src="/ingredients-list.png"
-                alt="Správa ingrediencií"
-                height="40px"
-              ></img>
-            </Link>
+            <>
+              <Link to="/ingredient-list">
+                <img
+                  src="/ingredients-list.png"
+                  alt="Správa ingrediencií"
+                  height="40px"
+                ></img>
+              </Link>
+              <Link to="/user-list">
+                <img
+                  src="/users-list.png"
+                  alt="Správa užívateľov"
+                  height="40px"
+                ></img>
+              </Link>
+            </>
           )}
           <Link to="/about">O projekte</Link>
           {getUserFromCookies() != null && (

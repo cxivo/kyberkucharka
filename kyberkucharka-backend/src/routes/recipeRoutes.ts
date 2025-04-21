@@ -89,6 +89,7 @@ router.put("/:id", authenticateToken, (req: Request, res: Response) => {
   });
 });
 
+// Delete a recipe by ID
 router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
 
@@ -102,11 +103,6 @@ router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
         error: "",
       });
     });
-});
-
-// Delete a recipe by ID
-router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
-  // TODO
 });
 
 export default router;

@@ -402,6 +402,14 @@ export async function deleteUser(username: string) {
   return db.one(query, username);
 }
 
+export async function toggleAdminForUser(
+  username: string,
+  should_be_admin: boolean
+) {
+  const query = `UPDATE users SET is_admin = $2 WHERE username = $1 RETURNING username;`;
+  return db.one(query, [username, should_be_admin]);
+}
+
 // init
 
 export async function initTables() {

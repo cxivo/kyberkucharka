@@ -20,6 +20,7 @@ import "./styles/buttons.css";
 import "./styles/cards.css";
 import "./styles/recipe.css";
 import "./styles/windows.css";
+import UsersList from "./admin/UsersList.tsx";
 
 
 const router = createBrowserRouter([
@@ -100,6 +101,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         <IngredientsList></IngredientsList>
+      </App>
+    ),
+  },
+  {
+    path: "/user-list",
+    element: (
+      <App>
+        <UsersList></UsersList>
       </App>
     ),
   },
