@@ -397,6 +397,11 @@ export async function getUserByUsername(
   );
 }
 
+export async function deleteUser(username: string) {
+  const query = `DELETE FROM users WHERE username = $1 RETURNING username;`;
+  return db.one(query, username);
+}
+
 // init
 
 export async function initTables() {

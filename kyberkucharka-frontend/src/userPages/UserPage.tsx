@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   DEFAULT_USER,
   PartialRecipe,
@@ -6,14 +6,18 @@ import {
 } from "../../../common-interfaces/interfaces";
 import { useEffect, useState } from "react";
 import RecipeCard from "../recipeComponents/RecipeCard";
+import { getUserFromCookies } from "../functions/cookieHelper";
+import AreYouSureWindow from "../AreYouSureWindow";
 
 export default function UserPage() {
   const [user, setUser] = useState<User>(DEFAULT_USER);
   const [recipes, setRecipes] = useState<PartialRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [invalid, setInvalid] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const { slug = "0" } = useParams();
+  let navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +43,24 @@ export default function UserPage() {
     fetchData();
   }, [slug]);
 
+  function deleteUser() {
+    fetch(`/api/users/${user.username}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      credentials: "include",
+    }).then(async (response: Response) => {
+      if (response.ok) {
+        alert("Užívateľ úspešne zmazaný.");
+        navigate("/");
+      } else {
+        alert("Nepodarilo sa zmazať užívateľa.");
+        setLoading(false);
+      }
+    });
+  }
+
   return (
     <>
       {loading ? (
@@ -48,25 +70,52 @@ export default function UserPage() {
           <h1>Užívateľ nenájdený.</h1>
         </div>
       ) : (
-        <div>
+        <div className="user-page">
+          {(getUserFromCookies()?.username === user.username ||
+            getUserFromCookies()?.is_admin) && (
+            <button
+              className="kyberbutton delete-user"
+              type="button"
+              onClick={() => setIsDeleting(true)}
+            >
+              Zmazať účet
+            </button>
+          )}
           <div>
             <h1>{user.display_name}</h1>
             <p>
-              <em>{user.username}</em>
+              Používateľské meno: <em>{user.username}</em>
             </p>
             <p>
               Registrovanô{" "}
               {new Date(user.registered_on ?? "").toLocaleDateString()}
             </p>
-            {user.is_admin ? <p>Administrátor</p> : ""}
+            {user.is_admin && (
+              <p>
+                Tento užívateľ je <em>administrátor</em>.
+              </p>
+            )}
           </div>
-          <h2>Recepty používateľa</h2>
+          <h2>
+            {recipes.length > 0
+              ? `Recepty používateľa`
+              : `Užívateľ nevytvoril zatiaľ žiadne recepty.`}
+          </h2>
           <div className="card-container">
             {recipes.map((recipe) => (
               <RecipeCard key={recipe.id} recipe={recipe}></RecipeCard>
             ))}
           </div>
         </div>
+      )}
+      {isDeleting && (
+        <AreYouSureWindow
+          mainText="Naozaj zmazať užívateľa?"
+          descriptionText="Touto akciou sa zmažú aj všetky recepty užívateľa. Táto akcia je nenávratná!"
+          confirmText="Zmazať!"
+          successCallback={deleteUser}
+          closeCallback={() => setIsDeleting(false)}
+        ></AreYouSureWindow>
       )}
     </>
   );

@@ -1,5 +1,12 @@
 import { Router, Request, Response } from "express";
-import { getIngredientsByName, getPartialRecipesByUser, getUserByUsername, getUsers } from "../databaseFunctions";
+import {
+  deleteUser,
+  getIngredientsByName,
+  getPartialRecipesByUser,
+  getUserByUsername,
+  getUsers,
+} from "../databaseFunctions";
+import { authenticateToken } from "../auth";
 
 const router = Router();
 
@@ -10,17 +17,46 @@ router.get("/", (req: Request, res: Response) => {
   });
 });
 
-
 // get user by username
 router.get("/:username", (req: Request, res: Response) => {
   getUserByUsername(req.params.username ?? "").then((result) => {
     if (result == null) {
-      res.status(404).json({message: `No user with username "${req.params.username}" was found.`, error: ""});
+      res.status(404).json({
+        message: `No user with username "${req.params.username}" was found.`,
+        error: "",
+      });
     } else {
       res.json(result);
     }
   });
 });
+
+// delete user by username
+router.delete(
+  "/:username",
+  authenticateToken,
+  (req: Request, res: Response) => {
+    const username = req.params.username;
+
+    if (res.locals.user.username === username || res.locals.user.is_admin) {
+      deleteUser(req.params.username ?? "")
+        .then(() => {
+          res
+            .clearCookie("jwtoken")
+            .clearCookie("userData")
+            .status(204)
+            .json({});
+        })
+        .catch(() => {
+          res.status(404).json({ message: "User not found" });
+        });
+    } else {
+      res.status(403).json({
+        message: "You don't have the permission to delete this user.",
+      });
+    }
+  }
+);
 
 // get user by username
 router.get("/page/:username", async (req: Request, res: Response) => {

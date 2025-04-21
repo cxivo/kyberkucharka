@@ -31,7 +31,7 @@ router.get("/:id", (req: Request, res: Response) => {
     });
 });
 
-// get ingredient by id
+// delete ingredient by id
 router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
   const ingredientId = parseInt(req.params.id);
 
