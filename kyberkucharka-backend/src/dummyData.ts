@@ -18,7 +18,7 @@ export const users: User[] = [
   {
     username: "admin",
     display_name: "Admin",
-    password: "admin",
+    password: "nbusr123",
     registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
     is_admin: true,
   },
