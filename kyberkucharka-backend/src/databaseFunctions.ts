@@ -249,6 +249,7 @@ export async function addOrUpdateRecipe(
       const r2: any = { ...recipe };
       r2.description ??= undefined;
       r2.image_link ??= undefined;
+      r2.tags ??= [];
       r2.author_username = r2.author.username;
       r2.forked_from_id =
         r2.forked_from == null ? undefined : r2.forked_from.id;
@@ -328,7 +329,7 @@ export async function addOrUpdateRecipe(
       );
 
       await Promise.all(
-        recipe.tags?.map((tag) =>
+        r2.tags?.map((tag: Tag) =>
           transaction.none(
             `INSERT INTO used_recipe_tags(recipe, tag) VALUES ($1, $2);`,
             [db_recipe_id, tag.id]
