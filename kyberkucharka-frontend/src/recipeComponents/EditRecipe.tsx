@@ -3,13 +3,16 @@ import {
   DEFAULT_INGREDIENT,
   DEFAULT_RECIPE,
   Ingredient,
+  OptionsList,
   Recipe,
   Section,
+  Tag,
 } from "../../../common-interfaces/interfaces";
 import { useNavigate, useParams } from "react-router-dom";
 import EditableSection from "./EditableSection";
 import Login from "../userPages/Login";
 import EditIngredientWindow from "../EditIngredientWindow";
+import Select from "react-select";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -51,6 +54,7 @@ export function forkSubmit(_slug: string, recipe: Recipe) {
 
 export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
+  const [availableTags, setAvailableTags] = useState<OptionsList[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("načítavam...");
   const [nextSectionID, setNextSectionID] = useState<number>(0);
@@ -126,10 +130,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   // fetch all ingredients
   useEffect(() => {
     const fetchData = async () => {
-      fetch(
-        //`${serverURL}/api/ingredients/name/${debouncedText}`
-        `/api/ingredients`
-      )
+      fetch(`/api/ingredients`)
         .then(async (response) => {
           const result = await response.json();
 
@@ -150,6 +151,39 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
 
     fetchData();
   }, []);
+
+  // fetch all tags
+  useEffect(() => {
+    const fetchData = async () => {
+      fetch(`/api/tags`)
+        .then(async (response) => {
+          const result = await response.json();
+
+          if (response.ok) {
+            setAvailableTags(
+              result.map((tag: Tag) => {
+                return { value: tag.id, label: tag.name };
+              })
+            );
+          } else {
+            console.error(
+              `A problem (HTTPS status code ${response.status}) has occured when fetching tags: ${result.message}`
+            );
+          }
+
+          console.log(result);
+        })
+        .catch((error) => {
+          console.error("Error fetching list of tags:", error);
+        });
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    console.log(availableTags);
+  }, [availableTags]);
 
   function submitRecipe(event?: React.SyntheticEvent<HTMLFormElement>) {
     event?.preventDefault();
@@ -336,6 +370,26 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                   </p>
                 </div>
 
+                <Select
+                  className="select-thing"
+                  isLoading={loading}
+                  options={availableTags}
+                  isMulti
+                  loadingMessage={() => `Načítavam...`}
+                  noOptionsMessage={() => "...žiadne tagy s takýmto názvom"}
+                  placeholder="Pridaj tagy k receptu..."
+                  defaultValue={recipeData.tags?.map((tag) => {
+                    return { value: tag.id, label: tag.name };
+                  })}
+                  onChange={(e) => {
+                    const newRecipe: Recipe = { ...recipeData };
+                    newRecipe.tags = e?.map((x) => {
+                      return { id: x.value, name: x.label };
+                    });
+                    setRecipeData(newRecipe);
+                  }}
+                />
+
                 <div>
                   <button
                     className="kyberbutton"
@@ -345,24 +399,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                     Hotovo
                   </button>
                 </div>
-
-                {/*   <Select
-              className="select-thing"
-              isLoading={loading}
-              options={optionsList}
-              onChange={selectChange}
-              loadingMessage={() => `Načítavam...`}
-              noOptionsMessage={() => "...žiadne tagy s takýmto názvom"}
-              placeholder="Pridaj tagy k receptu..."
-              value={
-                selectedOption
-                  ? {
-                      value: selectedOption?.id ?? 0,
-                      label: selectedOption?.name ?? "",
-                    }
-                  : null
-              }
-            /> */}
               </div>
             </form>
           </>

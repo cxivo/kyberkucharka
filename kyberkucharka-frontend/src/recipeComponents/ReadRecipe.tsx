@@ -168,8 +168,14 @@ export default function ReadRecipe() {
                     </div>
                   ))}
                   <h2>Postup</h2>
-                  <p className="inlined" style={{ whiteSpace: "pre-line" }}>
+                  <p style={{ whiteSpace: "pre-line" }}>
                     {recipeData?.instructions}
+                  </p>
+                  <h2>Tagy</h2>
+                  <p>
+                    {recipeData.tags
+                      ?.map((tag) => tag.name)
+                      .reduce((prev, curr) => prev + ", " + curr)}
                   </p>
                   <div className="recipe-text-afterspace">&nbsp;</div>
                 </div>

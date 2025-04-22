@@ -5,6 +5,7 @@ import authRoutes from "./routes/authRoutes";
 import cookieParser from "cookie-parser";
 import ingredientRoutes from "./routes/ingredientRoutes";
 import userRoutes from "./routes/userRoutes";
+import tagRoutes from "./routes/tagRoutes";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/api/recipes", recipeRoutes);
 app.use("/api/ingredients", ingredientRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/tags", tagRoutes);
 
 if (process.env.STATUS === "production") {
   // trust proxy needed for secure cookie to work on render.com

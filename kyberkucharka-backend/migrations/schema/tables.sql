@@ -25,11 +25,13 @@ CREATE TABLE IF NOT EXISTS ingredients (
 );
 
 CREATE TABLE IF NOT EXISTS ingredient_tags (
-    id varchar(64) PRIMARY KEY
+    id SERIAL PRIMARY KEY,
+    name text UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS recipe_tags (
-    id varchar(64) PRIMARY KEY
+    id SERIAL PRIMARY KEY,
+    name text UNIQUE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS recipes (
@@ -79,7 +81,7 @@ CREATE TABLE IF NOT EXISTS used_ingredients (
 );
 
 CREATE TABLE IF NOT EXISTS used_recipe_tags (
-    tag varchar(64) NOT NULL,
+    tag INTEGER NOT NULL,
     recipe INTEGER NOT NULL,
     PRIMARY KEY (tag, recipe),
     CONSTRAINT fk_tag
@@ -93,7 +95,7 @@ CREATE TABLE IF NOT EXISTS used_recipe_tags (
 );
 
 CREATE TABLE IF NOT EXISTS used_ingredient_tags (
-    tag varchar(64) NOT NULL,
+    tag INTEGER NOT NULL,
     ingredient INTEGER NOT NULL,
     PRIMARY KEY (tag, ingredient),
     CONSTRAINT fk_tag

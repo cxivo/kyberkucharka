@@ -6,6 +6,7 @@ import {
   PartialRecipe,
   Recipe,
   Section,
+  Tag,
   UsedIngredient,
   User,
 } from "../../common-interfaces/interfaces";
@@ -151,6 +152,18 @@ const getRecipeQuery = `
   ) AS forked_from,
   r.description,
   r.image_link,
+  (
+    SELECT json_agg(
+      (
+        SELECT x FROM (
+          SELECT tg.id, tg.name
+        ) x
+      )
+    ) 
+    FROM used_recipe_tags JOIN recipe_tags AS tg 
+    ON used_recipe_tags.tag = tg.id
+    WHERE used_recipe_tags.recipe = r.id
+  ) AS tags,
   r.preparation_time,
   r.instructions,
   (
@@ -314,6 +327,15 @@ export async function addOrUpdateRecipe(
         })
       );
 
+      await Promise.all(
+        recipe.tags?.map((tag) =>
+          transaction.none(
+            `INSERT INTO used_recipe_tags(recipe, tag) VALUES ($1, $2);`,
+            [db_recipe_id, tag.id]
+          )
+        )
+      );
+
       // I have no idea why this works, but it does and I'm scared
 
       //return transaction.batch(queries);
@@ -408,6 +430,12 @@ export async function toggleAdminForUser(
 ) {
   const query = `UPDATE users SET is_admin = $2 WHERE username = $1 RETURNING username;`;
   return db.one(query, [username, should_be_admin]);
+}
+
+// tags
+export async function getTags(): Promise<Tag[]> {
+  const query = `SELECT * FROM recipe_tags;`;
+  return db.any(query);
 }
 
 // init

@@ -1,5 +1,10 @@
 import { ReactNode, useEffect, useState } from "react";
-import { Ingredient, Section, UsedIngredient } from "../../../common-interfaces/interfaces";
+import {
+  Ingredient,
+  OptionsList,
+  Section,
+  UsedIngredient,
+} from "../../../common-interfaces/interfaces";
 import EditableIngredient from "./EditableIngredient";
 import CreatableSelect from "react-select/creatable";
 
@@ -15,10 +20,7 @@ interface EditableSectionProps {
   ) => void;
 }
 
-type OptionsList = {
-  value: number;
-  label: string;
-};
+
 
 export default function EditableSection({
   section,

@@ -64,6 +64,13 @@ export interface Recipe extends PartialRecipe {
 
 ////////////////////////////////////////////
 
+export type OptionsList = {
+  value: number;
+  label: string;
+};
+
+////////////////////////////////////////////
+
 export const NONEXISTENT = -1;
 
 export const DEFAULT_RECIPE: Recipe = {
