@@ -208,15 +208,30 @@ td {
   font-size: 24px;
 }
 
+.about {
+  padding-left: 20%;
+}
+
+.about a {
+  display: inline-block;
+  text-shadow: 0px 0px calc(0.4vw * var(--main-recipe-size)) #2a2a2a;
+}
+
 @media only screen and (max-width: 1500px) {
   :root {
     --main-recipe-size: 1.0;
+  }
+  .about {
+    padding-left: 10%;
   }
 }
 
 @media only screen and (max-width: 1000px) {
   :root {
     --main-recipe-size: 1.4;
+  }
+  .about {
+    padding-left: 0%;
   }
 }
 
