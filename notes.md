@@ -5,3 +5,5 @@
   - https://stackoverflow.com/questions/55115705/typescript-project-with-references
 - Postgresql JSON https://stackoverflow.com/questions/13227142/using-row-to-json-with-nested-joins
 - @media print - optimize how the printed recipe looks
+- užívateľské štýly - vyber si vlastný stôl
+- maybe nahraď content-editable inputmi

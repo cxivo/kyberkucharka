@@ -3,9 +3,9 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
 import { formatAmount, gramsToAmountUsed } from "../functions/UnitHelper";
 import { getUserFromCookies } from "../functions/cookieHelper";
-import ForkCard from "./ForkCard";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
+import RecipeCard from "./RecipeCard";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -122,7 +122,10 @@ export default function ReadRecipe() {
           {
             // is a fork?
             recipeData.forked_from != null && (
-              <ForkCard recipe={recipeData.forked_from}></ForkCard>
+              <RecipeCard
+                recipe={recipeData.forked_from}
+                isFork={true}
+              ></RecipeCard>
             )
           }
           <div className="main-and-sidebar">
