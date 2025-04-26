@@ -106,7 +106,10 @@ router.post("/", authenticateToken, (req: Request, res: Response) => {
 router.put("/:id", authenticateToken, (req: Request, res: Response) => {
   const id = parseInt(req.params.id);
   getPartialRecipeByID(id).then((r) => {
-    if (r.author.username === res.locals.user.username) {
+    if (
+      r.author.username === res.locals.user.username ||
+      res.locals.user.is_admin
+    ) {
       addOrUpdateRecipe(req.body, id)
         .then((newID) => {
           res.status(200).json({ newID });

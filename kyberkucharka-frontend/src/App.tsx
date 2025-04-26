@@ -75,7 +75,7 @@ function Header() {
         </Link>
         <div className="links">
           {getUserFromCookies()?.is_admin && (
-            <div>
+            <>
               <Link to="/ingredient-list">
                 <img
                   src="/ingredients-list.png"
@@ -90,7 +90,7 @@ function Header() {
                   height="40px"
                 ></img>
               </Link>
-            </div>
+            </>
           )}
           <Link to="/search">
             <img src="/search.png" alt="Hľadať" height="40px"></img>

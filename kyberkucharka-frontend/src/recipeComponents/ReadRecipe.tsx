@@ -80,7 +80,8 @@ export default function ReadRecipe() {
           <div className="recipe-top-buttons">
             {
               // can edit own recipe
-              getUserFromCookies()?.username === recipeData.author.username && (
+              (getUserFromCookies()?.username === recipeData.author.username ||
+                getUserFromCookies()?.is_admin) && (
                 <button
                   type="button"
                   className="kyberbutton"
