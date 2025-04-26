@@ -12,6 +12,7 @@ import {
   mustHaveMassPerPiece,
   mustHaveMassPerSpoon,
 } from "./functions/unitHelper";
+import { Tooltip } from "react-tooltip";
 
 interface EditIngredientWindowProps {
   titleText: string;
@@ -334,7 +335,11 @@ export default function EditIngredientWindow({
                   </label>
                 </legend>
                 {hasSpoons && (
-                  <div>
+                  <div
+                    data-tooltip-id="spoon-tooltip"
+                    data-tooltip-content="Ak neviete čo sem napísať, pri kvapalinách spočítate gramy na lyžicu ako 15 krát hustota v gramoch na centimeter kubický, pri sypkých ingredienciách je zas jedna lyžica približne 17g."
+                  >
+                    <Tooltip id="spoon-tooltip" />
                     <label htmlFor="ingredient-spoons">
                       Gramov na{" "}
                       <select
