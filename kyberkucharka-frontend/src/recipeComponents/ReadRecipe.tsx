@@ -132,7 +132,10 @@ export default function ReadRecipe() {
           <div className="main-and-sidebar">
             <div className="recipe-notebook">
               <div className="recipe-title">
-                <h1>{recipeData?.title}</h1>
+                <h1 className="tooltip">
+                  {recipeData?.title}
+                  <span className="tooltiptext">Tooltip text</span>
+                </h1>
               </div>
               <div className="recipe-body">
                 <p className="recipe-author">

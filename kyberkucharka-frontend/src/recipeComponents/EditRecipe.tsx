@@ -239,6 +239,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                 <h1
                   id="recipe-title"
                   contentEditable="plaintext-only"
+                  className="contenteditable-title"
                   suppressContentEditableWarning={true}
                   onBlur={(e) => {
                     updateFieldFromForm(
@@ -247,7 +248,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                     );
                   }}
                 >
-                  {recipeData?.title || "<Sem vložte názov receptu>"}
+                  {recipeData?.title}
                 </h1>
               </div>
 
@@ -257,6 +258,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                   <p
                     id="recipe-image"
                     contentEditable="plaintext-only"
+                    className="contenteditable-image"
                     suppressContentEditableWarning={true}
                     onBlur={(e) => {
                       updateFieldFromForm(
@@ -265,8 +267,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                       );
                     }}
                   >
-                    {recipeData?.image_link ||
-                      "<Sem môžete vložiť URL obrázku k receptu>"}
+                    {recipeData?.image_link}
                   </p>
                 </div>
 
@@ -276,6 +277,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                     id="recipe-description"
                     contentEditable="plaintext-only"
                     suppressContentEditableWarning={true}
+                    className="contenteditable-description"
                     onBlur={(e) => {
                       updateFieldFromForm(
                         "description",
@@ -283,7 +285,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                       );
                     }}
                   >
-                    {recipeData?.description || "<Sem vložte popis receptu>"}
+                    {recipeData?.description}
                   </p>
                 </div>
 
@@ -317,6 +319,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                     id="recipe-instructions"
                     contentEditable="plaintext-only"
                     suppressContentEditableWarning={true}
+                    className="contenteditable-instructions"
                     onBlur={(e) => {
                       updateFieldFromForm(
                         "instructions",
@@ -324,11 +327,11 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                       );
                     }}
                   >
-                    {recipeData?.instructions ||
-                      "<Sem vložte inštrukcie k receptu>"}
+                    {recipeData?.instructions}
                   </p>
                 </div>
 
+                <h2>Tagy</h2>
                 <Select
                   className="select-thing"
                   isLoading={loading}

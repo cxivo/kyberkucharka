@@ -94,10 +94,11 @@ export default function EditableSection({
         <h3
           id={`section ${index}`}
           contentEditable="plaintext-only"
+          className="contenteditable-section-name"
           suppressContentEditableWarning={true}
           onBlur={(e) => changeTitle(e.target.innerText.trim())}
         >
-          {section.name || "<Sem môžete vložiť názov sekcie>"}
+          {section.name}
         </h3>
         <img
           src="/x.png"

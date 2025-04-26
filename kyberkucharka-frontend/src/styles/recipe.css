@@ -29,7 +29,7 @@
   bottom: calc(1vw * var(--main-recipe-size));
 
   max-width: calc(55vw * var(--main-recipe-size));
-  max-height: calc(8vw * var(--main-recipe-size));
+  max-height: calc(7vw * var(--main-recipe-size));
 
   text-align: center;
 
@@ -37,7 +37,15 @@
   padding-bottom: 0;
 
   font-size: calc(3vw * var(--main-recipe-size));
+  display: -webkit-box;
+  overflow: hidden;
   text-overflow: ellipsis;
+
+  padding: 0 10px;
+
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .recipe-body {
@@ -202,6 +210,31 @@ input.p-like {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
+}
+
+.contenteditable-title:empty:after {
+  content: "<Sem vložte názov receptu>";
+  color: gray;
+}
+
+.contenteditable-image:empty:after {
+  content: "<Sem môžete vložiť link na obrázok>";
+  color: gray;
+}
+
+.contenteditable-description:empty:after {
+  content: "<Sem vložte popis receptu>";
+  color: gray;
+}
+
+.contenteditable-instructions:empty:after {
+  content: "<Sem vložte inštrukcie k receptu>";
+  color: gray;
+}
+
+.contenteditable-section-name:empty:after {
+  content: "<Sem môžete vložiť názov sekcie>";
+  color: gray;
 }
 
 @media only screen and (max-width: 400px) {

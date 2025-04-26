@@ -279,19 +279,20 @@ export async function addOrUpdateRecipe(
   id?: number
 ): Promise<number> {
   let db_recipe_id: number = -1;
+  const r2: any = { ...recipe };
+  r2.description ??= "";
+  r2.image_link ??= "";
+  r2.tags ??= [];
+  r2.author_username = r2.author.username;
+  r2.forked_from_id =
+    r2.forked_from == null ? undefined : r2.forked_from.id;
+
   // use a transaction, so it either all succeeds or all fails
   return await db
     .tx(async (transaction) => {
-      // prepare the JS object for the database (still not sure if needed)
-      const r2: any = { ...recipe };
-      r2.description ??= undefined;
-      r2.image_link ??= undefined;
-      r2.tags ??= [];
-      r2.author_username = r2.author.username;
-      r2.forked_from_id =
-        r2.forked_from == null ? undefined : r2.forked_from.id;
 
       // if id is set, then we need to remove the previous recipe
+      // this also removes all the sections and used_ingredients
       // also remembers the date of the original creation
       const original_creation: string =
         id == null
@@ -322,7 +323,7 @@ export async function addOrUpdateRecipe(
 
       // add each section of the recipe and its used_ingredients
       await Promise.all(
-        recipe.sections.map(async (section: Section, i: number) => {
+        recipe.sections?.map(async (section: Section, i: number) => {
           const db_section_id = await transaction.one(
             `INSERT INTO sections(name, recipe, ordering)
           VALUES ($1, $2, $3)
@@ -331,7 +332,7 @@ export async function addOrUpdateRecipe(
           );
 
           await Promise.all(
-            section.used_ingredients.map(
+            section.used_ingredients?.map(
               async (used_ingredient: UsedIngredient) => {
                 let ingredient_id = used_ingredient.ingredient.id;
 
