@@ -156,3 +156,7 @@ export function formatAmount(used_ingredient: UsedIngredient) {
       return declensions_g[declension];
   }
 }
+
+export function roundToAtMostDecimals(x: number) {
+  return Math.round(100 * x) / 100;
+}

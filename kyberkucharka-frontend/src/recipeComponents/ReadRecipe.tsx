@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
-import { formatAmount, gramsToAmountUsed } from "../functions/unitHelper";
+import {
+  formatAmount,
+  gramsToAmountUsed,
+  roundToAtMostDecimals,
+} from "../functions/unitHelper";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
 import RecipeCard from "./RecipeCard";
@@ -173,7 +177,10 @@ export default function ReadRecipe() {
                       <ul className="ingredients-list">
                         {section?.used_ingredients?.map((used_ingredient) => (
                           <li key={used_ingredient.id}>
-                            {gramsToAmountUsed(used_ingredient)}&nbsp;
+                            {roundToAtMostDecimals(
+                              gramsToAmountUsed(used_ingredient)
+                            )}
+                            &nbsp;
                             {formatAmount(used_ingredient)}
                             {" - "}
                             {used_ingredient.ingredient.name}
