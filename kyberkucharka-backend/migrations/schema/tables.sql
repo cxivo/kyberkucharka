@@ -108,25 +108,4 @@ CREATE TABLE IF NOT EXISTS used_ingredient_tags (
             ON DELETE CASCADE
 );
 
-/* 
-SELECT row_to_json(
-    (
-        SELECT x FROM 
-        (
-            SELECT
-            1 AS k1,
-            2 AS k2,
-            (
-                SELECT json_agg( 
-                    (
-                        SELECT x FROM (
-                            SELECT 1 AS a, 2 AS b
-                        ) x
-                    ) 
-                )
-                FROM generate_series(1,2) 
-            ) AS k3
-        ) x
-    ),
-    true
-); */
+CREATE EXTENSION unaccent; 

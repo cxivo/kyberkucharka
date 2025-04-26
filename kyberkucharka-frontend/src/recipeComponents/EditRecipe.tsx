@@ -13,6 +13,11 @@ import EditableSection from "./EditableSection";
 import Login from "../userPages/Login";
 import EditIngredientWindow from "../EditIngredientWindow";
 import Select from "react-select";
+import {
+  fetchIngredients,
+  fetchRecipe,
+  fetchTags,
+} from "../functions/communicationHelper";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -78,43 +83,39 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   // fetch the recipe
   useEffect(() => {
     const fetchData = async () => {
-      fetch(`/api/recipes/${slug}`)
-        .then(async (response) => {
-          const result = await response.json();
-          if (response.ok) {
-            const newRecipe: Recipe = { ...result };
+      fetchRecipe(
+        slug,
+        // success
+        (result) => {
+          // what the next section ID will be
+          setNextSectionID(
+            result.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
+              id: 0,
+            }).id + 1
+          );
 
-            // what the next section ID will be
-            setNextSectionID(
-              newRecipe.sections.reduce((x, y) => (x && x.id > y.id ? x : y), {
-                id: 0,
-              }).id + 1
-            );
-
-            // this will make sure that the new recipe will have the old one as the reference
-            if (type == "fork") {
-              const forkedFrom: Recipe = { ...newRecipe };
-              newRecipe.forked_from = forkedFrom;
-            }
-
-            setRecipeData(newRecipe);
-            setLoading(false);
-            setSendingDisabled(false);
-          } else {
-            console.error(result.message);
-            if (response.status === 404) {
-              setMessage(`Recept nenájdený.`);
-            } else {
-              setMessage(`Nepodarilo sa načítať recept: ${result.message}`);
-            }
+          // this will make sure that the new recipe will have the old one as the reference
+          if (type == "fork") {
+            const forkedFrom: Recipe = { ...result };
+            result.forked_from = forkedFrom;
           }
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
+
+          setRecipeData(result);
+          setLoading(false);
+          setSendingDisabled(false);
+        },
+        // http error
+        (status, message) =>
+          status === 404
+            ? setMessage(`Recept nenájdený.`)
+            : setMessage(`Nepodarilo sa načítať recept: ${message}`),
+
+        // other error
+        (error) =>
           setMessage(
             `Úprava receptu je aktuálne nedostupná, skúste to neskôr.\nNastala neznáma chyba: ${error}`
-          );
-        });
+          )
+      );
     };
 
     // if creating a new recipe, no data will be loaded
@@ -127,63 +128,21 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     }
   }, []);
 
-  // fetch all ingredients
   useEffect(() => {
-    const fetchData = async () => {
-      fetch(`/api/ingredients`)
-        .then(async (response) => {
-          const result = await response.json();
+    // fetch all ingredients
+    fetchIngredients().then((result) => {
+      setSelectableIngredients(result);
+    });
 
-          if (response.ok) {
-            setSelectableIngredients(result);
-          } else {
-            console.error(
-              `A problem (HTTPS status code ${response.status}) has occured when fetching ingredients: ${result.message}`
-            );
-          }
-
-          console.log(result);
+    // fetch all tags
+    fetchTags().then((result) =>
+      setAvailableTags(
+        result?.map((tag: Tag) => {
+          return { value: tag.id, label: tag.name };
         })
-        .catch((error) => {
-          console.error("Error fetching list of ingredients:", error);
-        });
-    };
-
-    fetchData();
+      )
+    );
   }, []);
-
-  // fetch all tags
-  useEffect(() => {
-    const fetchData = async () => {
-      fetch(`/api/tags`)
-        .then(async (response) => {
-          const result = await response.json();
-
-          if (response.ok) {
-            setAvailableTags(
-              result.map((tag: Tag) => {
-                return { value: tag.id, label: tag.name };
-              })
-            );
-          } else {
-            console.error(
-              `A problem (HTTPS status code ${response.status}) has occured when fetching tags: ${result.message}`
-            );
-          }
-
-          console.log(result);
-        })
-        .catch((error) => {
-          console.error("Error fetching list of tags:", error);
-        });
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    console.log(availableTags);
-  }, [availableTags]);
 
   function submitRecipe(event?: React.SyntheticEvent<HTMLFormElement>) {
     event?.preventDefault();
@@ -378,7 +337,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                   loadingMessage={() => `Načítavam...`}
                   noOptionsMessage={() => "...žiadne tagy s takýmto názvom"}
                   placeholder="Pridaj tagy k receptu..."
-                  defaultValue={recipeData.tags?.map((tag) => {
+                  value={recipeData.tags?.map((tag) => {
                     return { value: tag.id, label: tag.name };
                   })}
                   onChange={(e) => {

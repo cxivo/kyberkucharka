@@ -31,22 +31,10 @@ export default function EditableSection({
   createNewIngredient,
 }: EditableSectionProps): ReactNode {
   const [nextUsedIngredientID, setNextUsedIngredientID] = useState<number>(0);
-  //const [debouncedText] = useDebounce(searchText, 500);
 
   const [selectedOption, setSelectedOption] = useState<
     Ingredient | undefined
   >();
-
-  const [optionsList, setOptionsList] = useState<OptionsList[]>([]);
-
-  // convert the list of ingredients from the server into a list of options for the Select
-  useEffect(() => {
-    setOptionsList(
-      selectableIngredients.map((ingredient) => {
-        return { value: ingredient.id, label: ingredient.name };
-      })
-    );
-  }, [selectableIngredients]);
 
   useEffect(() => {
     setNextUsedIngredientID(
@@ -140,8 +128,12 @@ export default function EditableSection({
 
       <CreatableSelect
         className="select-thing"
-        isLoading={optionsList.length === 0}
-        options={optionsList}
+        isLoading={selectableIngredients?.length == 0}
+        options={
+          selectableIngredients?.map((ingredient) => {
+            return { value: ingredient.id, label: ingredient.name };
+          }) ?? []
+        }
         onChange={selectChange}
         loadingMessage={() => `Načítavam...`}
         noOptionsMessage={() => "...nič? divné"}

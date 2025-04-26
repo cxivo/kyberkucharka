@@ -1,0 +1,26 @@
+.search-settings {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  text-align: center;
+  
+}
+
+.search-select {
+  min-width: 300px;
+}
+
+.search-div {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-div > * {
+  margin: 5px 10px;
+  font-size: 24px;
+  font-family: KyberFontSimple;
+}

@@ -6,6 +6,7 @@ import {
   getPartialRecipes,
   getPartialRecipesByUser,
   getRecipeByID,
+  getRecipesSearch,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 import { Recipe } from "../../../common-interfaces/interfaces";
@@ -21,6 +22,40 @@ router.get("/", (req: Request, res: Response) => {
     .catch((e) => {
       console.error(e);
       res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// search for recipes
+router.get("/search", (req: Request, res: Response) => {
+  const queryString = (req.query.query as string) ?? "";
+  const requiredIngredients = JSON.parse(
+    (req.query.requiredIngredients as string) ?? "[]"
+  ) as number[];
+  const unwantedIngredients = JSON.parse(
+    (req.query.unwantedIngredients as string) ?? "[]"
+  ) as number[];
+  const requiredTags = JSON.parse(
+    (req.query.requiredTags as string) ?? "[]"
+  ) as number[];
+  const unwantedTags = JSON.parse(
+    (req.query.unwantedTags as string) ?? "[]"
+  ) as number[];
+  console.log(queryString);
+
+  getRecipesSearch(
+    queryString,
+    requiredIngredients,
+    unwantedIngredients,
+    requiredTags,
+    unwantedTags
+  )
+    .then((result) => {
+      console.log(result.length);
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(400).json({ message: "An error has occured", error: e });
     });
 });
 
@@ -104,5 +139,7 @@ router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
       });
     });
 });
+
+
 
 export default router;

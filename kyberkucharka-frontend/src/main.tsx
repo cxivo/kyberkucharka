@@ -20,8 +20,9 @@ import "./styles/buttons.css";
 import "./styles/cards.css";
 import "./styles/recipe.css";
 import "./styles/windows.css";
+import "./styles/search.css";
 import UsersList from "./admin/UsersList.tsx";
-
+import Search from "./Search.tsx";
 
 const router = createBrowserRouter([
   {
@@ -109,6 +110,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         <UsersList></UsersList>
+      </App>
+    ),
+  },
+  {
+    path: "/search",
+    element: (
+      <App>
+        <Search></Search>
       </App>
     ),
   },

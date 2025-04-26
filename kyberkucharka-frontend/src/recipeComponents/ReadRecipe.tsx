@@ -176,9 +176,20 @@ export default function ReadRecipe() {
                   </p>
                   <h2>Tagy</h2>
                   <p>
-                    {recipeData.tags
-                      ?.map((tag) => tag.name)
-                      .reduce((prev, curr) => prev + ", " + curr)}
+                    {recipeData.tags?.map((tag, index) => (
+                      <>
+                        <Link
+                          style={{ display: "inline-block" }}
+                          to={
+                            `/search?` +
+                            new URLSearchParams({ requiredTags: `[${tag.id}]` })
+                          }
+                        >
+                          {tag.name}
+                        </Link>
+                        {index !== recipeData.tags?.length - 1 && ", "}
+                      </>
+                    ))}
                   </p>
                   <div className="recipe-text-afterspace">&nbsp;</div>
                 </div>

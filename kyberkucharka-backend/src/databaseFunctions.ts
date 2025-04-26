@@ -235,6 +235,43 @@ export async function getRecipesByName(name: string): Promise<Recipe[]> {
     .then((rs) => rs.map(fixMissingRecipeTags));
 }
 
+export async function getRecipesSearch(
+  name: string,
+  requiredIngredients: number[],
+  unwantedIngredients: number[],
+  requiredTags: number[],
+  unwantedTags: number[]
+): Promise<PartialRecipe[]> {
+  const query =
+    getPartialRecipeQuery +
+    ` 
+    WHERE UPPER(unaccent(r.title)) LIKE UPPER(unaccent($1))
+    ${requiredTags
+      .map(
+        (tagID, index) => `
+      AND EXISTS (
+        SELECT 1 FROM used_recipe_tags AS urt
+        WHERE urt.recipe = r.id
+        AND urt.tag = $${2 + index}
+      )`
+      )
+      .reduce((prev, curr) => prev + " " + curr, "")}
+
+    ${unwantedTags
+      .map(
+        (tagID, index) => `
+      AND NOT EXISTS (
+        SELECT 1 FROM used_recipe_tags AS urt
+        WHERE urt.recipe = r.id
+        AND urt.tag = $${2 + requiredTags.length + index}
+      )`
+      )
+      .reduce((prev, curr) => prev + " " + curr, "")}
+    
+    `;
+  return db.any(query, [`%${name}%`, ...requiredTags, ...unwantedTags]);
+}
+
 // TODO add recipe validation... maybe using zod
 // this works both for adding a new recipe and forking an existing one
 export async function addOrUpdateRecipe(
