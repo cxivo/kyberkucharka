@@ -183,22 +183,31 @@ export default function ReadRecipe() {
                     {recipeData?.instructions}
                   </p>
                   <h2>Tagy</h2>
-                  <p>
-                    {recipeData.tags?.map((tag, index) => (
-                      <>
-                        <Link
-                          style={{ display: "inline-block" }}
-                          to={
-                            `/search?` +
-                            new URLSearchParams({ requiredTags: `[${tag.id}]` })
-                          }
-                        >
-                          {tag.name}
-                        </Link>
-                        {index !== recipeData.tags?.length - 1 && ", "}
-                      </>
-                    ))}
-                  </p>
+                  {recipeData.tags?.length > 0 ? (
+                    <p>
+                      {recipeData.tags?.map((tag, index) => (
+                        <>
+                          <Link
+                            style={{ display: "inline-block" }}
+                            to={
+                              `/search?` +
+                              new URLSearchParams({
+                                requiredTags: `[${tag.id}]`,
+                              })
+                            }
+                          >
+                            {tag.name}
+                          </Link>
+                          {index !== recipeData.tags?.length - 1 && ", "}
+                        </>
+                      ))}
+                    </p>
+                  ) : (
+                    <p>
+                      <em>Tento recept nemá žiadne tagy.</em>
+                    </p>
+                  )}
+
                   <div className="recipe-text-afterspace">&nbsp;</div>
                 </div>
               </div>

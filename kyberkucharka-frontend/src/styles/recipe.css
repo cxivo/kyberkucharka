@@ -29,7 +29,8 @@
   bottom: calc(1vw * var(--main-recipe-size));
 
   max-width: calc(55vw * var(--main-recipe-size));
-  max-height: calc(7vw * var(--main-recipe-size));
+  max-height: calc(6.5vw * var(--main-recipe-size));
+  transform: translateY(calc(-0.2vw * var(--main-recipe-size)));
 
   text-align: center;
 
@@ -41,7 +42,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
 
-  padding: 0 10px;
+  padding: 0 calc(0.7vw * var(--main-recipe-size));
 
   line-clamp: 2;
   -webkit-line-clamp: 2;
@@ -194,6 +195,7 @@ input.p-like {
 }
 
 .recipe-top-buttons {
+  margin: auto;
   display: flex;
   flex-direction: row;
   justify-content: center;
