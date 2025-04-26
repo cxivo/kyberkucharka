@@ -6,7 +6,7 @@ import { Request, Response, NextFunction } from "express";
 // note - apparently there is no upper limit for expiration for JWT
 // and the upper limit for cookies is like 400 days... so, you can set this to a year
 // (I now also understand why Wikipedia tells me I have to relog every year, lol)
-export const TOKEN_EXPIRES_IN_SECONDS = 1800;
+export const TOKEN_EXPIRES_IN_SECONDS = 60 * 60 * 24 * 365; //1800;
 
 type ValidationResult =
   | undefined

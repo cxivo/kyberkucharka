@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
 import { User } from "../../common-interfaces/interfaces";
-import { getUserFromCookies } from "./functions/cookieHelper";
 import { useState } from "react";
 import Login from "./userPages/Login";
+import { CookiesProvider, useCookies } from "react-cookie";
 
 function Header() {
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
+  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
+    ["userData"],
+    {}
+  );
 
   function sendLogout() {
     fetch(`/api/auth/logout/`, {
@@ -19,8 +23,6 @@ function Header() {
 
       if (response.ok) {
         console.log(json);
-        // refresh, so the disappearance of cookies becomes visible
-        window.location.reload();
       } else {
         console.error(
           `Error while logging out somehow: ${json.message}, ${json.error}`
@@ -74,7 +76,7 @@ function Header() {
           <img src="/logo.png" alt="Kyberkuchárka" className="logo"></img>
         </Link>
         <div className="links">
-          {getUserFromCookies()?.is_admin && (
+          {userCookie.userData?.is_admin && (
             <>
               <Link to="/ingredient-list">
                 <img
@@ -96,13 +98,13 @@ function Header() {
             <img src="/search.png" alt="Hľadať" height="40px"></img>
           </Link>
           <Link to="/about">O projekte</Link>
-          {getUserFromCookies() != null && (
+          {userCookie.userData != null && (
             <Link to="/create">Vytvor recept</Link>
           )}
-          {getUserFromCookies() == null ? (
+          {userCookie.userData == null ? (
             <>{loginRegisterCard()}</>
           ) : (
-            <>{createProfileCard(getUserFromCookies())}</>
+            <>{createProfileCard(userCookie.userData as User)}</>
           )}
         </div>
       </nav>
@@ -122,10 +124,10 @@ function Header() {
 
 function App({ children }: any) {
   return (
-    <>
+    <CookiesProvider>
       <Header></Header>
       <div>{children}</div>
-    </>
+    </CookiesProvider>
   );
 }
 

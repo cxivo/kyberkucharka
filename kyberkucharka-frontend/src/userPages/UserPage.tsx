@@ -6,8 +6,8 @@ import {
 } from "../../../common-interfaces/interfaces";
 import { useEffect, useState } from "react";
 import RecipeCard from "../recipeComponents/RecipeCard";
-import { getUserFromCookies } from "../functions/cookieHelper";
 import AreYouSureWindow from "../AreYouSureWindow";
+import { useCookies } from "react-cookie";
 
 export default function UserPage() {
   const [user, setUser] = useState<User>(DEFAULT_USER);
@@ -15,6 +15,10 @@ export default function UserPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [invalid, setInvalid] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
+  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
+    ["userData"],
+    {}
+  );
 
   const { slug = "0" } = useParams();
   let navigate = useNavigate();
@@ -71,8 +75,8 @@ export default function UserPage() {
         </div>
       ) : (
         <div className="user-page">
-          {(getUserFromCookies()?.username === user.username ||
-            getUserFromCookies()?.is_admin) && (
+          {(userCookie.userData?.username === user.username ||
+            userCookie.userData?.is_admin) && (
             <button
               className="kyberbutton delete-user"
               type="button"

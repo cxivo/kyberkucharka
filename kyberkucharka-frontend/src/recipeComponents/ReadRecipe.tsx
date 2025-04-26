@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
-import { formatAmount, gramsToAmountUsed } from "../functions/UnitHelper";
-import { getUserFromCookies } from "../functions/cookieHelper";
+import { formatAmount, gramsToAmountUsed } from "../functions/unitHelper";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
 import RecipeCard from "./RecipeCard";
 import { Tooltip } from "react-tooltip";
+import { useCookies } from "react-cookie";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -14,6 +14,10 @@ export default function ReadRecipe() {
   const [isInvalidImage, setIsInvalidImage] = useState<boolean>(false);
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("načítavam...");
+  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
+    ["userData"],
+    {}
+  );
 
   const { slug = "0" } = useParams();
 
@@ -81,8 +85,8 @@ export default function ReadRecipe() {
           <div className="recipe-top-buttons">
             {
               // can edit own recipe
-              (getUserFromCookies()?.username === recipeData.author.username ||
-                getUserFromCookies()?.is_admin) && (
+              (userCookie.userData?.username === recipeData.author.username ||
+                userCookie.userData?.is_admin) && (
                 <button
                   type="button"
                   className="kyberbutton"
@@ -95,7 +99,7 @@ export default function ReadRecipe() {
 
             {
               // can fork anyone's recipe
-              getUserFromCookies() != null && (
+              userCookie.userData != null && (
                 <button
                   type="button"
                   className="kyberbutton"
@@ -108,8 +112,8 @@ export default function ReadRecipe() {
 
             {
               // can delete own recipe
-              (getUserFromCookies()?.username === recipeData.author.username ||
-                getUserFromCookies()?.is_admin) && (
+              (userCookie.userData?.username === recipeData.author.username ||
+                userCookie.userData?.is_admin) && (
                 <button
                   type="button"
                   className="kyberbutton"

@@ -3,7 +3,7 @@ import {
   amountToGrams,
   formatAmount,
   gramsToAmountUsed,
-} from "../functions/UnitHelper";
+} from "../functions/unitHelper";
 
 interface EditableIngredientProps {
   index: number;

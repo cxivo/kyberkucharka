@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_USER, User } from "../../../common-interfaces/interfaces";
 import { Link, useNavigate } from "react-router";
-import { getUserFromCookies } from "../functions/cookieHelper";
+import { useCookies } from "react-cookie";
 
 export default function Register() {
   const [user, setUSer] = useState<User>(DEFAULT_USER);
@@ -9,12 +9,16 @@ export default function Register() {
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const [userExists, setUserExists] = useState<boolean>(false);
   const [sendingDisabled, setSendingDisabled] = useState<boolean>(false);
+  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
+    ["userData"],
+    {}
+  );
 
   let navigate = useNavigate();
 
   // if logged in, navigate the user away
   useEffect(() => {
-    if (getUserFromCookies() != null) {
+    if (userCookie.userData != null) {
       navigate("/");
     }
   }, []);

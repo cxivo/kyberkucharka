@@ -8,7 +8,7 @@ import {
   getUnitName,
   mustHaveDensity,
   mustHaveMassPerPiece,
-} from "./functions/UnitHelper";
+} from "./functions/unitHelper";
 
 interface EditIngredientWindowProps {
   titleText: string;
