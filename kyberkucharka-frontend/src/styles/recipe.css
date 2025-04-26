@@ -152,7 +152,7 @@ img.recipe-image {
 }
 
 .add-section-button {
-  margin-bottom: calc(3.6vw * var(--main-recipe-size));
+  margin-bottom: calc(3.5vw * var(--main-recipe-size));
 }
 
 .inliner * {
@@ -237,6 +237,15 @@ input.p-like {
 .contenteditable-section-name:empty:after {
   content: "<Sem môžete vložiť názov sekcie>";
   color: gray;
+}
+
+fieldset {
+  margin-bottom: 10px;
+}
+
+.floating-window-content select.select-unit-small {
+  margin: 0;
+  margin-right: 5px;
 }
 
 @media only screen and (max-width: 400px) {

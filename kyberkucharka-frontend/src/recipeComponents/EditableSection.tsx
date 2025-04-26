@@ -50,7 +50,7 @@ export default function EditableSection({
     newSection.used_ingredients.push({
       id: nextUsedIngredientID,
       ingredient,
-      amount: 0,
+      weight: 0,
     });
     setNextUsedIngredientID(nextUsedIngredientID + 1);
     setSection(index, newSection);
@@ -77,7 +77,7 @@ export default function EditableSection({
 
   function setIngredientAmount(ingredientIndex: number, amount: number) {
     const newSection: Section = { ...section };
-    newSection.used_ingredients[ingredientIndex].amount = amount;
+    newSection.used_ingredients[ingredientIndex].weight = amount;
     setSection(index, newSection);
   }
 

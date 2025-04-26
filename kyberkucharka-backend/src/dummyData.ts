@@ -106,7 +106,7 @@ export const recipes: Recipe[] = [
         used_ingredients: [
           {
             id: 0,
-            amount: 5,
+            weight: 5,
             ingredient: ingredients[0],
           },
         ],
@@ -133,12 +133,12 @@ export const recipes: Recipe[] = [
         used_ingredients: [
           {
             id: 0,
-            amount: 1,
+            weight: 1,
             ingredient: ingredients[1],
           },
           {
             id: 1,
-            amount: 0.2,
+            weight: 0.2,
             ingredient: ingredients[2],
           },
         ],
@@ -149,12 +149,12 @@ export const recipes: Recipe[] = [
         used_ingredients: [
           {
             id: 0,
-            amount: 2,
+            weight: 2,
             ingredient: ingredients[3],
           },
           {
             id: 1,
-            amount: 15,
+            weight: 15,
             ingredient: ingredients[4],
           },
         ],

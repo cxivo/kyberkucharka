@@ -53,10 +53,11 @@ export async function addIngredient(ingredient: Ingredient): Promise<number> {
   const i2 = { ...ingredient };
   i2.density ??= undefined;
   i2.mass_per_piece ??= undefined;
+  i2.mass_per_tablespoon ??= undefined;
   i2.created_by ??= undefined;
 
-  const query = `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, verified, created_on, created_by) 
-    VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, $<verified>, NOW(), $<created_by>)
+  const query = `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, mass_per_tablespoon, alt_names, verified, created_on, created_by) 
+    VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<mass_per_tablespoon>, $<alt_names>, $<verified>, NOW(), $<created_by>)
     RETURNING id;`;
   return db.one(query, i2);
 }
@@ -65,6 +66,7 @@ export async function modifyIngredient(ingredient: Ingredient) {
   const i2 = { ...ingredient };
   i2.density ??= undefined;
   i2.mass_per_piece ??= undefined;
+  i2.mass_per_tablespoon ??= undefined;
   i2.created_by ??= undefined;
 
   const query = `UPDATE ingredients
@@ -72,6 +74,7 @@ export async function modifyIngredient(ingredient: Ingredient) {
     primary_unit = $<primary_unit>, 
     density = $<density>, 
     mass_per_piece = $<mass_per_piece>, 
+    mass_per_tablespoon = $<mass_per_tablespoon>,
     alt_names = $<alt_names>, 
     verified = $<verified>
   WHERE id = $<id>
@@ -173,7 +176,7 @@ const getRecipeQuery = `
           SELECT s.id, s.name, s.ordering, json_agg(
             ( 
               SELECT y FROM (
-                SELECT ui.id, ui.amount, row_to_json(
+                SELECT ui.id, ui.amount AS weight, row_to_json(
                   i
                 ) AS ingredient
                 FROM ingredients AS i
@@ -284,13 +287,11 @@ export async function addOrUpdateRecipe(
   r2.image_link ??= "";
   r2.tags ??= [];
   r2.author_username = r2.author.username;
-  r2.forked_from_id =
-    r2.forked_from == null ? undefined : r2.forked_from.id;
+  r2.forked_from_id = r2.forked_from == null ? undefined : r2.forked_from.id;
 
   // use a transaction, so it either all succeeds or all fails
   return await db
     .tx(async (transaction) => {
-
       // if id is set, then we need to remove the previous recipe
       // this also removes all the sections and used_ingredients
       // also remembers the date of the original creation
@@ -343,12 +344,13 @@ export async function addOrUpdateRecipe(
                   };
                   newIngredient.density ??= undefined;
                   newIngredient.mass_per_piece ??= undefined;
+                  newIngredient.mass_per_tablespoon ??= undefined;
                   newIngredient.created_by = recipe.author.username;
 
                   ingredient_id = (
                     await transaction.one(
-                      `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, alt_names, created_on, created_by)
-                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<alt_names>, NOW(), $<created_by>) 
+                      `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, mass_per_tablespoon, alt_names, created_on, created_by)
+                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<mass_per_tablespoon>, $<alt_names>, NOW(), $<created_by>) 
                 RETURNING id;`,
                       newIngredient
                     )
@@ -358,7 +360,7 @@ export async function addOrUpdateRecipe(
                 return transaction.none(
                   `INSERT INTO used_ingredients(ingredient, section, amount)
             VALUES ($1, $2, $3);`,
-                  [ingredient_id, db_section_id.id, used_ingredient.amount]
+                  [ingredient_id, db_section_id.id, used_ingredient.weight]
                 );
               }
             )
@@ -384,7 +386,7 @@ export async function addOrUpdateRecipe(
       return db_recipe_id;
     })
     .catch((e) => {
-      //console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
+      console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
       return -1;
     });
 }

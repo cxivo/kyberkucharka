@@ -11,14 +11,23 @@ export interface Tag {
     name: string;
 }
 
-export type measurement_unit = "g" | "ml" | "tsp" | "pc" | "pack";
+export type measurement_unit =
+  | "g"
+  | "ml"
+  | "tsp"
+  | "tbsp"
+  | "pc"
+  | "pack"
+  | "cup";
 
 export const measurement_unit_list: measurement_unit[] = [
   "g",
   "ml",
   "tsp",
+  "tbsp",
   "pc",
   "pack",
+  "cup",
 ];
 
 export interface Ingredient {
@@ -27,6 +36,7 @@ export interface Ingredient {
   primary_unit: measurement_unit;
   density?: number; // grams per cm^3, undefined in things with unreliable volume, like bread
   mass_per_piece?: number; // in grams, undefined in things not (practically) measurable in pieces
+  mass_per_tablespoon?: number; // in grams, undefined in things not (practically) measurable in teaspoons
   alt_names: string;
   verified: boolean;
   created_on: Date;
@@ -36,7 +46,7 @@ export interface Ingredient {
 export interface UsedIngredient {
   id: number;
   ingredient: Ingredient;
-  amount: number; // in grams
+  weight: number; // in grams
 }
 
 export interface Section {
@@ -106,4 +116,5 @@ export const DEFAULT_USER: User = {
 
 export const TEASPOON_ML = 5;
 export const TABLESPOON_ML = 15;
+export const TEASPOONS_PER_TABLESPOON = 3;
 export const CUP_ML = 250;

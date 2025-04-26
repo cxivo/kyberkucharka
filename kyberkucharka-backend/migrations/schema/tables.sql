@@ -1,4 +1,4 @@
-CREATE TYPE measurement_unit AS ENUM ('g', 'ml', 'pc', 'tsp', 'pack');
+CREATE TYPE measurement_unit AS ENUM ('g', 'ml', 'pc', 'tsp', 'tbsp', 'pack', 'cup');
 
 CREATE TABLE IF NOT EXISTS users (
     username varchar(64) PRIMARY KEY,
@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS ingredients (
     primary_unit measurement_unit NOT NULL, 
     density real,
     mass_per_piece real,
+    mass_per_tablespoon real,
     alt_names text NOT NULL DEFAULT '',
     verified boolean NOT NULL DEFAULT false,
     created_on timestamp,

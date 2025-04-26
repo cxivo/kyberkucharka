@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import {
+  CUP_ML,
   Ingredient,
   measurement_unit,
   measurement_unit_list,
+  TEASPOONS_PER_TABLESPOON,
 } from "../../common-interfaces/interfaces";
 import {
   getUnitName,
   mustHaveDensity,
   mustHaveMassPerPiece,
+  mustHaveMassPerSpoon,
 } from "./functions/unitHelper";
 
 interface EditIngredientWindowProps {
@@ -20,6 +23,7 @@ interface EditIngredientWindowProps {
 
 const DEFAULT_DENSITY = 1.0;
 const DEFAULT_MASS_PER_PIECE = 50;
+const DEFAULT_MASS_PER_TABLESPOON = 15;
 
 export default function EditIngredientWindow({
   titleText,
@@ -35,6 +39,11 @@ export default function EditIngredientWindow({
   const [hasPieces, setHasPieces] = useState<boolean>(
     defaultIngredient.mass_per_piece != null
   );
+  const [hasSpoons, setHasSpoons] = useState<boolean>(
+    defaultIngredient.mass_per_tablespoon != null
+  );
+  const [usesTsp, setUsesTsp] = useState<boolean>(false);
+  const [usesCups, setUsesCups] = useState<boolean>(false);
   const [nameIsDuplicate, setNameIsDuplicate] = useState<boolean>(false);
 
   function updateFieldFromForm(field: keyof Ingredient, value: any) {
@@ -122,6 +131,7 @@ export default function EditIngredientWindow({
                   if (mustHaveDensity(e.target.value as measurement_unit)) {
                     newIngredient.density ??= DEFAULT_DENSITY;
                   }
+
                   setHasPieces(
                     hasPieces ||
                       mustHaveMassPerPiece(e.target.value as measurement_unit)
@@ -130,6 +140,17 @@ export default function EditIngredientWindow({
                     mustHaveMassPerPiece(e.target.value as measurement_unit)
                   ) {
                     newIngredient.mass_per_piece ??= DEFAULT_MASS_PER_PIECE;
+                  }
+
+                  setHasSpoons(
+                    hasSpoons ||
+                      mustHaveMassPerSpoon(e.target.value as measurement_unit)
+                  );
+                  if (
+                    mustHaveMassPerSpoon(e.target.value as measurement_unit)
+                  ) {
+                    newIngredient.mass_per_tablespoon ??=
+                      DEFAULT_MASS_PER_TABLESPOON;
                   }
 
                   setIngredient(newIngredient);
@@ -143,105 +164,227 @@ export default function EditIngredientWindow({
               </select>
             </div>
           </div>
-          <div>
-            <div className="inliner">
-              <input
-                type="checkbox"
-                id="has-density"
-                name="has-density"
-                disabled={mustHaveDensity(ingredient.primary_unit)}
-                checked={hasDensity || mustHaveDensity(ingredient.primary_unit)}
-                onChange={(e) => {
-                  setHasDensity(
-                    e.target.checked || mustHaveDensity(ingredient.primary_unit)
-                  );
-                  updateFieldFromForm(
-                    "density",
-                    e.target.checked ? DEFAULT_DENSITY : undefined
-                  );
-                }}
-              ></input>
-              <label
-                htmlFor="has-density"
-                title="Pri ingredienciách meraných v mililitroch a lyžičkách je tento atribút vyžadovaný."
-              >
-                Ingrediencia má rozumne merateľný objem
-              </label>
-            </div>
-            {hasDensity && (
-              <div>
-                <label htmlFor="ingredient-density">Hustota v g/cm³: </label>
-                <input
-                  type="number"
-                  id="ingredient-density"
-                  name="ingredient-density"
-                  disabled={!hasDensity}
-                  value={
-                    hasDensity ? ingredient.density ?? DEFAULT_DENSITY : ""
-                  }
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateFieldFromForm("density", e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.value = e.currentTarget.value || "0";
-                  }}
-                />
-              </div>
-            )}
-          </div>
+
           <div>
             <div>
-              <input
-                type="checkbox"
-                id="has-pieces"
-                name="has-pieces"
-                disabled={mustHaveMassPerPiece(ingredient.primary_unit)}
-                checked={
-                  hasPieces || mustHaveMassPerPiece(ingredient.primary_unit)
-                }
-                onChange={(e) => {
-                  setHasPieces(
-                    e.target.checked ||
-                      mustHaveMassPerPiece(ingredient.primary_unit)
-                  );
-                  updateFieldFromForm(
-                    "mass_per_piece",
-                    e.target.checked ||
-                      mustHaveMassPerPiece(ingredient.primary_unit)
-                      ? DEFAULT_MASS_PER_PIECE
-                      : undefined
-                  );
-                }}
-              ></input>
-              <label
-                htmlFor="has-pieces"
-                title="Pri ingredienciách meraných v kusoch a baleniach je tento atribút vyžadovaný."
-              >
-                Je možné merať na kusy/balíky
-              </label>
+              <fieldset style={{ border: hasDensity ? undefined : "none" }}>
+                <legend>
+                  <input
+                    type="checkbox"
+                    id="has-density"
+                    name="has-density"
+                    disabled={mustHaveDensity(ingredient.primary_unit)}
+                    checked={
+                      hasDensity || mustHaveDensity(ingredient.primary_unit)
+                    }
+                    onChange={(e) => {
+                      setHasDensity(
+                        e.target.checked ||
+                          mustHaveDensity(ingredient.primary_unit)
+                      );
+                      updateFieldFromForm(
+                        "density",
+                        e.target.checked ? DEFAULT_DENSITY : undefined
+                      );
+                    }}
+                  ></input>
+                  <label
+                    htmlFor="has-density"
+                    title="Pri ingredienciách meraných v mililitroch a šálkach je tento atribút vyžadovaný."
+                  >
+                    Ingrediencia má rozumne merateľný objem
+                  </label>
+                </legend>
+                {hasDensity && (
+                  <div>
+                    <label htmlFor="ingredient-density">
+                      <select
+                        name="density-cup"
+                        id="density-cup"
+                        className="select-unit-small"
+                        defaultValue="density"
+                        onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                          setUsesCups(e.target.value == "cup");
+                        }}
+                      >
+                        <option value="density">Hustota v g/cm³</option>
+                        <option value="cup">Gramov na jednu šálku</option>
+                      </select>
+                      =
+                    </label>
+                    <input
+                      type="number"
+                      id="ingredient-density"
+                      name="ingredient-density"
+                      disabled={!hasDensity}
+                      value={
+                        hasDensity
+                          ? (ingredient.density ?? DEFAULT_DENSITY) *
+                            (usesCups ? CUP_ML : 1)
+                          : ""
+                      }
+                      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        updateFieldFromForm(
+                          "density",
+                          parseFloat(e.target.value) / (usesCups ? CUP_ML : 1)
+                        );
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.value = e.currentTarget.value || "0";
+
+                        updateFieldFromForm(
+                          "density",
+                          parseFloat(e.target.value) / (usesCups ? CUP_ML : 1)
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+              </fieldset>
             </div>
-            {hasPieces && (
-              <div>
-                <label htmlFor="ingredient-pieces">Gramov na kus/balík: </label>
-                <input
-                  type="number"
-                  id="ingredient-pieces"
-                  name="ingredient-pieces"
-                  disabled={!hasPieces}
-                  value={
-                    hasPieces
-                      ? ingredient.mass_per_piece ?? DEFAULT_MASS_PER_PIECE
-                      : ""
-                  }
-                  onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    updateFieldFromForm("mass_per_piece", e.target.value);
-                  }}
-                  onBlur={(e) => {
-                    e.currentTarget.value = e.currentTarget.value || "0";
-                  }}
-                />
-              </div>
-            )}
+
+            <div>
+              <fieldset style={{ border: hasPieces ? undefined : "none" }}>
+                <legend>
+                  <input
+                    type="checkbox"
+                    id="has-pieces"
+                    name="has-pieces"
+                    disabled={mustHaveMassPerPiece(ingredient.primary_unit)}
+                    checked={
+                      hasPieces || mustHaveMassPerPiece(ingredient.primary_unit)
+                    }
+                    onChange={(e) => {
+                      setHasPieces(
+                        e.target.checked ||
+                          mustHaveMassPerPiece(ingredient.primary_unit)
+                      );
+                      updateFieldFromForm(
+                        "mass_per_piece",
+                        e.target.checked ||
+                          mustHaveMassPerPiece(ingredient.primary_unit)
+                          ? DEFAULT_MASS_PER_PIECE
+                          : undefined
+                      );
+                    }}
+                  ></input>
+                  <label
+                    htmlFor="has-pieces"
+                    title="Pri ingredienciách meraných v kusoch a baleniach je tento atribút vyžadovaný."
+                  >
+                    Je možné merať na kusy/balíky
+                  </label>
+                </legend>
+                {hasPieces && (
+                  <div>
+                    <label htmlFor="ingredient-pieces">
+                      Gramov na kus/balík:{" "}
+                    </label>
+                    <input
+                      type="number"
+                      id="ingredient-pieces"
+                      name="ingredient-pieces"
+                      disabled={!hasPieces}
+                      value={
+                        hasPieces
+                          ? ingredient.mass_per_piece ?? DEFAULT_MASS_PER_PIECE
+                          : ""
+                      }
+                      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        updateFieldFromForm("mass_per_piece", e.target.value);
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.value = e.currentTarget.value || "0";
+                      }}
+                    />
+                  </div>
+                )}
+              </fieldset>
+            </div>
+            <div>
+              <fieldset style={{ border: hasSpoons ? undefined : "none" }}>
+                <legend>
+                  <input
+                    type="checkbox"
+                    id="has-spoons"
+                    name="has-spoons"
+                    disabled={mustHaveMassPerSpoon(ingredient.primary_unit)}
+                    checked={
+                      hasSpoons || mustHaveMassPerSpoon(ingredient.primary_unit)
+                    }
+                    onChange={(e) => {
+                      setHasSpoons(
+                        e.target.checked ||
+                          mustHaveMassPerSpoon(ingredient.primary_unit)
+                      );
+                      updateFieldFromForm(
+                        "mass_per_tablespoon",
+                        e.target.checked ||
+                          mustHaveMassPerSpoon(ingredient.primary_unit)
+                          ? DEFAULT_MASS_PER_TABLESPOON
+                          : undefined
+                      );
+                    }}
+                  ></input>
+                  <label
+                    htmlFor="has-spoons"
+                    title="Pri ingredienciách meraných v lyžičkách či lyžiciach je tento atribút vyžadovaný."
+                  >
+                    Je možné merať na lyžičky/lyžice
+                  </label>
+                </legend>
+                {hasSpoons && (
+                  <div>
+                    <label htmlFor="ingredient-spoons">
+                      Gramov na{" "}
+                      <select
+                        name="tsp-tbsp"
+                        id="tsp-tbsp"
+                        className="select-unit-small"
+                        defaultValue="tbsp"
+                        onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                          setUsesTsp(e.target.value == "tsp");
+                        }}
+                      >
+                        <option value="tsp">lyžičku</option>
+                        <option value="tbsp">lyžicu</option>
+                      </select>
+                      =
+                    </label>
+                    <input
+                      type="number"
+                      id="ingredient-spoons"
+                      name="ingredient-spoons"
+                      disabled={!hasSpoons}
+                      value={
+                        hasSpoons
+                          ? (ingredient.mass_per_tablespoon ??
+                              DEFAULT_MASS_PER_TABLESPOON) /
+                            (usesTsp ? TEASPOONS_PER_TABLESPOON : 1)
+                          : ""
+                      }
+                      onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        updateFieldFromForm(
+                          "mass_per_tablespoon",
+                          parseFloat(e.target.value) *
+                            (usesTsp ? TEASPOONS_PER_TABLESPOON : 1)
+                        );
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.value = e.currentTarget.value || "0";
+
+                        // also update if needed
+                        updateFieldFromForm(
+                          "mass_per_tablespoon",
+                          parseFloat(e.target.value) *
+                            (usesTsp ? TEASPOONS_PER_TABLESPOON : 1)
+                        );
+                      }}
+                    />
+                  </div>
+                )}
+              </fieldset>
+            </div>
           </div>
           <div>
             <label
@@ -252,7 +395,7 @@ export default function EditIngredientWindow({
             </label>
             <textarea
               id="alt-names"
-              rows={4}
+              rows={3}
               defaultValue={defaultIngredient.alt_names}
               onInput={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                 updateFieldFromForm("alt_names", e.target.value);

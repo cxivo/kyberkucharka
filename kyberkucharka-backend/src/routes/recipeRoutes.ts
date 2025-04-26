@@ -67,7 +67,6 @@ router.get("/:id", (req: Request, res: Response) => {
       res.json(result);
     })
     .catch((e) => {
-      console.error(e);
       res.status(404).json({ message: "Recipe not found", error: e });
     });
 });
