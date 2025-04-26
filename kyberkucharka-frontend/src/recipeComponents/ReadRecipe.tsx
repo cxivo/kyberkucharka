@@ -6,6 +6,7 @@ import { getUserFromCookies } from "../functions/cookieHelper";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
 import RecipeCard from "./RecipeCard";
+import { Tooltip } from "react-tooltip";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -132,10 +133,13 @@ export default function ReadRecipe() {
           <div className="main-and-sidebar">
             <div className="recipe-notebook">
               <div className="recipe-title">
-                <h1 className="tooltip">
+                <h1
+                  data-tooltip-id="recipe-title-tooltip"
+                  data-tooltip-content={recipeData.title}
+                >
                   {recipeData?.title}
-                  <span className="tooltiptext">Tooltip text</span>
                 </h1>
+                <Tooltip id="recipe-title-tooltip" />
               </div>
               <div className="recipe-body">
                 <p className="recipe-author">
