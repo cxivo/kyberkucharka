@@ -1,7 +1,14 @@
-import { UsedIngredient } from "../../../common-interfaces/interfaces";
+import { useState } from "react";
 import {
+  measurement_unit,
+  UsedIngredient,
+} from "../../../common-interfaces/interfaces";
+import {
+  allowedUnits,
   amountToGrams,
+  amountToGramsUsed,
   formatAmount,
+  gramsToAmount,
   gramsToAmountUsed,
 } from "../functions/unitHelper";
 
@@ -18,6 +25,10 @@ export default function EditableIngredient({
   setAmount,
   deleteIngredient,
 }: EditableIngredientProps) {
+  const [usedUnit, setUsedUnit] = useState<measurement_unit>(
+    used_ingredient.ingredient.primary_unit
+  );
+
   return (
     <li>
       <span>
@@ -26,18 +37,58 @@ export default function EditableIngredient({
           type="number"
           step={0.05}
           min={0}
-          defaultValue={gramsToAmountUsed(used_ingredient)}
+          value={gramsToAmount(
+            used_ingredient.weight,
+            used_ingredient.ingredient,
+            usedUnit
+          )}
           onInput={(x) => {
             setAmount(
               index,
-              amountToGrams(+x.currentTarget.value, used_ingredient.ingredient)
+              amountToGrams(
+                +x.currentTarget.value,
+                used_ingredient.ingredient,
+                usedUnit
+              )
             );
           }}
           onBlur={(e) => {
             e.currentTarget.value = e.currentTarget.value || "0";
           }}
         />
-        {formatAmount(used_ingredient)}
+        <select
+          className="inconspicuous-select"
+          onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            setAmount(
+              index,
+              amountToGrams(
+                gramsToAmount(
+                  used_ingredient.weight,
+                  used_ingredient.ingredient,
+                  usedUnit
+                ),
+                used_ingredient.ingredient,
+                e.currentTarget.value as measurement_unit
+              )
+            );
+
+            setUsedUnit(e.currentTarget.value as measurement_unit);
+          }}
+        >
+          {allowedUnits(used_ingredient.ingredient).map((u) => (
+            <option
+              value={u}
+              key={u}
+              selected={u == used_ingredient.ingredient.primary_unit}
+            >
+              {formatAmount(
+                used_ingredient.ingredient,
+                used_ingredient.weight,
+                u
+              )}
+            </option>
+          ))}
+        </select>
         {" - "}
         {used_ingredient.ingredient.name}
       </span>

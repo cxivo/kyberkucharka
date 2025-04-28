@@ -68,8 +68,19 @@ export function isValidIngredient(ingredient: Ingredient): boolean {
   return true;
 }
 
-export function amountToGrams(amount: number, ingredient: Ingredient): number {
-  switch (ingredient.primary_unit) {
+export function amountToGramsUsed(
+  amount: number,
+  ingredient: Ingredient
+): number {
+  return amountToGrams(amount, ingredient, ingredient.primary_unit);
+}
+
+export function amountToGrams(
+  amount: number,
+  ingredient: Ingredient,
+  unit: measurement_unit
+): number {
+  switch (unit) {
     case "g":
       return amount;
     case "ml":
@@ -103,7 +114,15 @@ export function gramsToAmountInPrimaryIngredient(
   grams: number,
   ingredient: Ingredient
 ): number {
-  switch (ingredient.primary_unit) {
+  return gramsToAmount(grams, ingredient, ingredient.primary_unit);
+}
+
+export function gramsToAmount(
+  grams: number,
+  ingredient: Ingredient,
+  unit: measurement_unit
+): number {
+  switch (unit) {
     case "g":
       return grams;
     case "ml":
@@ -134,12 +153,16 @@ const declensions_pc = ["kus", "kusy", "kusov"];
 const declensions_pack = ["balenie", "balenia", "balení"];
 const declensions_cup = ["šálka", "šálky", "šálok"];
 
-export function formatAmount(used_ingredient: UsedIngredient) {
-  const amount = gramsToAmountUsed(used_ingredient);
+export function formatAmount(
+  ingredient: Ingredient,
+  grams: number,
+  unit: measurement_unit
+): string {
+  const amount = gramsToAmount(grams, ingredient, unit);
   const declension =
     amount === 1 ? 0 : amount === 2 || amount === 3 || amount === 4 ? 1 : 2;
 
-  switch (used_ingredient.ingredient.primary_unit) {
+  switch (unit) {
     case "ml":
       return declensions_ml[declension];
     case "pack":
@@ -157,6 +180,32 @@ export function formatAmount(used_ingredient: UsedIngredient) {
   }
 }
 
-export function roundToAtMostDecimals(x: number) {
+export function formatAmountUsed(used_ingredient: UsedIngredient): string {
+  return formatAmount(
+    used_ingredient.ingredient,
+    used_ingredient.weight,
+    used_ingredient.ingredient.primary_unit
+  );
+}
+
+export function roundToAtMostDecimals(x: number): number {
   return Math.round(100 * x) / 100;
+}
+
+export function allowedUnits(ingredient: Ingredient): measurement_unit[] {
+  const units: measurement_unit[] = ["g"];
+
+  if (ingredient.density != null) {
+    units.push("ml", "cup");
+  }
+
+  if (ingredient.mass_per_piece != null) {
+    units.push("pc", "pack");
+  }
+
+  if (ingredient.mass_per_tablespoon != null) {
+    units.push("tsp", "tbsp");
+  }
+
+  return units;
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
 import {
-  formatAmount,
+  formatAmountUsed,
   gramsToAmountUsed,
   roundToAtMostDecimals,
 } from "../functions/unitHelper";
@@ -181,7 +181,7 @@ export default function ReadRecipe() {
                               gramsToAmountUsed(used_ingredient)
                             )}
                             &nbsp;
-                            {formatAmount(used_ingredient)}
+                            {formatAmountUsed(used_ingredient)}
                             {" - "}
                             {used_ingredient.ingredient.name}
                           </li>
