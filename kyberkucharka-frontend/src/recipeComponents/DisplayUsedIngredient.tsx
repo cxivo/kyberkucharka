@@ -31,26 +31,31 @@ export default function DisplayUsedIngredient({
         )
       )}
       &nbsp;
-      <select
-        className="inconspicuous-select"
-        onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
-          setUsedUnit(e.currentTarget.value as measurement_unit);
-        }}
-      >
-        {allowedUnits(used_ingredient.ingredient).map((u) => (
-          <option
-            value={u}
-            key={u}
-            selected={u == used_ingredient.ingredient.primary_unit}
-          >
-            {formatAmount(
-              used_ingredient.ingredient,
-              used_ingredient.weight,
-              u
-            )}
-          </option>
-        ))}
-      </select>
+      {allowedUnits(used_ingredient.ingredient).length > 1 ? (
+        <select
+          className="inconspicuous-select"
+          onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
+            setUsedUnit(e.currentTarget.value as measurement_unit);
+          }}
+        >
+          {allowedUnits(used_ingredient.ingredient).map((u) => (
+            <option
+              value={u}
+              key={u}
+              selected={u == used_ingredient.ingredient.primary_unit}
+            >
+              {formatAmount(
+                used_ingredient.ingredient,
+                used_ingredient.weight,
+                u
+              )}
+            </option>
+          ))}
+        </select>
+      ) : (
+        // only grams are available, don't display a select
+        formatAmount(used_ingredient.ingredient, used_ingredient.weight, "g")
+      )}
       {" - "}
       {used_ingredient.ingredient.name}
     </li>
