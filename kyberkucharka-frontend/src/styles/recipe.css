@@ -200,10 +200,11 @@ select.inconspicuous-select {
   font-size: inherit;
   font-family: inherit;
   background: transparent;
-  width: calc(9vw * var(--main-recipe-size));
   color: inherit;
   padding: 0;
   text-shadow: 0px 0px calc(0.05vw * var(--main-recipe-size)) #2a2a2a;
+
+  cursor: pointer;
 }
 
 .recipe-top-buttons {

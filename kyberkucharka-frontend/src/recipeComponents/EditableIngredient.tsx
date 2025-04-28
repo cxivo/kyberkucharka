@@ -6,10 +6,8 @@ import {
 import {
   allowedUnits,
   amountToGrams,
-  amountToGramsUsed,
   formatAmount,
   gramsToAmount,
-  gramsToAmountUsed,
 } from "../functions/unitHelper";
 
 interface EditableIngredientProps {

@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
-import {
-  formatAmountUsed,
-  gramsToAmountUsed,
-  roundToAtMostDecimals,
-} from "../functions/unitHelper";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
 import RecipeCard from "./RecipeCard";
 import { Tooltip } from "react-tooltip";
 import { useCookies } from "react-cookie";
+import DisplayUsedIngredient from "./DisplayUsedIngredient";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -176,15 +172,9 @@ export default function ReadRecipe() {
                       <h3>{section.name}</h3>
                       <ul className="ingredients-list">
                         {section?.used_ingredients?.map((used_ingredient) => (
-                          <li key={used_ingredient.id}>
-                            {roundToAtMostDecimals(
-                              gramsToAmountUsed(used_ingredient)
-                            )}
-                            &nbsp;
-                            {formatAmountUsed(used_ingredient)}
-                            {" - "}
-                            {used_ingredient.ingredient.name}
-                          </li>
+                          <DisplayUsedIngredient
+                            used_ingredient={used_ingredient}
+                          />
                         ))}
                       </ul>
                     </div>
