@@ -17,7 +17,9 @@ export default function RecipeCard({ recipe, isFork }: RecipeCardProps) {
         to={`/recipes/${recipe.id}`}
         className={isFork ? "fork" : "card"}
         data-tooltip-id="fork-tooltip"
-        data-tooltip-content={`Forknuté z receptu "${recipe.title}"`}
+        data-tooltip-content={
+          isFork ? `Forknuté z receptu "${recipe.title}"` : ""
+        }
       >
         <div className={isFork ? "fork-card" : ""}>
           <h3>{recipe.title}</h3>

@@ -41,7 +41,7 @@ export default function RecipeList({ flexColumn }: RecipeListProps) {
   ) : (
     <div className={`card-container ${flexColumn && "flex-column"}`}>
       {recipesList.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe}></RecipeCard>
+        <RecipeCard key={recipe.id} recipe={recipe} isFork={false}></RecipeCard>
       ))}
     </div>
   );
