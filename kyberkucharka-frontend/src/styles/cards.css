@@ -172,11 +172,13 @@
 
 .flex-column {
   flex-direction: column;
+  justify-content:start;
 }
 
 @media only screen and (max-width: 1650px) {
   .flex-column {
     flex-direction: row;
+    justify-content: space-between;
   }
 }
 

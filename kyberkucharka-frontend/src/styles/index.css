@@ -101,7 +101,7 @@ nav {
   padding-top: 0;
   padding-left: 1vw;
   padding-right: 2vw;
-  padding-bottom: 0;
+  padding-bottom: 5px;
 }
 
 nav * {

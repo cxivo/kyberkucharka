@@ -3,17 +3,21 @@ import { PartialRecipe } from "../../common-interfaces/interfaces";
 import RecipeCard from "./recipeComponents/RecipeCard";
 
 interface RecipeListProps {
-  flexColumn?: boolean;
+  relatedRecipeID?: number;
 }
 
-export default function RecipeList({ flexColumn }: RecipeListProps) {
+export default function RecipeList({ relatedRecipeID }: RecipeListProps) {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [invalid, setInvalid] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(`/api/recipes`)
+      await fetch(
+        relatedRecipeID != null
+          ? `/api/recipes/related/${relatedRecipeID}`
+          : `/api/recipes`
+      )
         .then(async (response) => {
           if (response.ok) {
             const result = await response.json();
@@ -39,7 +43,9 @@ export default function RecipeList({ flexColumn }: RecipeListProps) {
   ) : invalid ? (
     <p>Nastala neznáma chyba</p>
   ) : (
-    <div className={`card-container ${flexColumn && "flex-column"}`}>
+    <div
+      className={`card-container ${relatedRecipeID != null && "flex-column"}`}
+    >
       {recipesList.map((recipe) => (
         <RecipeCard key={recipe.id} recipe={recipe} isFork={false}></RecipeCard>
       ))}

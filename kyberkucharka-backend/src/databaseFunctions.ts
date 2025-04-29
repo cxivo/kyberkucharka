@@ -107,7 +107,7 @@ export async function deleteIngredientAndRecipes(id: number) {
 
 // recipes
 
-const getPartialRecipeQuery = `SELECT 
+const GET_PARTIAL_RECIPE_QUERY = `SELECT 
 id, 
 title, 
 description, 
@@ -123,7 +123,7 @@ JOIN users AS u
 ON r.author = u.username`;
 
 // query for getting a formatted JSON Recipe object
-const getRecipeQuery = `
+const GET_RECIPE_QUERY = `
   SELECT 
   r.id,
   r.title, 
@@ -197,7 +197,7 @@ const getRecipeQuery = `
 `;
 
 export async function getPartialRecipes(): Promise<PartialRecipe[]> {
-  const query = getPartialRecipeQuery + ` ORDER BY r.created_on DESC;`;
+  const query = GET_PARTIAL_RECIPE_QUERY + ` ORDER BY r.created_on DESC;`;
   return db.any(query);
 }
 
@@ -205,7 +205,7 @@ export async function getPartialRecipesByUser(
   username: string
 ): Promise<PartialRecipe[]> {
   const query =
-    getPartialRecipeQuery +
+    GET_PARTIAL_RECIPE_QUERY +
     ` WHERE u.username = $1
     ORDER BY r.created_on DESC;`;
   return db.any(query, [username]);
@@ -222,17 +222,17 @@ function fixMissingRecipeTags(recipe: Recipe): Recipe {
 }
 
 export async function getPartialRecipeByID(id: number): Promise<PartialRecipe> {
-  const query = getPartialRecipeQuery + ` WHERE r.id = $1;`;
+  const query = GET_PARTIAL_RECIPE_QUERY + ` WHERE r.id = $1;`;
   return db.one(query, [id]);
 }
 
 export async function getRecipeByID(id: number): Promise<Recipe> {
-  const query = getRecipeQuery + `WHERE r.id = $1;`;
+  const query = GET_RECIPE_QUERY + `WHERE r.id = $1;`;
   return db.one(query, [id]).then(fixMissingRecipeTags);
 }
 
 export async function getRecipesByName(name: string): Promise<Recipe[]> {
-  const query = getRecipeQuery + ` WHERE r.title LIKE $1;`;
+  const query = GET_RECIPE_QUERY + ` WHERE r.title LIKE $1;`;
   return db
     .any(query, [`%${name}%`])
     .then((rs) => rs.map(fixMissingRecipeTags));
@@ -246,7 +246,7 @@ export async function getRecipesSearch(
   unwantedTags: number[]
 ): Promise<PartialRecipe[]> {
   const query =
-    getPartialRecipeQuery +
+    GET_PARTIAL_RECIPE_QUERY +
     ` 
     WHERE UPPER(unaccent(r.title)) LIKE UPPER(unaccent($1))
     ${requiredTags
@@ -273,6 +273,20 @@ export async function getRecipesSearch(
     
     `;
   return db.any(query, [`%${name}%`, ...requiredTags, ...unwantedTags]);
+}
+
+export async function getRelatedRecipes(id: number): Promise<PartialRecipe[]> {
+  const query =
+    GET_PARTIAL_RECIPE_QUERY +
+    `
+    JOIN used_recipe_tags AS urt ON urt.recipe = r.id
+    JOIN used_recipe_tags AS urt2 ON urt.tag = urt2.tag AND urt2.recipe = $1
+    WHERE NOT r.id = $1
+    GROUP BY urt, r.id, u.username
+    ORDER BY COUNT(urt) DESC
+    LIMIT 10;
+    `;
+  return db.any(query, [id]);
 }
 
 // TODO add recipe validation... maybe using zod

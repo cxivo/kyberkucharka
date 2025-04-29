@@ -7,6 +7,7 @@ import {
   getPartialRecipesByUser,
   getRecipeByID,
   getRecipesSearch,
+  getRelatedRecipes,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 import { Recipe } from "../../../common-interfaces/interfaces";
@@ -16,6 +17,20 @@ const router = Router();
 // get all recipes
 router.get("/", (req: Request, res: Response) => {
   getPartialRecipes()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// get recipes similar to this one
+router.get("/related/:id", (req: Request, res: Response) => {
+  const recipeId = parseInt(req.params.id);
+
+  getRelatedRecipes(recipeId)
     .then((result) => {
       res.json(result);
     })

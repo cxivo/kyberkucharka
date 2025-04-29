@@ -147,7 +147,7 @@ export default function ReadRecipe() {
             )
           }
           <div className="main-and-sidebar">
-            <div className="recipe-notebook">
+            <main className="recipe-notebook">
               <div className="recipe-title">
                 <h1
                   data-tooltip-id="recipe-title-tooltip"
@@ -253,8 +253,11 @@ export default function ReadRecipe() {
                   <div className="recipe-text-afterspace">&nbsp;</div>
                 </div>
               </div>
-            </div>
-            <RecipeList flexColumn={true}></RecipeList>
+            </main>
+            <aside>
+              <h2>Podobné recepty</h2>
+              <RecipeList relatedRecipeID={recipeData.id}></RecipeList>
+            </aside>
           </div>
         </div>
       )}
