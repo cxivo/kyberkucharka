@@ -77,6 +77,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   >([]);
 
   const { slug = "" } = useParams();
+  const params = useParams();
 
   let navigate = useNavigate();
 
@@ -126,7 +127,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       setLoading(false);
       setSendingDisabled(false);
     }
-  }, []);
+  }, [params]);
 
   useEffect(() => {
     // fetch all ingredients
