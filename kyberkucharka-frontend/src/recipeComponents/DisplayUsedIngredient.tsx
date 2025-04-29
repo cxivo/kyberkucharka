@@ -95,9 +95,10 @@ export default function DisplayUsedIngredient({
             setUsedUnit(e.currentTarget.value as measurement_unit);
             changeUnitCallback();
           }}
+          value={usedUnit}
         >
           {allowedUnits(used_ingredient.ingredient).map((u) => (
-            <option value={u} key={u} selected={u == usedUnit}>
+            <option value={u} key={u}>
               {formatAmount(
                 used_ingredient.ingredient,
                 used_ingredient.weight,

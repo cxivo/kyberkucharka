@@ -57,6 +57,7 @@
   background-image: url("/zosit_middle2.png");
   background-repeat: repeat-y;
   background-size: calc(70vw * var(--main-recipe-size));
+  opacity: 0.96;
 
   font-size: calc(2vw * var(--main-recipe-size));
   /* min-height: 100vh; */

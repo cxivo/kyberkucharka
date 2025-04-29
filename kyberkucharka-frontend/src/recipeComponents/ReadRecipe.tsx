@@ -189,12 +189,12 @@ export default function ReadRecipe() {
                           e.target.value as measurement_method
                         );
                       }}
+                      value={measurementMethod}
                     >
                       {measurement_method_list.map((method) => (
                         <option
                           value={method}
                           key={method}
-                          selected={method == measurementMethod}
                           disabled={method == "various"}
                         >
                           {getMeasurementMethodName(method)}
@@ -211,6 +211,7 @@ export default function ReadRecipe() {
                           <DisplayUsedIngredient
                             used_ingredient={used_ingredient}
                             measurementMethod={measurementMethod}
+                            key={used_ingredient.id}
                             changeUnitCallback={
                               individuallyChangedIngredientUnit
                             }
@@ -227,7 +228,7 @@ export default function ReadRecipe() {
                   {recipeData.tags?.length > 0 ? (
                     <p>
                       {recipeData.tags?.map((tag, index) => (
-                        <>
+                        <span key={index}>
                           <Link
                             style={{ display: "inline-block" }}
                             to={
@@ -240,7 +241,7 @@ export default function ReadRecipe() {
                             {tag.name}
                           </Link>
                           {index !== recipeData.tags?.length - 1 && ", "}
-                        </>
+                        </span>
                       ))}
                     </p>
                   ) : (

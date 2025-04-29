@@ -72,13 +72,10 @@ export default function EditableIngredient({
 
             setUsedUnit(e.currentTarget.value as measurement_unit);
           }}
+          value={used_ingredient.ingredient.primary_unit}
         >
           {allowedUnits(used_ingredient.ingredient).map((u) => (
-            <option
-              value={u}
-              key={u}
-              selected={u == used_ingredient.ingredient.primary_unit}
-            >
+            <option value={u} key={u}>
               {formatAmount(
                 used_ingredient.ingredient,
                 used_ingredient.weight,
