@@ -147,8 +147,8 @@ export function gramsToAmount(
       return grams / (ingredient.mass_per_piece ?? 1);
     case "tsp":
       return (
-        grams /
-        (TEASPOONS_PER_TABLESPOON * (ingredient.mass_per_tablespoon ?? 1))
+        (TEASPOONS_PER_TABLESPOON * grams) /
+        (ingredient.mass_per_tablespoon ?? 1)
       );
     case "tbsp":
       return grams / (ingredient.mass_per_tablespoon ?? 1);
