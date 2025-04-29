@@ -1,6 +1,7 @@
 import {
   CUP_ML,
   Ingredient,
+  measurement_method,
   measurement_unit,
   TEASPOONS_PER_TABLESPOON,
   UsedIngredient,
@@ -24,6 +25,21 @@ export function getUnitName(unit: measurement_unit) {
       return "šálky";
     default:
       return "<neznáme>";
+  }
+}
+
+export function getMeasurementMethodName(method: measurement_method): string {
+  switch (method) {
+    case "primary":
+      return "najrozumnejšie jednotky";
+    case "grams":
+      return "všetko v gramoch";
+    case "cups":
+      return "hrnčekový recept";
+    case "spoons":
+      return "lyžice a lyžičky";
+    case "various":
+      return "rôzne";
   }
 }
 
@@ -209,3 +225,4 @@ export function allowedUnits(ingredient: Ingredient): measurement_unit[] {
 
   return units;
 }
+

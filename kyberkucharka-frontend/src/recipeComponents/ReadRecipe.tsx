@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { DEFAULT_RECIPE, Recipe } from "../../../common-interfaces/interfaces";
+import {
+  DEFAULT_RECIPE,
+  measurement_method,
+  measurement_method_list,
+  Recipe,
+} from "../../../common-interfaces/interfaces";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
 import RecipeCard from "./RecipeCard";
 import { Tooltip } from "react-tooltip";
 import { useCookies } from "react-cookie";
 import DisplayUsedIngredient from "./DisplayUsedIngredient";
+import { getMeasurementMethodName } from "../functions/unitHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -18,6 +24,8 @@ export default function ReadRecipe() {
     ["userData"],
     {}
   );
+  const [measurementMethod, setMeasurementMethod] =
+    useState<measurement_method>("primary");
 
   const { slug = "0" } = useParams();
 
@@ -71,6 +79,10 @@ export default function ReadRecipe() {
         setLoading(false);
       }
     });
+  }
+
+  function individuallyChangedIngredientUnit() {
+    setMeasurementMethod("various");
   }
 
   return (
@@ -167,6 +179,30 @@ export default function ReadRecipe() {
                 <div className="recipe-text">
                   <p>{recipeData?.description}</p>
                   <h2>Ingrediencie</h2>
+
+                  <p>
+                    Merať v:{" "}
+                    <select
+                      className="inconspicuous-select"
+                      onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        setMeasurementMethod(
+                          e.target.value as measurement_method
+                        );
+                      }}
+                    >
+                      {measurement_method_list.map((method) => (
+                        <option
+                          value={method}
+                          key={method}
+                          selected={method == measurementMethod}
+                          disabled={method == "various"}
+                        >
+                          {getMeasurementMethodName(method)}
+                        </option>
+                      ))}
+                    </select>
+                  </p>
+
                   {recipeData?.sections?.map((section) => (
                     <div key={section.id} className="recipe-section">
                       <h3>{section.name}</h3>
@@ -174,6 +210,10 @@ export default function ReadRecipe() {
                         {section?.used_ingredients?.map((used_ingredient) => (
                           <DisplayUsedIngredient
                             used_ingredient={used_ingredient}
+                            measurementMethod={measurementMethod}
+                            changeUnitCallback={
+                              individuallyChangedIngredientUnit
+                            }
                           />
                         ))}
                       </ul>

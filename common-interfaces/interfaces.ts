@@ -30,6 +30,20 @@ export const measurement_unit_list: measurement_unit[] = [
   "cup",
 ];
 
+export type measurement_method =
+  | "primary"
+  | "grams"
+  | "cups"
+  | "spoons"
+  | "various";
+export const measurement_method_list: measurement_method[] = [
+  "primary",
+  "grams",
+  "cups",
+  "spoons",
+  "various",
+];
+
 export interface Ingredient {
   id: number;
   name: string;
