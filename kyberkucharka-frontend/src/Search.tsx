@@ -167,6 +167,7 @@ export default function Search() {
               id="name"
               onChange={(e) => setSearchText(e.target.value)}
               value={searchText}
+              autoFocus
             />
           </div>
 
