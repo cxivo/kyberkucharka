@@ -84,7 +84,7 @@ h1 {
 
 nav {
   margin: auto;
-  width: 96vw;
+  width: 97vw;
 
   display: flex;
   flex-direction: row;
@@ -98,10 +98,10 @@ nav {
   background-position: bottom;
   opacity: 0.95;
 
-  padding-top: 0vw;
-  padding-left: 2vw;
-  padding-right: 1vw;
-  padding-bottom: 15px;
+  padding-top: 0;
+  padding-left: 1vw;
+  padding-right: 2vw;
+  padding-bottom: 0;
 }
 
 nav * {
@@ -129,8 +129,8 @@ nav * {
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
-  margin-top: 20px;
-  margin-bottom: 30px;
+
+  margin-bottom: 40px;
 }
 
 .links > * {
@@ -236,6 +236,9 @@ td {
   }
   .about {
     padding-left: 0%;
+  }
+  nav {
+    padding-bottom: 10px;
   }
 }
 
