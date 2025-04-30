@@ -3,6 +3,7 @@ import { User } from "../../common-interfaces/interfaces";
 import { useState } from "react";
 import Login from "./userPages/Login";
 import { CookiesProvider, useCookies } from "react-cookie";
+import Popup from "./Popup";
 
 function Header() {
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
@@ -127,6 +128,7 @@ function App({ children }: any) {
     <CookiesProvider>
       <Header></Header>
       <div>{children}</div>
+      <Popup />
     </CookiesProvider>
   );
 }

@@ -1,0 +1,60 @@
+.popup {
+    position: fixed;
+    bottom: 0;
+    z-index: 20;
+
+    background-color: transparent;
+    border: none;
+
+    background-image: url("/popup.png");
+    background-repeat: no-repeat;
+    background-size: calc(70vw * var(--main-recipe-size));
+    background-position-y: top;
+    background-size: cover;
+
+    color: black;
+    width: 800px;
+    height: 200px;
+
+    text-shadow: 0px 0px 2px #2a2a2a;
+}
+
+.popup > * {
+    padding-right: 50px;
+}
+
+.popup div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.popup p {
+    font-size: 24px;
+}
+
+@media only screen and (max-width: 800px) {
+    .popup {
+        width: 100vw;
+    }
+
+    .popup p {
+        font-size: 20px;
+    }
+  }
+
+  @media only screen and (max-width: 600px) {
+    .popup {
+        background-position: 50%;
+        font-size: 16px;
+        height: 220px;
+    }
+  }
+
+  @media only screen and (max-width: 350px) {
+    .popup {
+        height: 250px;
+        background-position: 50%;
+        font-size: 12px;
+    }
+  }
