@@ -1,10 +1,11 @@
+
+
 .search-settings {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
   text-align: center;
-  
 }
 
 .search-page form {
@@ -28,16 +29,17 @@
 
 .search-page label {
   justify-self: right;
+  margin: auto 0;
 }
 
 .search-page input {
   background-color: white;
   color: #1a1a1a;
   border: none;
-  padding: 3px;
+  padding: 5px;
 
   justify-self: left;
-  min-width: 300px;
+  min-width: 340px;
 
 
 }
@@ -45,6 +47,13 @@
 .search-select {
 
   justify-self: left;
-  min-width: 300px;
+  min-width: 350px;
 
+}
+
+@media only screen and (max-width: 800px) {
+  .search-page form {
+    display: flex;
+    flex-direction: column;
+  }
 }

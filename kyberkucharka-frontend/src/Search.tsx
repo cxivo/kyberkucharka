@@ -10,6 +10,7 @@ import { fetchIngredients, fetchTags } from "./functions/communicationHelper";
 import { useDebounce } from "use-debounce";
 import { useSearchParams } from "react-router-dom";
 import RecipeCard from "./recipeComponents/RecipeCard";
+import HorizontalLine from "./HorizontalLine";
 
 export default function Search() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -154,6 +155,32 @@ export default function Search() {
     );
   }
 
+  function selectForIngredients(
+    id: string,
+    placeholder: string,
+    defaultIngredients: Ingredient[],
+    onChange: (e: MultiValue<OptionsList>) => void
+  ) {
+    return (
+      <Select
+        id={id}
+        className="search-select"
+        isLoading={loading}
+        options={availableIngredients.map((ingredient) => {
+          return { value: ingredient.id, label: ingredient.name };
+        })}
+        isMulti
+        loadingMessage={() => `Načítavam...`}
+        noOptionsMessage={() => "...žiadne ingrediencie s takýmto názvom"}
+        placeholder={placeholder}
+        value={defaultIngredients?.map((ingredient) => {
+          return { value: ingredient.id, label: ingredient.name };
+        })}
+        onChange={onChange}
+      />
+    );
+  }
+
   return (
     <div className="search-page">
       <title>Vyhľadávanie - Kyberkuchárka</title>
@@ -196,8 +223,43 @@ export default function Search() {
               );
             }
           )}
+
+          <label htmlFor="required-ingredients">
+            Ingrediencie, ktoré musí recept používať
+          </label>
+          {selectForIngredients(
+            "required-ingredients",
+            "Musí používať ingrediencie",
+            requiredIngredients,
+            (e) => {
+              setRequiredIngredients(
+                e.map(
+                  (o) => availableIngredients.find((i) => i.id === o.value)!
+                )
+              );
+            }
+          )}
+
+          <label htmlFor="unwanted-ingredients">
+            Ingrediencie, ktoré recept nesmie používať
+          </label>
+          {selectForIngredients(
+            "unwanted-ingredients",
+            "Nesmie používať ingrediencie",
+            unwantedIngredients,
+            (e) => {
+              setUnwantedIngredients(
+                e.map(
+                  (o) => availableIngredients.find((i) => i.id === o.value)!
+                )
+              );
+            }
+          )}
         </form>
       </div>
+
+      <HorizontalLine />
+
       {loading ? (
         <p>Načítavam...</p>
       ) : invalid ? (

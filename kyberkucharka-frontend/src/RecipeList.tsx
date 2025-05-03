@@ -18,7 +18,7 @@ export default function RecipeList({
   useEffect(() => {
     const fetchData = async () => {
       const recipes: Recipe[] = await dataSource;
-      if (recipes.length > 0) {
+      if (recipes !== null) {
         setRecipesList(recipes);
         setLoading(false);
       } else {
@@ -35,10 +35,16 @@ export default function RecipeList({
   ) : invalid ? (
     <p>Nastala neznáma chyba</p>
   ) : (
-    <div className={`card-container ${flexColumn && "flex-column"}`}>
-      {recipesList.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} isFork={false}></RecipeCard>
-      ))}
-    </div>
+    recipesList.length > 0 && (
+      <div className={`card-container ${flexColumn && "flex-column"}`}>
+        {recipesList.map((recipe) => (
+          <RecipeCard
+            key={recipe.id}
+            recipe={recipe}
+            isFork={false}
+          ></RecipeCard>
+        ))}
+      </div>
+    )
   );
 }

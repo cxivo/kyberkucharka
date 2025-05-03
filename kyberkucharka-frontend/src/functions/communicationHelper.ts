@@ -60,13 +60,13 @@ const COMMON_RECIPE_THEN = async (response: Response) => {
       response.status,
       result.message
     );
-    return [];
+    return null;
   }
-}
+};
 
 const COMMON_RECIPE_CATCH = async (error: Error) => {
   console.error("An error has occured in fetchRecipesSimilarTo: ", error);
-  return [];
+  return null;
 };
 
 

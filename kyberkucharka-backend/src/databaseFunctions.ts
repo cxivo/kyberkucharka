@@ -270,9 +270,49 @@ export async function getRecipesSearch(
       )`
       )
       .reduce((prev, curr) => prev + " " + curr, "")}
+
+    ${requiredIngredients
+      .map(
+        (ingredientID, index) =>
+          `AND EXISTS (
+        SELECT 1 
+        FROM used_ingredients AS ui
+        JOIN sections AS s ON ui.section = s.id
+        WHERE s.recipe = r.id
+        AND ui.ingredient = $${
+          2 + requiredTags.length + unwantedTags.length + index
+        }
+      )`
+      )
+      .reduce((prev, curr) => prev + " " + curr, "")}
+
+    ${unwantedIngredients
+      .map(
+        (ingredientID, index) =>
+          `AND NOT EXISTS (
+        SELECT 1 
+        FROM used_ingredients AS ui
+        JOIN sections AS s ON ui.section = s.id
+        WHERE s.recipe = r.id
+        AND ui.ingredient = $${
+          2 +
+          requiredTags.length +
+          unwantedTags.length +
+          requiredIngredients.length +
+          index
+        }
+      )`
+      )
+      .reduce((prev, curr) => prev + " " + curr, "")}
     
     `;
-  return db.any(query, [`%${name}%`, ...requiredTags, ...unwantedTags]);
+  return db.any(query, [
+    `%${name}%`,
+    ...requiredTags,
+    ...unwantedTags,
+    ...requiredIngredients,
+    ...unwantedIngredients,
+  ]);
 }
 
 // how many recipes should the "Limited" functions return at most

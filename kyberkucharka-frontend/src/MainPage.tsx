@@ -3,6 +3,7 @@ import {
   fetchLatestRecipes,
   fetchRecipesWithTag,
 } from "./functions/communicationHelper";
+import HorizontalLine from "./HorizontalLine";
 import RecipeList from "./RecipeList";
 
 export default function MainPage() {
@@ -17,11 +18,7 @@ export default function MainPage() {
         flexColumn={false}
       ></RecipeList>
 
-      <img
-        src="hr.png"
-        alt="------------------------------"
-        className="hr"
-      ></img>
+      <HorizontalLine />
 
       <h2>Koláče</h2>
       <RecipeList
@@ -29,11 +26,7 @@ export default function MainPage() {
         flexColumn={false}
       ></RecipeList>
 
-      <img
-        src="hr.png"
-        alt="------------------------------"
-        className="hr"
-      ></img>
+      <HorizontalLine />
 
       <h2>Vegetariánsky výber</h2>
       <RecipeList
@@ -41,11 +34,7 @@ export default function MainPage() {
         flexColumn={false}
       ></RecipeList>
 
-      <img
-        src="hr.png"
-        alt="------------------------------"
-        className="hr"
-      ></img>
+      <HorizontalLine />
 
       {/* This will probably be removed once there are too many recipes on the site */}
       <h2>Všetky recepty na stránke</h2>
