@@ -30,6 +30,10 @@ COOKIE_SIGNING= <rovnako (teda, iný string, ale rovnakým spôsobom získaný)>
 8. voliteľné - Prihláste sa jedným z uvedených kont a užívajte si (voliteľné) stránku.
 
 # ČKO (často kladené otázky)
+- *Licencia?*
+
+AGPL v3.
+
 - *Prečo sa to volá KyberKuchárka?*
 
 Názov vznikol, lebo som chcel "byť prvým človekom v tomto desaťročí, čo použije slovo **kyber** neironicky" (čo sa mi nie úplne vyplnilo, lebo všetky kybernetické bezpečnosti a všetko, ale nevadí). S kamarátmi sme "KyberKuchárka" vybrali, lebo to znelo extrémne snobsky a chcel som dať najavo, že od tohto projektu si nemá robiť človek veľké očakávania. Fakt, že nakoniec je UI spravené skôr útulným než hypermoderným spôsobom len pridáva na irónii.
