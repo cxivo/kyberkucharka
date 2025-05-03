@@ -353,7 +353,7 @@ export async function getRelatedRecipesLimited(
     JOIN used_recipe_tags AS urt ON urt.recipe = r.id
     JOIN used_recipe_tags AS urt2 ON urt.tag = urt2.tag AND urt2.recipe = $1
     WHERE NOT r.id = $1
-    GROUP BY urt, r.id, u.username
+    GROUP BY r.id, u.username
     ORDER BY COUNT(urt) DESC
     LIMIT ${RECIPE_LIMIT};
     `;
