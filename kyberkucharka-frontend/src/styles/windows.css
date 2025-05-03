@@ -19,7 +19,7 @@
   text-align: center;
   display: flex;
   flex-direction: column;
-  font-size: larger;
+  
 
   max-width: 100%;
   max-height: 100%;
@@ -29,6 +29,7 @@
 .floating-window-content > * {
   margin-top: 20px;
   margin: auto;
+  font-size: medium;
 }
 
 .floating-window-content form > * {
@@ -36,6 +37,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.floating-window-content h1 {
+  font-size: 50px;
 }
 
 .floating-window-content p {
@@ -65,4 +70,17 @@
 
 .floating-window-content a:hover { 
   transform: rotate(4deg) scale(1.05);
+}
+
+
+@media only screen and (max-width: 600px) {
+  .floating-window-content * {
+    font-size: 22px !important;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .floating-window-content * {
+    font-size: 20px !important;
+  }
 }
