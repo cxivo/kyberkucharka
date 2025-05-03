@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import { addTag, deleteTag, getTags } from "../databaseFunctions";
+import { addTag, deleteTag, getTags, getTagsPlus } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 
 const router = Router();
@@ -7,6 +7,13 @@ const router = Router();
 // get all tags
 router.get("/", (req: Request, res: Response) => {
   getTags().then((result) => {
+    res.json(result);
+  });
+});
+
+// get all tags + additional info
+router.get("/detailed", (req: Request, res: Response) => {
+  getTagsPlus().then((result) => {
     res.json(result);
   });
 });

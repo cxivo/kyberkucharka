@@ -5,8 +5,7 @@ import {
 } from "../../../common-interfaces/interfaces";
 import { Link } from "react-router-dom";
 import AreYouSureWindow from "../AreYouSureWindow";
-import { fetchTags } from "../functions/communicationHelper";
-import { tagAlphabeticalComparator } from "../functions/commonFunctions";
+import { fetchTagsDetailed } from "../functions/communicationHelper";
 
 export default function TagsList() {
   const [tags, setTags] = useState<Tag[]>([]);
@@ -15,25 +14,20 @@ export default function TagsList() {
 
   async function fetchData() {
     // fetch all tags
-    fetchTags().then((result) =>
-      setTags(result.sort(tagAlphabeticalComparator))
-    );
+    fetchTagsDetailed().then((result) => setTags(result));
   }
 
   useEffect(() => {
     fetchData();
   }, []);
 
-
-
   function sendTag(formData: FormData) {
-
     const formJSON = Object.fromEntries(formData.entries());
     console.log(formJSON);
 
     fetch(`/api/tags/`, {
       method: "POST",
-      body: JSON.stringify({name: formJSON.tagName}),
+      body: JSON.stringify({ name: formJSON.tagName }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -43,10 +37,7 @@ export default function TagsList() {
         if (!response.ok) {
           const json = await response.json();
 
-          
-          
-            alert(json.message);
-          
+          alert(json.message);
         }
       })
       .then(fetchData);
@@ -77,7 +68,9 @@ export default function TagsList() {
       <form action={sendTag}>
         <fieldset className="new-tag-form">
           <legend>Vytvoriť nový tag</legend>
-          <label htmlFor="new-tag-name" id="new-tag-label">Názov nového tagu:</label>
+          <label htmlFor="new-tag-name" id="new-tag-label">
+            Názov nového tagu:
+          </label>
           <input type="text" id="new-tag-name" name="tagName"></input>
           <button type="submit" className="plus-button"></button>
         </fieldset>
@@ -88,6 +81,7 @@ export default function TagsList() {
           <tr>
             <th scope="col">Názov</th>
             <th scope="col">ID</th>
+            <th scope="col">Počet použití</th>
             <th scope="col">Zmazať</th>
           </tr>
         </thead>
@@ -95,19 +89,20 @@ export default function TagsList() {
           {tags.map((tag) => (
             <tr key={tag.id}>
               <td>
-              <Link
-                            style={{ display: "inline-block" }}
-                            to={
-                              `/search?` +
-                              new URLSearchParams({
-                                requiredTags: `[${tag.id}]`,
-                              })
-                            }
-                          >
-                            {tag.name}
-                          </Link>
+                <Link
+                  style={{ display: "inline-block" }}
+                  to={
+                    `/search?` +
+                    new URLSearchParams({
+                      requiredTags: `[${tag.id}]`,
+                    })
+                  }
+                >
+                  {tag.name}
+                </Link>
               </td>
               <td>{tag.id}</td>
+              <td>{tag.count ?? 0}</td>
 
               <td>
                 <img

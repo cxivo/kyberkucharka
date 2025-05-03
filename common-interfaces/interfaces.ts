@@ -8,8 +8,9 @@ export interface User {
 }
 
 export interface Tag {
-    id: number;
-    name: string;
+  id: number;
+  name: string;
+  count?: number;
 }
 
 export type measurement_unit =

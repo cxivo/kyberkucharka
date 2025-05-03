@@ -496,6 +496,16 @@ export async function getTags(): Promise<Tag[]> {
   return db.any(query);
 }
 
+export async function getTagsPlus(): Promise<Tag[]> {
+  const query = `
+    SELECT rt.id, rt.name, COUNT(urt.recipe) 
+    FROM recipe_tags AS rt
+    LEFT JOIN used_recipe_tags AS urt ON urt.tag = rt.id
+    GROUP BY rt.id;
+  `;
+  return db.any(query);
+}
+
 export async function addTag(name: string): Promise<number> {
   const query = `INSERT INTO recipe_tags(name) VALUES ($1) RETURNING id;`;
   return db.one(query, [name]);

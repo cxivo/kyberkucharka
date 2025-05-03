@@ -2,6 +2,7 @@ import { Ingredient, Recipe, Tag } from "../../../common-interfaces/interfaces";
 import {
   ingredientAlphabeticalComparator,
   tagAlphabeticalComparator,
+  tagUsageComparator,
 } from "./commonFunctions";
 
 async function fetchData(path: string): Promise<any> {
@@ -18,7 +19,6 @@ async function fetchData(path: string): Promise<any> {
 
         return [];
       }
-    
     })
     .catch((error) => {
       console.error(`Error fetching from ${path}`, error);
@@ -35,6 +35,12 @@ export function fetchIngredients(): Promise<Ingredient[]> {
 export function fetchTags(): Promise<Tag[]> {
   return fetchData(`/api/tags`).then((x: Tag[]) =>
     x.sort(tagAlphabeticalComparator)
+  );
+}
+
+export function fetchTagsDetailed(): Promise<Tag[]> {
+  return fetchData(`/api/tags/detailed`).then((x: Tag[]) =>
+    x.sort(tagUsageComparator)
   );
 }
 
