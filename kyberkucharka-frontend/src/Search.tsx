@@ -160,48 +160,42 @@ export default function Search() {
       <div className="search-settings">
         <h1>Hľadať</h1>
         <form>
-          <div className="search-div">
-            <label htmlFor="name">Názov: </label>
-            <input
-              type="text"
-              id="name"
-              onChange={(e) => setSearchText(e.target.value)}
-              value={searchText}
-              autoFocus
-            />
-          </div>
+          <label htmlFor="name">Názov: </label>
+          <input
+            type="text"
+            id="name"
+            onChange={(e) => setSearchText(e.target.value)}
+            value={searchText}
+            autoFocus
+          />
 
-          <div className="search-div">
-            <label htmlFor="required-tags">Tagy, ktoré musí recept mať</label>
-            {selectForTags(
-              "required-tags",
-              "Musí mať tagy",
-              requiredTags,
-              (e) => {
-                setRequiredTags(
-                  e.map((o) => {
-                    return { id: o.value, name: o.label };
-                  })
-                );
-              }
-            )}
-          </div>
+          <label htmlFor="required-tags">Tagy, ktoré musí recept mať</label>
+          {selectForTags(
+            "required-tags",
+            "Musí mať tagy",
+            requiredTags,
+            (e) => {
+              setRequiredTags(
+                e.map((o) => {
+                  return { id: o.value, name: o.label };
+                })
+              );
+            }
+          )}
 
-          <div className="search-div">
-            <label htmlFor="unwanted-tags">Tagy, ktoré recept nesmie mať</label>
-            {selectForTags(
-              "unwanted-tags",
-              "Nesmie mať tagy",
-              unwantedTags,
-              (e) => {
-                setUnwantedTags(
-                  e.map((o) => {
-                    return { id: o.value, name: o.label };
-                  })
-                );
-              }
-            )}
-          </div>
+          <label htmlFor="unwanted-tags">Tagy, ktoré recept nesmie mať</label>
+          {selectForTags(
+            "unwanted-tags",
+            "Nesmie mať tagy",
+            unwantedTags,
+            (e) => {
+              setUnwantedTags(
+                e.map((o) => {
+                  return { id: o.value, name: o.label };
+                })
+              );
+            }
+          )}
         </form>
       </div>
       {loading ? (
