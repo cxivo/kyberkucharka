@@ -40,8 +40,8 @@
 
   --scale: 1;
   --main-recipe-size: 0.8;
-  --card-size: 1.2;
-  --fork-card-size: 1.2;
+  --card-size: 1.15;
+  --fork-card-size: 1.15;
 }
 
 a {
@@ -152,6 +152,19 @@ nav * {
   display: inline-flex;
 }
 
+.main-page {
+  width: 99vw;  /* because the stickers would get hidden behind the scrollbar */
+}
+
+.main-page h2 {
+  font-size: 40px;
+}
+
+.hr {
+  margin-top: 20px;
+  width: 95vw;
+  height: 40px;
+}
 
 .form-error {
   color: orange;

@@ -275,7 +275,12 @@ export async function getRecipesSearch(
   return db.any(query, [`%${name}%`, ...requiredTags, ...unwantedTags]);
 }
 
-export async function getRelatedRecipes(id: number): Promise<PartialRecipe[]> {
+// how many recipes should the "Limited" functions return at most
+const RECIPE_LIMIT = 8;
+
+export async function getRelatedRecipesLimited(
+  id: number
+): Promise<PartialRecipe[]> {
   const query =
     GET_PARTIAL_RECIPE_QUERY +
     `
@@ -284,9 +289,29 @@ export async function getRelatedRecipes(id: number): Promise<PartialRecipe[]> {
     WHERE NOT r.id = $1
     GROUP BY urt, r.id, u.username
     ORDER BY COUNT(urt) DESC
-    LIMIT 10;
+    LIMIT ${RECIPE_LIMIT};
     `;
   return db.any(query, [id]);
+}
+
+export async function getPartialRecipesLimited(): Promise<PartialRecipe[]> {
+  const query =
+    GET_PARTIAL_RECIPE_QUERY +
+    ` ORDER BY r.created_on DESC
+  LIMIT ${RECIPE_LIMIT};`;
+  return db.any(query);
+}
+
+export async function getPartialRecipesByTagLimited(
+  tagID: number
+): Promise<PartialRecipe[]> {
+  const query =
+    GET_PARTIAL_RECIPE_QUERY +
+    ` JOIN used_recipe_tags AS urt ON urt.recipe = r.id
+    WHERE urt.tag = $1
+    ORDER BY r.created_on DESC
+    LIMIT ${RECIPE_LIMIT};`;
+  return db.any(query, [tagID]);
 }
 
 // TODO add recipe validation... maybe using zod

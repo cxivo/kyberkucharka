@@ -13,6 +13,7 @@ import { Tooltip } from "react-tooltip";
 import { useCookies } from "react-cookie";
 import DisplayUsedIngredient from "./DisplayUsedIngredient";
 import { getMeasurementMethodName } from "../functions/unitHelper";
+import { fetchRecipesSimilarTo } from "../functions/communicationHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -256,7 +257,10 @@ export default function ReadRecipe() {
             </main>
             <aside>
               <h2>Podobné recepty</h2>
-              <RecipeList relatedRecipeID={recipeData.id}></RecipeList>
+              <RecipeList
+                dataSource={fetchRecipesSimilarTo(recipeData.id)}
+                flexColumn={true}
+              ></RecipeList>
             </aside>
           </div>
         </div>

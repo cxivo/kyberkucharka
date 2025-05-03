@@ -1,38 +1,30 @@
 import { useEffect, useState } from "react";
-import { PartialRecipe } from "../../common-interfaces/interfaces";
+import { PartialRecipe, Recipe } from "../../common-interfaces/interfaces";
 import RecipeCard from "./recipeComponents/RecipeCard";
 
 interface RecipeListProps {
-  relatedRecipeID?: number;
+  dataSource: Promise<Recipe[]>;
+  flexColumn: boolean;
 }
 
-export default function RecipeList({ relatedRecipeID }: RecipeListProps) {
+export default function RecipeList({
+  dataSource,
+  flexColumn,
+}: RecipeListProps) {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [invalid, setInvalid] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
-      await fetch(
-        relatedRecipeID != null
-          ? `/api/recipes/related/${relatedRecipeID}`
-          : `/api/recipes`
-      )
-        .then(async (response) => {
-          if (response.ok) {
-            const result = await response.json();
-            setRecipesList(result);
-            setLoading(false);
-          } else {
-            setInvalid(true);
-            setLoading(false);
-          }
-        })
-        .catch((e) => {
-          console.error("Error fetching data:", e);
-          setInvalid(true);
-          setLoading(false);
-        });
+      const recipes: Recipe[] = await dataSource;
+      if (recipes.length > 0) {
+        setRecipesList(recipes);
+        setLoading(false);
+      } else {
+        setInvalid(true);
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -43,9 +35,7 @@ export default function RecipeList({ relatedRecipeID }: RecipeListProps) {
   ) : invalid ? (
     <p>Nastala neznáma chyba</p>
   ) : (
-    <div
-      className={`card-container ${relatedRecipeID != null && "flex-column"}`}
-    >
+    <div className={`card-container ${flexColumn && "flex-column"}`}>
       {recipesList.map((recipe) => (
         <RecipeCard key={recipe.id} recipe={recipe} isFork={false}></RecipeCard>
       ))}

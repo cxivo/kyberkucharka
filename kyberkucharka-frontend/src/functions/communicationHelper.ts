@@ -44,6 +44,32 @@ export function fetchTagsDetailed(): Promise<Tag[]> {
   );
 }
 
+/* export type FetchingFunction = (
+  success: (result: Recipe[]) => void,
+  httpError: (status: number, message: string) => void,
+  error: (e: Error) => void
+) => void; */
+
+const COMMON_RECIPE_THEN = async (response: Response) => {
+  const result = await response.json();
+  if (response.ok) {
+    return result;
+  } else {
+    console.error(
+      "An error has occured in fetchRecipesSimilarTo: ",
+      response.status,
+      result.message
+    );
+    return [];
+  }
+}
+
+const COMMON_RECIPE_CATCH = async (error: Error) => {
+  console.error("An error has occured in fetchRecipesSimilarTo: ", error);
+  return [];
+};
+
+
 export async function fetchRecipe(
   id: string,
   success: (result: Recipe) => void,
@@ -61,3 +87,31 @@ export async function fetchRecipe(
     })
     .catch(error);
 }
+
+
+export async function fetchAllRecipes(): Promise<Recipe[]> {
+  return fetch(`/api/recipes`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}
+
+export async function fetchLatestRecipes(): Promise<Recipe[]> {
+  return fetch(`/api/recipes/latest`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}
+
+export async function fetchRecipesSimilarTo(
+  relatedRecipeID: number
+): Promise<Recipe[]> {
+  return fetch(`/api/recipes/related/${relatedRecipeID}`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}
+
+export async function fetchRecipesWithTag(tagID: number): Promise<Recipe[]> {
+  return fetch(`/api/recipes/by-tag/${tagID}`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}
+

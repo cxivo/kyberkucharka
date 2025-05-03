@@ -4,10 +4,12 @@ import {
   deleteRecipe,
   getPartialRecipeByID,
   getPartialRecipes,
+  getPartialRecipesByTagLimited,
   getPartialRecipesByUser,
+  getPartialRecipesLimited,
   getRecipeByID,
   getRecipesSearch,
-  getRelatedRecipes,
+  getRelatedRecipesLimited,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 import { Recipe } from "../../../common-interfaces/interfaces";
@@ -30,7 +32,33 @@ router.get("/", (req: Request, res: Response) => {
 router.get("/related/:id", (req: Request, res: Response) => {
   const recipeId = parseInt(req.params.id);
 
-  getRelatedRecipes(recipeId)
+  getRelatedRecipesLimited(recipeId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// get a couple of latest recipes
+router.get("/latest/", (req: Request, res: Response) => {
+  getPartialRecipesLimited()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// get recipes by tag
+router.get("/by-tag/:id", (req: Request, res: Response) => {
+  const tagId = parseInt(req.params.id);
+
+  getPartialRecipesByTagLimited(tagId)
     .then((result) => {
       res.json(result);
     })

@@ -72,7 +72,8 @@
   padding-bottom: calc(0.5vw * var(--main-recipe-size));
   line-height: calc(3.449vw * var(--main-recipe-size));
   margin-bottom: 80px;
-  overflow-x: hidden;
+  overflow: visible;
+
 }
 
 
@@ -151,6 +152,7 @@ img.recipe-image {
   margin-top: 0;
   margin-bottom: calc(1.48vw * var(--main-recipe-size));
   height: calc(4.3vw * var(--main-recipe-size));
+  
 
   color: #1a1a1a;
 }

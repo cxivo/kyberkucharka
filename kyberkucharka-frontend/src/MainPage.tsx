@@ -1,12 +1,58 @@
+import {
+  fetchAllRecipes,
+  fetchLatestRecipes,
+  fetchRecipesWithTag,
+} from "./functions/communicationHelper";
 import RecipeList from "./RecipeList";
 
 export default function MainPage() {
   return (
-    <>
+    <div className="main-page">
       <title>Kyberkuchárka!</title>
-      <h1>Vitajte na hlavnej stránke!</h1>
-      <h2>Zoznam všetkých receptov:</h2>
-      <RecipeList></RecipeList>
-    </>
+      <h1>Vitajte na Kyberkuchárke!</h1>
+
+      <h2>Najnovšie recepty</h2>
+      <RecipeList
+        dataSource={fetchLatestRecipes()}
+        flexColumn={false}
+      ></RecipeList>
+
+      <img
+        src="hr.png"
+        alt="------------------------------"
+        className="hr"
+      ></img>
+
+      <h2>Koláče</h2>
+      <RecipeList
+        dataSource={fetchRecipesWithTag(3 /* ID of tag "koláče" */)}
+        flexColumn={false}
+      ></RecipeList>
+
+      <img
+        src="hr.png"
+        alt="------------------------------"
+        className="hr"
+      ></img>
+
+      <h2>Vegetariánsky výber</h2>
+      <RecipeList
+        dataSource={fetchRecipesWithTag(14 /* ID of tag "vegetariánske" */)}
+        flexColumn={false}
+      ></RecipeList>
+
+      <img
+        src="hr.png"
+        alt="------------------------------"
+        className="hr"
+      ></img>
+
+      {/* This will probably be removed once there are too many recipes on the site */}
+      <h2>Všetky recepty na stránke</h2>
+      <RecipeList
+        dataSource={fetchAllRecipes()}
+        flexColumn={false}
+      ></RecipeList>
+    </div>
   );
 }
