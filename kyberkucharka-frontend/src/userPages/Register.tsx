@@ -75,88 +75,110 @@ export default function Register() {
   }
 
   return (
-    <div className="register-window">
-      <h1>Registrácia používateľa</h1>
-      <form onSubmit={sendRegister}>
-        <div>
-          <label htmlFor="username-input">
-            Prihlasovacie meno (iba text, čísla, pomlčka a podčiarkovník):{" "}
-          </label>
-          <input
-            id="username-input"
-            name="username-input"
-            type="text"
-            onChange={(x) => updateFieldFromForm("username", x)}
-            onBlur={checkUsernameExists}
-            pattern="[a-zA-Z0-9\-_]{3,}"
-            title="Prihlasovacie meno musí mať aspoň 3 znaky, ktoré sú písmená bez diakritiky, číslice, pomlčka alebo podčiarkovník"
-            autoComplete="username"
-            required
-          />
-          {userExists ? (
-            <p className="form-error">Užívateľ s týmto menom už existuje.</p>
-          ) : (
-            ""
-          )}
+    <div className="recipe">
+      <div className="register">
+        <div className="recipe-title">
+          <h1>Registrácia používateľa</h1>
         </div>
+        <div className="recipe-body recipe-text">
+          <form onSubmit={sendRegister}>
+            <div>
+              <label htmlFor="username-input">
+                Prihlasovacie meno (iba text, čísla, pomlčka a podčiarkovník):{" "}
+              </label>
+              <input
+                id="username-input"
+                name="username-input"
+                type="text"
+                className="p-like"
+                placeholder=">"
+                onChange={(x) => updateFieldFromForm("username", x)}
+                onBlur={checkUsernameExists}
+                pattern="[a-zA-Z0-9\-_]{3,}"
+                title="Prihlasovacie meno musí mať aspoň 3 znaky, ktoré sú písmená bez diakritiky, číslice, pomlčka alebo podčiarkovník"
+                autoComplete="username"
+                required
+              />
+              {userExists ? (
+                <p className="form-error">
+                  Užívateľ s týmto menom už existuje.
+                </p>
+              ) : (
+                ""
+              )}
+            </div>
 
-        <div>
-          <label htmlFor="display-name-input">
-            Meno, pod ktorým vás ostatní uvidia):{" "}
-          </label>
-          <input
-            id="display-name-input"
-            name="display-name-input"
-            type="text"
-            onChange={(x) => updateFieldFromForm("display_name", x)}
-            pattern=".+"
-            title="Meno musí obsahovať aspoň 1 znak"
-            autoComplete="nickname"
-            required
-          />
+            <div>
+              <label htmlFor="display-name-input">
+                Meno, pod ktorým vás ostatní uvidia):{" "}
+              </label>
+              <input
+                id="display-name-input"
+                name="display-name-input"
+                className="p-like"
+                type="text"
+                placeholder=">"
+                onChange={(x) => updateFieldFromForm("display_name", x)}
+                pattern=".+"
+                title="Meno musí obsahovať aspoň 1 znak"
+                autoComplete="nickname"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password-input">Heslo: </label>
+              <input
+                id="password-input"
+                name="password-input"
+                className="p-like"
+                type="password"
+                placeholder=">"
+                onChange={(x) => updateFieldFromForm("password", x)}
+                pattern=".{8,}"
+                title="Heslo musí mať aspoň 8 znakov"
+                autoComplete="new-password"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password2-input">Opäť heslo: </label>
+              <input
+                id="password2-input"
+                name="password2-input"
+                className="p-like"
+                type="password"
+                placeholder=">"
+                onChange={(x) => setPassword2(x.target.value)}
+                pattern=".{8,}"
+                title="Heslo musí mať aspoň 8 znakov"
+                autoComplete="new-password"
+                required
+              />
+            </div>
+
+            {passwordsMatch ? (
+              <div>&nbsp;</div>
+            ) : (
+              <div className="form-error">Heslá sa nerovnajú!</div>
+            )}
+
+            <input
+              type="submit"
+              className="kyberbutton"
+              disabled={!passwordsMatch || userExists || sendingDisabled}
+            ></input>
+          </form>
+          <p>
+            Ak už máte účet,{" "}
+            <Link className="highlighted-link" to={"/login"}>
+              prihláste sa
+            </Link>
+            .
+          </p>
         </div>
-
-        <div>
-          <label htmlFor="password-input">Heslo: </label>
-          <input
-            id="password-input"
-            name="password-input"
-            type="password"
-            onChange={(x) => updateFieldFromForm("password", x)}
-            pattern=".{8,}"
-            title="Heslo musí mať aspoň 8 znakov"
-            autoComplete="new-password"
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password2-input">Opäť heslo: </label>
-          <input
-            id="password2-input"
-            name="password2-input"
-            type="password"
-            onChange={(x) => setPassword2(x.target.value)}
-            pattern=".{8,}"
-            title="Heslo musí mať aspoň 8 znakov"
-            autoComplete="new-password"
-            required
-          />
-          {passwordsMatch ? (
-            ""
-          ) : (
-            <p className="form-error">Heslá sa nerovnajú!</p>
-          )}
-        </div>
-
-        <input
-          type="submit"
-          disabled={!passwordsMatch || userExists || sendingDisabled}
-        ></input>
-      </form>
-      <p>
-        Ak už máte účet, <Link to={"/login"}>prihláste sa</Link>.
-      </p>
+      </div>
     </div>
   );
 }

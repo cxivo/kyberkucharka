@@ -22,6 +22,7 @@ import "./styles/recipe.css";
 import "./styles/windows.css";
 import "./styles/search.css";
 import "./styles/popup.css";
+import "./styles/register.css";
 import UsersList from "./admin/UsersList.tsx";
 import Search from "./Search.tsx";
 
