@@ -88,7 +88,7 @@
 }
 
 .card img {
-  height: calc(150px * var(--card-size));
+  height: calc(130px * var(--card-size));
   max-width: calc(250px * var(--card-size));
   margin: calc(10px * var(--card-size)) auto;
 
@@ -98,7 +98,7 @@
 }
 
 .fork-card img {
-  height: calc(150px * var(--fork-card-size));
+  height: calc(125px * var(--fork-card-size));
   max-width: calc(250px * var(--fork-card-size));
   margin: calc(10px * var(--fork-card-size)) auto;
 
@@ -123,6 +123,7 @@
 
 .fork-card p {
   max-height: calc(100px * var(--fork-card-size ));
+  max-width: calc(360px * var(--fork-card-size ));
 }
 
 /* FORK */
@@ -137,7 +138,7 @@
 }
 
 .fork-card {
-  margin-right: 8px;
+  margin-right: 14px;
   margin-left: auto;
 
   padding: calc(52px * var(--fork-card-size));
