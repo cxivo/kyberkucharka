@@ -26,10 +26,10 @@ CREATE TABLE IF NOT EXISTS ingredients (
             ON DELETE SET NULL
 );
 
-CREATE TABLE IF NOT EXISTS ingredient_tags (
+/* CREATE TABLE IF NOT EXISTS ingredient_tags (
     id SERIAL PRIMARY KEY,
     name text UNIQUE NOT NULL
-);
+); */
 
 CREATE TABLE IF NOT EXISTS recipe_tags (
     id SERIAL PRIMARY KEY,
@@ -96,7 +96,7 @@ CREATE TABLE IF NOT EXISTS used_recipe_tags (
             ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS used_ingredient_tags (
+/* CREATE TABLE IF NOT EXISTS used_ingredient_tags (
     tag INTEGER NOT NULL,
     ingredient INTEGER NOT NULL,
     PRIMARY KEY (tag, ingredient),
@@ -108,6 +108,6 @@ CREATE TABLE IF NOT EXISTS used_ingredient_tags (
         FOREIGN KEY(ingredient)
             REFERENCES ingredients(id)
             ON DELETE CASCADE
-);
+); */
 
 CREATE EXTENSION unaccent; 
