@@ -75,7 +75,7 @@ export default function Register() {
   }
 
   return (
-    <div className="recipe">
+    <div className="recipe recipe-notebook">
       <div className="register">
         <div className="recipe-title">
           <h1>Registrácia používateľa</h1>
@@ -99,18 +99,11 @@ export default function Register() {
                 autoComplete="username"
                 required
               />
-              {userExists ? (
-                <p className="form-error">
-                  Užívateľ s týmto menom už existuje.
-                </p>
-              ) : (
-                ""
-              )}
             </div>
 
             <div>
               <label htmlFor="display-name-input">
-                Meno, pod ktorým vás ostatní uvidia):{" "}
+                Meno, pod ktorým vás ostatní uvidia:
               </label>
               <input
                 id="display-name-input"
@@ -122,6 +115,21 @@ export default function Register() {
                 pattern=".+"
                 title="Meno musí obsahovať aspoň 1 znak"
                 autoComplete="nickname"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email-input">Adresa elektronickej pošty: </label>
+              <input
+                id="email-input"
+                name="email-input"
+                className="p-like"
+                type="email"
+                placeholder=">"
+                onChange={(x) => updateFieldFromForm("email", x)}
+                title="Musí byť platná emailová adresa"
+                autoComplete="email"
                 required
               />
             </div>
@@ -157,6 +165,14 @@ export default function Register() {
                 required
               />
             </div>
+
+            {userExists ? (
+              <div className="form-error">
+                Užívateľ s týmto menom už existuje!
+              </div>
+            ) : (
+              <div>&nbsp;</div>
+            )}
 
             {passwordsMatch ? (
               <div>&nbsp;</div>

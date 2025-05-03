@@ -24,7 +24,7 @@
   padding-top: 12px;
 }
 
-.kyberbutton-white:disabled {
+.kyberbutton:disabled, .kyberbutton-white:disabled {
   color: gray;
 }
 

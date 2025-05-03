@@ -428,8 +428,8 @@ export async function addUser(user: User): Promise<User> {
   const hash = bcrypt.hashSync(user.password ?? "");
   user.password = hash;
 
-  const query = `INSERT INTO users(username, display_name, password, registered_on)
-    VALUES ($<username>, $<display_name>, $<password>, NOW()) RETURNING username, display_name, registered_on, is_admin;`;
+  const query = `INSERT INTO users(username, display_name, password, registered_on, email)
+    VALUES ($<username>, $<display_name>, $<password>, NOW(), $<email>) RETURNING username, display_name, registered_on, is_admin;`;
   return db.one(query, user);
 }
 

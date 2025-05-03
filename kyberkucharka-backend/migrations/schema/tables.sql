@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
     display_name varchar(256) NOT NULL,
     password varchar(64) NOT NULL,
     registered_on timestamp,
+    email varchar(256),
     is_admin boolean NOT NULL DEFAULT false
 );
 

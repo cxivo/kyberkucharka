@@ -39,6 +39,11 @@ export async function validateUser(user: User): Promise<ValidationResult> {
     return { message: "Heslo musí mať aspoň 8 znakov.", status: 400 };
   }
 
+  // we don't care about email that much tbh
+  if (user.email == null) {
+    return { message: "Nebol zadaný email.", status: 400 };
+  }
+
   // everything looks good
   return undefined;
 }

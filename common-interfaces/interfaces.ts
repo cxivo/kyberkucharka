@@ -3,6 +3,7 @@ export interface User {
   display_name: string;
   password?: string;
   registered_on?: Date;
+  email?: string;
   is_admin: boolean;
 }
 
