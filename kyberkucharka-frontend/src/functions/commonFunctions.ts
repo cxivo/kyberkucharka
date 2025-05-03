@@ -1,3 +1,4 @@
+import { FilterOptionOption } from "react-select";
 import { Ingredient, Tag } from "../../../common-interfaces/interfaces";
 
 export function ingredientAlphabeticalComparator(
@@ -13,4 +14,17 @@ export function tagAlphabeticalComparator(a: Tag, b: Tag): number {
 
 export function tagUsageComparator(a: Tag, b: Tag): number {
   return (b.count ?? 0) - (a.count ?? 0);
+}
+
+export function withoutDiacritics(s: string): string {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
+// for React-Select
+export function ingredientFilter(availableIngredients: Ingredient[]) {
+  return (option: FilterOptionOption<{ value: number; label: string; }>, inputValue: string) => {
+    const searchIn = withoutDiacritics((option.label + availableIngredients.find(i => i.id === parseInt(option.value))?.alt_names).toLowerCase())
+  
+    return searchIn.includes(withoutDiacritics(inputValue.toLowerCase()));
+  };
 }

@@ -7,6 +7,7 @@ import {
 } from "../../../common-interfaces/interfaces";
 import EditableIngredient from "./EditableIngredient";
 import CreatableSelect from "react-select/creatable";
+import { ingredientFilter } from "../functions/commonFunctions";
 
 interface EditableSectionProps {
   section: Section;
@@ -154,6 +155,7 @@ export default function EditableSection({
               }
             : null
         }
+        filterOption={ingredientFilter(selectableIngredients)}
       />
     </div>
   );

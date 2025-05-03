@@ -11,6 +11,7 @@ import { useDebounce } from "use-debounce";
 import { useSearchParams } from "react-router-dom";
 import RecipeCard from "./recipeComponents/RecipeCard";
 import HorizontalLine from "./HorizontalLine";
+import { ingredientFilter } from "./functions/commonFunctions";
 
 
 /* const styles: StylesConfig<OptionsList, true> = {
@@ -222,6 +223,8 @@ export default function Search() {
     onChange: (e: MultiValue<OptionsList>) => void,
     _hasFixed: boolean
   ) {
+    
+
     return (
       <Select
         id={id}
@@ -243,6 +246,7 @@ export default function Search() {
         })}
         /* styles={styles} */
         onChange={onChange}
+        filterOption={ingredientFilter(availableIngredients)}
       />
     );
   }
