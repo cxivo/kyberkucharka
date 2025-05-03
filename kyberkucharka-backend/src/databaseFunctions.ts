@@ -176,11 +176,11 @@ const GET_RECIPE_QUERY = `
           SELECT s.id, s.name, s.ordering, json_agg(
             ( 
               SELECT y FROM (
-                SELECT ui.id, ui.amount AS weight, row_to_json(
+                SELECT ui.id, ui.amount AS weight, ui.ordering, row_to_json(
                   i
                 ) AS ingredient
                 FROM ingredients AS i
-                WHERE ui.ingredient = i.id
+                WHERE ui.ingredient = i.id                
               ) y
             )
           ) AS used_ingredients
@@ -216,6 +216,9 @@ function fixMissingRecipeTags(recipe: Recipe): Recipe {
   recipe.sections.map((section: Section) => {
     const s2 = { ...section };
     s2.used_ingredients ??= [];
+
+    s2.used_ingredients.sort((a, b) => a.ordering! - b.ordering!)
+
     return s2;
   });
   return recipe;
@@ -439,7 +442,7 @@ export async function addOrUpdateRecipe(
 
           await Promise.all(
             section.used_ingredients?.map(
-              async (used_ingredient: UsedIngredient) => {
+              async (used_ingredient: UsedIngredient, index: number) => {
                 let ingredient_id = used_ingredient.ingredient.id;
 
                 // add the ingredient if it was newly created
@@ -466,9 +469,9 @@ export async function addOrUpdateRecipe(
                 }
 
                 return transaction.none(
-                  `INSERT INTO used_ingredients(ingredient, section, amount)
-            VALUES ($1, $2, $3);`,
-                  [ingredient_id, db_section_id.id, used_ingredient.weight]
+                  `INSERT INTO used_ingredients(ingredient, section, amount, ordering)
+            VALUES ($1, $2, $3, $4);`,
+                  [ingredient_id, db_section_id.id, used_ingredient.weight, index]
                 );
               }
             )

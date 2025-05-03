@@ -63,6 +63,7 @@ export interface UsedIngredient {
   id: number;
   ingredient: Ingredient;
   weight: number; // in grams
+  ordering?: number;
 }
 
 export interface Section {
