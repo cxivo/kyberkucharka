@@ -496,6 +496,16 @@ export async function getTags(): Promise<Tag[]> {
   return db.any(query);
 }
 
+export async function addTag(name: string): Promise<number> {
+  const query = `INSERT INTO recipe_tags(name) VALUES ($1) RETURNING id;`;
+  return db.one(query, [name]);
+}
+
+export async function deleteTag(id: number): Promise<number> {
+  const query = `DELETE FROM recipe_tags WHERE id = $1 RETURNING id;`;
+  return db.one(query, [id]);
+}
+
 // init
 
 export async function initTables() {

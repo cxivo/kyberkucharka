@@ -18,6 +18,7 @@ import {
   fetchRecipe,
   fetchTags,
 } from "../functions/communicationHelper";
+import { ingredientAlphabeticalComparator } from "../functions/commonFunctions";
 
 interface EditRecipeProps {
   submitAction: (slug: string, recipe: Recipe) => Promise<Response>;
@@ -181,12 +182,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     setRecipeData(newRecipe);
   }
 
-  function ingredientAlphabeticalComparator(
-    a: Ingredient,
-    b: Ingredient
-  ): number {
-    return a.name.localeCompare(b.name);
-  }
+  
 
   // page title
   const pageTitle =

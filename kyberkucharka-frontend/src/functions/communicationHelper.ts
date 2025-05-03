@@ -1,4 +1,8 @@
 import { Ingredient, Recipe, Tag } from "../../../common-interfaces/interfaces";
+import {
+  ingredientAlphabeticalComparator,
+  tagAlphabeticalComparator,
+} from "./commonFunctions";
 
 async function fetchData(path: string): Promise<any> {
   return await fetch(path)
@@ -23,11 +27,15 @@ async function fetchData(path: string): Promise<any> {
 }
 
 export function fetchIngredients(): Promise<Ingredient[]> {
-  return fetchData(`/api/ingredients`);
+  return fetchData(`/api/ingredients`).then((x: Ingredient[]) =>
+    x.sort(ingredientAlphabeticalComparator)
+  );
 }
 
 export function fetchTags(): Promise<Tag[]> {
-  return fetchData(`/api/tags`);
+  return fetchData(`/api/tags`).then((x: Tag[]) =>
+    x.sort(tagAlphabeticalComparator)
+  );
 }
 
 export async function fetchRecipe(

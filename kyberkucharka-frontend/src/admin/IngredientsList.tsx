@@ -118,13 +118,11 @@ export default function IngredientsList() {
     <>
       <title>Správa ingrediencií</title>
       <h1>Zoznam ingrediencií</h1>
-      <img
-        src="/plus.png"
-        alt="Pridať ingredienciu"
-        className="plus"
-        height="50px"
+      <button
+        type="button"
+        className="plus-button"
         onClick={createIngredient}
-      ></img>
+      ></button>
       <table className="ingredients-table">
         <thead>
           <tr>

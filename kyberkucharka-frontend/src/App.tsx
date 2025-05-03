@@ -78,7 +78,14 @@ function Header() {
         </Link>
         <div className="links">
           {userCookie.userData?.is_admin && (
-            <>
+            <div>
+              <Link to="/tag-list">
+                <img
+                  src="/tags-list.png"
+                  alt="Správa tagov"
+                  height="40px"
+                ></img>
+              </Link>
               <Link to="/ingredient-list">
                 <img
                   src="/ingredients-list.png"
@@ -93,7 +100,7 @@ function Header() {
                   height="40px"
                 ></img>
               </Link>
-            </>
+            </div>
           )}
           <Link to="/search">
             <img src="/search.png" alt="Hľadať" height="40px"></img>

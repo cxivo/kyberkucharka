@@ -25,6 +25,7 @@ import "./styles/popup.css";
 import "./styles/register.css";
 import UsersList from "./admin/UsersList.tsx";
 import Search from "./Search.tsx";
+import TagsList from "./admin/TagsList.tsx";
 
 const router = createBrowserRouter([
   {
@@ -112,6 +113,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         <UsersList></UsersList>
+      </App>
+    ),
+  },
+  {
+    path: "/tag-list",
+    element: (
+      <App>
+        <TagsList></TagsList>
       </App>
     ),
   },
