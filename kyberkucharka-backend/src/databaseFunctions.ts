@@ -240,10 +240,11 @@ export async function getRecipesByName(name: string): Promise<Recipe[]> {
 
 export async function getRecipesSearch(
   name: string,
+  requiredTags: number[],
+  unwantedTags: number[],
   requiredIngredients: number[],
   unwantedIngredients: number[],
-  requiredTags: number[],
-  unwantedTags: number[]
+  onlyFromIngredients: number[],
 ): Promise<PartialRecipe[]> {
   const query =
     GET_PARTIAL_RECIPE_QUERY +
@@ -289,7 +290,7 @@ export async function getRecipesSearch(
     ${unwantedIngredients
       .map(
         (ingredientID, index) =>
-          `AND NOT EXISTS (
+          ` AND NOT EXISTS (
         SELECT 1 
         FROM used_ingredients AS ui
         JOIN sections AS s ON ui.section = s.id
@@ -304,6 +305,30 @@ export async function getRecipesSearch(
       )`
       )
       .reduce((prev, curr) => prev + " " + curr, "")}
+
+      ${onlyFromIngredients.length === 0 ? "" :
+      ` AND NOT EXISTS 
+        (
+          SELECT 1 
+          FROM used_ingredients AS ui
+          JOIN sections AS s ON ui.section = s.id
+          WHERE s.recipe = r.id
+          AND 
+          (` +
+            onlyFromIngredients.map(
+              (ingredientID, index) =>
+                `ui.ingredient <> $${
+                  2 +
+                  requiredTags.length +
+                  unwantedTags.length +
+                  requiredIngredients.length +
+                  unwantedIngredients.length +
+                  index
+                }`
+            ).reduce((prev, curr) => prev + " AND " + curr)
+            + "))"
+        } 
+          
     
     `;
   return db.any(query, [
@@ -312,6 +337,7 @@ export async function getRecipesSearch(
     ...unwantedTags,
     ...requiredIngredients,
     ...unwantedIngredients,
+    ...onlyFromIngredients
   ]);
 }
 

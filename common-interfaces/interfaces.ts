@@ -93,6 +93,7 @@ export interface Recipe extends PartialRecipe {
 export type OptionsList = {
   value: number;
   label: string;
+  isFixed?: boolean;
 };
 
 ////////////////////////////////////////////

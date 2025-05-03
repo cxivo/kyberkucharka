@@ -71,26 +71,30 @@ router.get("/by-tag/:id", (req: Request, res: Response) => {
 // search for recipes
 router.get("/search", (req: Request, res: Response) => {
   const queryString = (req.query.query as string) ?? "";
-  const requiredIngredients = JSON.parse(
-    (req.query.requiredIngredients as string) ?? "[]"
-  ) as number[];
-  const unwantedIngredients = JSON.parse(
-    (req.query.unwantedIngredients as string) ?? "[]"
-  ) as number[];
   const requiredTags = JSON.parse(
     (req.query.requiredTags as string) ?? "[]"
   ) as number[];
   const unwantedTags = JSON.parse(
     (req.query.unwantedTags as string) ?? "[]"
   ) as number[];
+  const requiredIngredients = JSON.parse(
+    (req.query.requiredIngredients as string) ?? "[]"
+  ) as number[];
+  const unwantedIngredients = JSON.parse(
+    (req.query.unwantedIngredients as string) ?? "[]"
+  ) as number[];
+  const onlyFromIngredients = JSON.parse(
+    (req.query.onlyFromIngredients as string) ?? "[]"
+  ) as number[];
   console.log(queryString);
 
   getRecipesSearch(
     queryString,
+    requiredTags,
+    unwantedTags,
     requiredIngredients,
     unwantedIngredients,
-    requiredTags,
-    unwantedTags
+    onlyFromIngredients
   )
     .then((result) => {
       console.log(result.length);
