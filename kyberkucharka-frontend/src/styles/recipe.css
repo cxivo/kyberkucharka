@@ -1,6 +1,7 @@
 .recipe {
   color: #1a1a1a;
   text-shadow: 0px 0px calc(0.05vw * var(--main-recipe-size)) #2a2a2a;
+  overflow-x: hidden;
 }
 
 .recipe-title {
@@ -70,6 +71,7 @@
   padding-bottom: calc(0.5vw * var(--main-recipe-size));
   line-height: calc(3.449vw * var(--main-recipe-size));
   margin-bottom: 80px;
+  overflow-x: hidden;
 }
 
 
@@ -266,6 +268,7 @@ fieldset {
   .recipe-notebook {
     margin-top: 150px;
     margin-bottom: 40px;
-    transform: scale(1.4);
+    transform: scale(1.15) translateX(-3vw);
   }
+
 }
