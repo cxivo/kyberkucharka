@@ -24,6 +24,10 @@
   padding-top: 12px;
 }
 
+.kyberbutton-white:disabled {
+  color: gray;
+}
+
 .kyberbutton {
   background-image: url("/box.png");
   color: #1a1a1a;

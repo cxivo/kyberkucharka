@@ -361,10 +361,13 @@ export async function addOrUpdateRecipe(
                   newIngredient.mass_per_tablespoon ??= undefined;
                   newIngredient.created_by = recipe.author.username;
 
+                  // if the user has used the newly created ingredient more than once, it would've caused problems, so we just
+                  // use ON CONFLICT to update nothing and return the id
                   ingredient_id = (
                     await transaction.one(
                       `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, mass_per_tablespoon, alt_names, created_on, created_by)
                 VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<mass_per_tablespoon>, $<alt_names>, NOW(), $<created_by>) 
+                ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name
                 RETURNING id;`,
                       newIngredient
                     )

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import {
+  Ingredient,
   measurement_unit,
+  NONEXISTENT,
   UsedIngredient,
 } from "../../../common-interfaces/interfaces";
 import {
@@ -15,6 +17,7 @@ interface EditableIngredientProps {
   used_ingredient: UsedIngredient;
   setAmount: (index: number, amount: number) => void;
   deleteIngredient: (index: number) => void;
+  editUserAddedIngredient: (originalIngredient: Ingredient) => void;
 }
 
 export default function EditableIngredient({
@@ -22,6 +25,7 @@ export default function EditableIngredient({
   used_ingredient,
   setAmount,
   deleteIngredient,
+  editUserAddedIngredient,
 }: EditableIngredientProps) {
   const [usedUnit, setUsedUnit] = useState<measurement_unit>(
     used_ingredient.ingredient.primary_unit
@@ -85,7 +89,18 @@ export default function EditableIngredient({
           ))}
         </select>
         {" - "}
-        {used_ingredient.ingredient.name}
+        {used_ingredient.ingredient.id === NONEXISTENT ? (
+          <span
+            className="highlighted-link"
+            onClick={() => {
+              editUserAddedIngredient(used_ingredient.ingredient);
+            }}
+          >
+            {used_ingredient.ingredient.name}
+          </span>
+        ) : (
+          <span>{used_ingredient.ingredient.name}</span>
+        )}
       </span>
       <img
         src="/x.png"

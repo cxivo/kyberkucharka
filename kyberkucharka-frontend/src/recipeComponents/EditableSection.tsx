@@ -18,9 +18,8 @@ interface EditableSectionProps {
     possibleName: string,
     thenCall: (i: Ingredient) => void
   ) => void;
+  editUserAddedIngredient: (originalIngredient: Ingredient) => void;
 }
-
-
 
 export default function EditableSection({
   section,
@@ -29,6 +28,7 @@ export default function EditableSection({
   setSection,
   selectableIngredients,
   createNewIngredient,
+  editUserAddedIngredient,
 }: EditableSectionProps): ReactNode {
   const [nextUsedIngredientID, setNextUsedIngredientID] = useState<number>(0);
 
@@ -122,6 +122,7 @@ export default function EditableSection({
               setAmount={setIngredientAmount}
               used_ingredient={usedIngredient}
               deleteIngredient={deleteIngredient}
+              editUserAddedIngredient={editUserAddedIngredient}
             />
           )
         )}

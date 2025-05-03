@@ -67,8 +67,8 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   const [creatingNewIngredient, setCreatingNewIngredient] =
     useState<boolean>(false);
   const [loginNeeded, setLoginNeeded] = useState<boolean>(false);
-  const [possibleNewIngredientName, setPossibleNewIngredientName] =
-    useState<string>("");
+  const [possibleNewIngredient, setPossibleNewIngredient] =
+    useState<Ingredient>(DEFAULT_INGREDIENT);
   const [newIngredientCallback, setNewIngredientCallback] = useState<
     (i: Ingredient) => void
   >(() => {}); // maybe it can be done in a different way, you are free to DM me somehow and voice your opinion
@@ -132,7 +132,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   useEffect(() => {
     // fetch all ingredients
     fetchIngredients().then((result) => {
-      setSelectableIngredients(result);
+      setSelectableIngredients(result.sort(ingredientAlphabeticalComparator));
     });
 
     // fetch all tags
@@ -181,10 +181,17 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     setRecipeData(newRecipe);
   }
 
+  function ingredientAlphabeticalComparator(
+    a: Ingredient,
+    b: Ingredient
+  ): number {
+    return a.name.localeCompare(b.name);
+  }
+
   // page title
   const pageTitle =
     type == "create"
-      ? "Vytváranie receptu"
+      ? "Vytváranie nového receptu"
       : type == "edit"
       ? `Úprava receptu ${recipeData.title}`
       : `Forkovanie receptu ${recipeData.title}`;
@@ -217,9 +224,41 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     thenCall: (i: Ingredient) => void
   ) {
     setCreatingNewIngredient(true);
-    setPossibleNewIngredientName(possibleName);
-    setNewIngredientCallback(() => thenCall); // WHY do I have to write it like this?? why the hell is React calling my functions??
+    setPossibleNewIngredient({ ...DEFAULT_INGREDIENT, name: possibleName });
+    setNewIngredientCallback(() => (i: Ingredient) => {
+      // add to the list of available ingredients
+      setSelectableIngredients(
+        [...selectableIngredients, i].sort(ingredientAlphabeticalComparator)
+      );
+      thenCall(i);
+    }); // WHY do I have to write it like this?? why the hell is React calling my functions??
     // this is the programming equivalent of unsolicited catcalling
+  }
+
+  function editUserAddedIngredient(originalIngredient: Ingredient) {
+    setCreatingNewIngredient(true);
+    setPossibleNewIngredient({ ...originalIngredient });
+
+    // replace the original with this new one
+    setNewIngredientCallback(() => (editedIngredient: Ingredient) => {
+      // in the list of available ingredients
+      setSelectableIngredients(
+        selectableIngredients
+          .map((i) => (i === originalIngredient ? editedIngredient : i))
+          .sort(ingredientAlphabeticalComparator)
+      );
+
+      // and in all sections
+      const newRecipe: Recipe = { ...recipeData };
+      newRecipe.sections = newRecipe.sections.map((s) => {
+        s.used_ingredients = s.used_ingredients.map((ui) =>
+          ui.ingredient === originalIngredient
+            ? { id: ui.id, ingredient: editedIngredient, weight: ui.weight }
+            : ui
+        );
+        return s;
+      });
+    });
   }
 
   // this literally just closes the "window", nothing else
@@ -303,6 +342,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
                       setSection={setSection}
                       selectableIngredients={selectableIngredients}
                       createNewIngredient={createNewIngredient}
+                      editUserAddedIngredient={editUserAddedIngredient}
                     />
                   ))}
                   <button
@@ -371,12 +411,13 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
         <EditIngredientWindow
           titleText="Vytvorenie novej ingrediencie"
           defaultIngredient={{
-            ...DEFAULT_INGREDIENT,
-            name: possibleNewIngredientName,
+            ...possibleNewIngredient,
           }}
           callbackSuccess={newIngredientCallback}
           callbackAny={doneCreating}
-          existingIngredients={selectableIngredients}
+          existingIngredients={selectableIngredients.filter(
+            (i) => i.name !== possibleNewIngredient.name
+          )}
         />
       )}
       {loginNeeded && (

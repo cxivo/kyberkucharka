@@ -7,3 +7,4 @@
 - @media print - optimize how the printed recipe looks
 - užívateľské štýly - vyber si vlastný stôl
 - maybe nahraď content-editable inputmi
+- https://stackoverflow.com/questions/4069718/postgres-insert-if-does-not-exist-already
