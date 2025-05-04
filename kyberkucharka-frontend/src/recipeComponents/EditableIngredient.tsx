@@ -10,6 +10,7 @@ import {
   amountToGrams,
   formatAmount,
   gramsToAmount,
+  roundToAtMostDecimals,
 } from "../functions/unitHelper";
 
 interface EditableIngredientProps {
@@ -40,11 +41,11 @@ export default function EditableIngredient({
           step={0.05}
           min={0}
           autoFocus
-          value={used_ingredient.weight === 0? "" : gramsToAmount(
+          value={used_ingredient.weight === 0? "" : roundToAtMostDecimals(gramsToAmount(
             used_ingredient.weight,
             used_ingredient.ingredient,
             usedUnit
-          )}
+          ))}
           onInput={(x) => {
             setAmount(
               index,
