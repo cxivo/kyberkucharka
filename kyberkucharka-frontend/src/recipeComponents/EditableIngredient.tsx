@@ -39,7 +39,8 @@ export default function EditableIngredient({
           type="number"
           step={0.05}
           min={0}
-          value={gramsToAmount(
+          autoFocus
+          value={used_ingredient.weight === 0? "" : gramsToAmount(
             used_ingredient.weight,
             used_ingredient.ingredient,
             usedUnit
