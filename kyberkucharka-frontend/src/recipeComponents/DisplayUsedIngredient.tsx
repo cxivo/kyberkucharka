@@ -14,12 +14,14 @@ import {
 interface DisplayUsedIngredientProps {
   used_ingredient: UsedIngredient;
   measurementMethod: measurement_method;
+  scale?: number;
   changeUnitCallback: () => void;
 }
 
 export default function DisplayUsedIngredient({
   used_ingredient,
   measurementMethod,
+  scale,
   changeUnitCallback,
 }: DisplayUsedIngredientProps) {
   const [usedUnit, setUsedUnit] = useState<measurement_unit>(
@@ -33,7 +35,7 @@ export default function DisplayUsedIngredient({
         if (
           allowedUnits(used_ingredient.ingredient).includes("tsp") &&
           gramsToAmount(
-            used_ingredient.weight,
+            used_ingredient.weight * (scale ?? 1),
             used_ingredient.ingredient,
             "tsp"
           ) < 3
@@ -51,7 +53,7 @@ export default function DisplayUsedIngredient({
         } else if (
           allowedUnits(used_ingredient.ingredient).includes("tbsp") &&
           gramsToAmount(
-            used_ingredient.weight,
+            used_ingredient.weight * (scale ?? 1),
             used_ingredient.ingredient,
             "tbsp"
           ) >= 1
@@ -70,7 +72,7 @@ export default function DisplayUsedIngredient({
         if (
           allowedUnits(used_ingredient.ingredient).includes("tbsp") &&
           gramsToAmount(
-            used_ingredient.weight,
+            used_ingredient.weight * (scale ?? 1),
             used_ingredient.ingredient,
             "tbsp"
           ) >= 1
@@ -93,7 +95,7 @@ export default function DisplayUsedIngredient({
     <li key={used_ingredient.id}>
       {roundToAtMostDecimals(
         gramsToAmount(
-          used_ingredient.weight,
+          used_ingredient.weight * (scale ?? 1),
           used_ingredient.ingredient,
           usedUnit
         )
@@ -112,7 +114,7 @@ export default function DisplayUsedIngredient({
             <option value={u} key={u}>
               {formatAmount(
                 used_ingredient.ingredient,
-                used_ingredient.weight,
+                used_ingredient.weight * (scale ?? 1),
                 u
               )}
             </option>
@@ -120,7 +122,7 @@ export default function DisplayUsedIngredient({
         </select>
       ) : (
         // only grams are available, don't display a select
-        formatAmount(used_ingredient.ingredient, used_ingredient.weight, "g")
+        formatAmount(used_ingredient.ingredient, used_ingredient.weight * (scale ?? 1), "g")
       )}
       {" - "}
       {used_ingredient.ingredient.name}

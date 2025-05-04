@@ -5,6 +5,7 @@ import {
   measurement_method,
   measurement_method_list,
   Recipe,
+  Section,
 } from "../../../common-interfaces/interfaces";
 import AreYouSureWindow from "../AreYouSureWindow";
 import RecipeList from "../RecipeList";
@@ -12,8 +13,14 @@ import RecipeCard from "./RecipeCard";
 import { Tooltip } from "react-tooltip";
 import { useCookies } from "react-cookie";
 import DisplayUsedIngredient from "./DisplayUsedIngredient";
-import { getMeasurementMethodName } from "../functions/unitHelper";
-import { fetchRecipesForkedFrom, fetchRecipesSimilarToNotForks } from "../functions/communicationHelper";
+import {
+  getMeasurementMethodName,
+  roundToAtMostDecimals,
+} from "../functions/unitHelper";
+import {
+  fetchRecipesForkedFrom,
+  fetchRecipesSimilarToNotForks,
+} from "../functions/communicationHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -27,6 +34,7 @@ export default function ReadRecipe() {
   );
   const [measurementMethod, setMeasurementMethod] =
     useState<measurement_method>("primary");
+  const [scale, setScale] = useState<number>(1);
 
   const { slug = "0" } = useParams();
 
@@ -61,6 +69,12 @@ export default function ReadRecipe() {
   }, [slug]);
 
   useEffect(() => console.log(recipeData), [recipeData]);
+
+  useEffect(() => {
+    if (isNaN(scale)) {
+      setScale(0);
+    }
+  }, [scale]);
 
   function deleteRecipe() {
     setLoading(true);
@@ -202,6 +216,22 @@ export default function ReadRecipe() {
                         </option>
                       ))}
                     </select>
+                  <br />
+                    Počet porcií:{" "}
+                    <input
+                      className="p-like"
+                      type="number"
+                      step={0.1}
+                      min={0.1}
+                      autoFocus
+                      value={scale > 0 ? scale : ""}
+                      onInput={(x) => {
+                        setScale(parseFloat(x.currentTarget.value));
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.value = e.currentTarget.value || "0";
+                      }}
+                    />
                   </p>
 
                   {recipeData?.sections?.map((section) => (
@@ -213,6 +243,7 @@ export default function ReadRecipe() {
                             used_ingredient={used_ingredient}
                             measurementMethod={measurementMethod}
                             key={used_ingredient.id}
+                            scale={scale}
                             changeUnitCallback={
                               individuallyChangedIngredientUnit
                             }
@@ -221,6 +252,22 @@ export default function ReadRecipe() {
                       </ul>
                     </div>
                   ))}
+                  <p>
+                    Celková hmotnosť výsledku:{" "}
+                    {roundToAtMostDecimals(
+                      scale *
+                        recipeData.sections.reduce<number>(
+                          (a: number, b: Section) =>
+                            a +
+                            b.used_ingredients.reduce<number>(
+                              (c, d) => c + d.weight,
+                              0
+                            ),
+                          0
+                        )
+                    )}{" "}
+                    g
+                  </p>
                   <h2>Postup</h2>
                   <p style={{ whiteSpace: "pre-line" }}>
                     {recipeData?.instructions}
@@ -256,7 +303,7 @@ export default function ReadRecipe() {
               </div>
             </main>
             <aside>
-            <RecipeList
+              <RecipeList
                 dataSource={fetchRecipesForkedFrom(recipeData.id)}
                 flexColumn={true}
                 displayText="Forknuté z receptu"
