@@ -104,7 +104,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
 
           setRecipeData(result);
           setLoading(false);
-          setSendingDisabled(false);
         },
         // http error
         (status, message) =>
@@ -126,7 +125,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     } else {
       setRecipeData(DEFAULT_RECIPE);
       setLoading(false);
-      setSendingDisabled(false);
     }
   }, [params]);
 
@@ -175,14 +173,17 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
       .then(() => setSendingDisabled(false));
   }
 
-  useEffect(() => console.log(recipeData), [recipeData]);
+  useEffect(() => {
+    console.log(recipeData);
+
+    // soft prevent sending recipe with empty title
+    setSendingDisabled(recipeData.title == "");
+  }, [recipeData]);
 
   function updateFieldFromForm(field: keyof Recipe, val: any) {
     const newRecipe: Recipe = { ...recipeData, [field]: val };
     setRecipeData(newRecipe);
   }
-
-  
 
   // page title
   const pageTitle =
