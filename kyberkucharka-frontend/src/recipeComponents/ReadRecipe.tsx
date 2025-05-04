@@ -216,7 +216,7 @@ export default function ReadRecipe() {
                         </option>
                       ))}
                     </select>
-                  <br />
+                    <br />
                     Počet porcií:{" "}
                     <input
                       className="p-like"
@@ -252,7 +252,10 @@ export default function ReadRecipe() {
                       </ul>
                     </div>
                   ))}
-                  <p>
+                  <p
+                    data-tooltip-id="recipe-mass-tooltip"
+                    data-tooltip-content="Hmotnosť spočítaná z hmotností z ingrediencií; nerátajú sa straty"
+                  >
                     Celková hmotnosť výsledku:{" "}
                     {roundToAtMostDecimals(
                       scale *
@@ -267,6 +270,7 @@ export default function ReadRecipe() {
                         )
                     )}{" "}
                     g
+                    <Tooltip id="recipe-mass-tooltip" />
                   </p>
                   <h2>Postup</h2>
                   <p style={{ whiteSpace: "pre-line" }}>
