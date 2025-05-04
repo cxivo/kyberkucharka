@@ -118,6 +118,7 @@ export default function EditIngredientWindow({
               <select
                 name="ingredient-primary-unit"
                 id="ingredient-primary-unit"
+                value={ingredient.primary_unit}
                 onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
                   // unit change-related changes
                   const newIngredient: Ingredient = {
