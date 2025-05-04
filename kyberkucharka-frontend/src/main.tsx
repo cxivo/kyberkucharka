@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import App from "./App.tsx";
-import About from "./About.tsx";
+import About from "./staticPages/About.tsx";
 import ReadRecipe from "./recipeComponents/ReadRecipe.tsx";
 import NoPage from "./NoPage.tsx";
 import MainPage from "./MainPage.tsx";
@@ -26,6 +26,8 @@ import "./styles/register.css";
 import UsersList from "./admin/UsersList.tsx";
 import Search from "./Search.tsx";
 import TagsList from "./admin/TagsList.tsx";
+import HowToUse from './staticPages/HowToUse.tsx';
+import UnitConversion from './staticPages/UnitConversion.tsx';
 
 const router = createBrowserRouter([
   {
@@ -129,6 +131,22 @@ const router = createBrowserRouter([
     element: (
       <App>
         <Search></Search>
+      </App>
+    ),
+  },
+  {
+    path: "/how-to-use",
+    element: (
+      <App>
+        <HowToUse />
+      </App>
+    ),
+  },
+  {
+    path: "/unit-conversion",
+    element: (
+      <App>
+        <UnitConversion />
       </App>
     ),
   },

@@ -5,7 +5,7 @@
   align-items: center;
 }
 
-.card {
+.card, .info-card {
   background-image: url("/stickers/sticker-yellow.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -24,7 +24,7 @@
   align-items: center;
 }
 
-.card > div {
+.card > div, .info-card > div {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -35,7 +35,7 @@
 }
 
 
-.card:nth-child(5n + 1) {
+.card:nth-child(5n + 1), .info-card:nth-child(3n + 1) {
   background-image: url("/stickers/sticker-orange.png");
   transform: rotate(-0.5deg) translateX(-2px);
 }
@@ -45,12 +45,12 @@
   transform: rotate(2deg) translateX(5px);
 }
 
-.card:nth-child(5n + 3) {
+.card:nth-child(5n + 3), .info-card:nth-child(3n + 2) {
   background-image: url("/stickers/sticker-yellow.png");
   transform: rotate(-0.5deg);
 }
 
-.card:nth-child(5n + 4) {
+.card:nth-child(5n + 4), .info-card:nth-child(3n + 3) {
   background-image: url("/stickers/sticker-blue.png");
   transform: rotate(1deg) translateX(5px);
 }
@@ -60,18 +60,20 @@
   transform: rotate(-1deg) translateX(-5px);
 }
 
-.card:hover {
+.card:hover, .info-card:hover {
   color: #1a1a1a;
   transform: rotate(0deg);
 }
 
 .card *,
-.fork-card * {
+.fork-card *,
+.info-card * {
   margin: 0;
 }
 
 .card h3,
-.fork-card h3 {
+.fork-card h3,
+.info-card h3 {
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box;
@@ -114,6 +116,15 @@
   display: -webkit-box;
   line-clamp: 3;
   -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+.info-card p {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 5;
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
 }
 
