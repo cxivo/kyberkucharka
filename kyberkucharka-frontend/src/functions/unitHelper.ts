@@ -174,7 +174,7 @@ export function formatAmount(
   grams: number,
   unit: measurement_unit
 ): string {
-  const amount = gramsToAmount(grams, ingredient, unit);
+  const amount = roundToAtMostDecimals(gramsToAmount(grams, ingredient, unit));
   const declension =
     amount === 1 ? 0 : amount === 2 || amount === 3 || amount === 4 ? 1 : 2;
 
