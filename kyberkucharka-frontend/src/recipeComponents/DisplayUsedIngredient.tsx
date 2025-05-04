@@ -29,7 +29,18 @@ export default function DisplayUsedIngredient({
   useEffect(() => {
     switch (measurementMethod) {
       case "primary":
-        setUsedUnit(used_ingredient.ingredient.primary_unit);
+        // use 
+        if (
+          allowedUnits(used_ingredient.ingredient).includes("tsp") &&
+          gramsToAmount(
+            used_ingredient.weight,
+            used_ingredient.ingredient,
+            "tsp"
+          ) < 3
+        ) {
+          setUsedUnit("tsp");
+        } else {
+        setUsedUnit(used_ingredient.ingredient.primary_unit);}
         break;
       case "grams":
         setUsedUnit("g");
