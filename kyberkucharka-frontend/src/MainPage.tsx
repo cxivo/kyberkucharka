@@ -28,6 +28,14 @@ export default function MainPage() {
 
       <HorizontalLine />
 
+      <h2>Sušienky</h2>
+      <RecipeList
+        dataSource={fetchRecipesWithTag(8 /* ID of tag "sušienky" */)}
+        flexColumn={false}
+      ></RecipeList>
+
+      <HorizontalLine />
+
       <h2>Vegetariánsky výber</h2>
       <RecipeList
         dataSource={fetchRecipesWithTag(14 /* ID of tag "vegetariánske" */)}

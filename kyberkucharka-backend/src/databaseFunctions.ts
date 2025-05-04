@@ -22,6 +22,8 @@ const pgp = pgPromise({
 
 export const db = pgp(process.env.DB_URL ?? "");
 
+/* console.log(bcrypt.hashSync("nbusr123")) */
+
 export async function printAllUsers() {
   db.any("SELECT * FROM users;").then((x) => console.log(x));
 }
@@ -356,6 +358,35 @@ export async function getRelatedRecipesLimited(
     JOIN used_recipe_tags AS urt ON urt.recipe = r.id
     JOIN used_recipe_tags AS urt2 ON urt.tag = urt2.tag AND urt2.recipe = $1
     WHERE NOT r.id = $1
+    GROUP BY r.id, u.username
+    ORDER BY COUNT(urt) DESC
+    LIMIT ${RECIPE_LIMIT};
+    `;
+  return db.any(query, [id]);
+}
+
+export async function getForkedRecipesLimited(
+  id: number
+): Promise<PartialRecipe[]> {
+  const query =
+    GET_PARTIAL_RECIPE_QUERY +
+    `
+    WHERE r.forked_from = $1
+    LIMIT ${RECIPE_LIMIT};
+    `;
+  return db.any(query, [id]);
+}
+
+export async function getRelatedRecipesNotForksLimited(
+  id: number
+): Promise<PartialRecipe[]> {
+  const query =
+    GET_PARTIAL_RECIPE_QUERY +
+    `
+    JOIN used_recipe_tags AS urt ON urt.recipe = r.id
+    JOIN used_recipe_tags AS urt2 ON urt.tag = urt2.tag AND urt2.recipe = $1
+    WHERE (NOT r.id = $1)
+    AND (r.forked_from IS NULL OR r.forked_from <> $1)
     GROUP BY r.id, u.username
     ORDER BY COUNT(urt) DESC
     LIMIT ${RECIPE_LIMIT};

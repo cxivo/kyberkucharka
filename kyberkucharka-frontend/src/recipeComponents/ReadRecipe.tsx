@@ -13,7 +13,7 @@ import { Tooltip } from "react-tooltip";
 import { useCookies } from "react-cookie";
 import DisplayUsedIngredient from "./DisplayUsedIngredient";
 import { getMeasurementMethodName } from "../functions/unitHelper";
-import { fetchRecipesSimilarTo } from "../functions/communicationHelper";
+import { fetchRecipesForkedFrom, fetchRecipesSimilarToNotForks } from "../functions/communicationHelper";
 
 export default function ReadRecipe() {
   const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
@@ -256,10 +256,16 @@ export default function ReadRecipe() {
               </div>
             </main>
             <aside>
-              <h2>Podobné recepty</h2>
-              <RecipeList
-                dataSource={fetchRecipesSimilarTo(recipeData.id)}
+            <RecipeList
+                dataSource={fetchRecipesForkedFrom(recipeData.id)}
                 flexColumn={true}
+                displayText="Forknuté z receptu"
+              ></RecipeList>
+
+              <RecipeList
+                dataSource={fetchRecipesSimilarToNotForks(recipeData.id)}
+                flexColumn={true}
+                displayText="Podobné recepty"
               ></RecipeList>
             </aside>
           </div>

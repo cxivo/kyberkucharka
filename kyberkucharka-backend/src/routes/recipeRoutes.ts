@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import {
   addOrUpdateRecipe,
   deleteRecipe,
+  getForkedRecipesLimited,
   getPartialRecipeByID,
   getPartialRecipes,
   getPartialRecipesByTagLimited,
@@ -10,6 +11,7 @@ import {
   getRecipeByID,
   getRecipesSearch,
   getRelatedRecipesLimited,
+  getRelatedRecipesNotForksLimited,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 import { Recipe } from "../../../common-interfaces/interfaces";
@@ -33,6 +35,34 @@ router.get("/related/:id", (req: Request, res: Response) => {
   const recipeId = parseInt(req.params.id);
 
   getRelatedRecipesLimited(recipeId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// get recipes forked from this one
+router.get("/forked-from/:id", (req: Request, res: Response) => {
+  const recipeId = parseInt(req.params.id);
+
+  getForkedRecipesLimited(recipeId)
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// get recipes similar to this one, but not forks
+router.get("/related-not-fork/:id", (req: Request, res: Response) => {
+  const recipeId = parseInt(req.params.id);
+
+  getRelatedRecipesNotForksLimited(recipeId)
     .then((result) => {
       res.json(result);
     })

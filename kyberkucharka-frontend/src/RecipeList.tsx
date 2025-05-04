@@ -5,11 +5,13 @@ import RecipeCard from "./recipeComponents/RecipeCard";
 interface RecipeListProps {
   dataSource: Promise<Recipe[]>;
   flexColumn: boolean;
+  displayText?: string;
 }
 
 export default function RecipeList({
   dataSource,
   flexColumn,
+  displayText,
 }: RecipeListProps) {
   const [recipesList, setRecipesList] = useState<PartialRecipe[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -34,17 +36,14 @@ export default function RecipeList({
     <p>načítavam...</p>
   ) : invalid ? (
     <p>Nastala neznáma chyba</p>
+  ) : recipesList.length == 0 ? (
+    <></>
   ) : (
-    recipesList.length > 0 && (
-      <div className={`card-container ${flexColumn && "flex-column"}`}>
-        {recipesList.map((recipe) => (
-          <RecipeCard
-            key={recipe.id}
-            recipe={recipe}
-            isFork={false}
-          ></RecipeCard>
-        ))}
-      </div>
-    )
+    <div className={`card-container ${flexColumn && "flex-column"}`}>
+      <h2>{displayText}</h2>
+      {recipesList.map((recipe) => (
+        <RecipeCard key={recipe.id} recipe={recipe} isFork={false}></RecipeCard>
+      ))}
+    </div>
   );
 }

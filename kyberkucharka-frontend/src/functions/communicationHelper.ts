@@ -109,6 +109,22 @@ export async function fetchRecipesSimilarTo(
     .catch(COMMON_RECIPE_CATCH);
 }
 
+export async function fetchRecipesForkedFrom(
+  originalRecipeID: number
+): Promise<Recipe[]> {
+  return fetch(`/api/recipes/forked-from/${originalRecipeID}`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}
+
+export async function fetchRecipesSimilarToNotForks(
+  relatedRecipeID: number
+): Promise<Recipe[]> {
+  return fetch(`/api/recipes/related-not-fork/${relatedRecipeID}`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}
+
 export async function fetchRecipesWithTag(tagID: number): Promise<Recipe[]> {
   return fetch(`/api/recipes/by-tag/${tagID}`)
     .then(COMMON_RECIPE_THEN)
