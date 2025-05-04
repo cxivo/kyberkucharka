@@ -33,6 +33,7 @@ export default function DisplayUsedIngredient({
       case "primary":
         // use 
         if (
+          used_ingredient.ingredient.primary_unit === "g" &&
           allowedUnits(used_ingredient.ingredient).includes("tsp") &&
           gramsToAmount(
             used_ingredient.weight * (scale ?? 1),
