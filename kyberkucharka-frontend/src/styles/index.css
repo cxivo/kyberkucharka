@@ -30,7 +30,7 @@
   color: #1a1a1a;
   /*  background-color: #242424; */
   background-image: url("/table-texture.jpg");
-  background-repeat: repeat-y;
+  background-repeat: repeat;
   background-size: 100vw;
 
   font-synthesis: none;
@@ -189,6 +189,8 @@ nav * {
 .ingredients-table {
   margin: auto;
   margin-bottom: 20px;
+  overflow-x: scroll;
+  max-width: 100vw;
 }
 
 table,

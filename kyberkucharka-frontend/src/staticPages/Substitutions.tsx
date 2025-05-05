@@ -26,7 +26,13 @@ export default function Substitutions() {
             Výsledok bude mať takú sviežejšiu, ovocnejšiu chuť, táto substitúcia je použiteľná pri koláčoch.</li>
             <li><em>Ovsené vločky</em> - 5 lyžíc nahradí 1 vajíčko. Najlepšie pri sušienkach a iných veľmi suchých jedlách.</li>
             <li><em>Arašidové maslo</em> - 3 lyžice nahradia 1 vajíčko. Použite tam, kde skutočne chcete chuť arašidového masla, lebo tá veru v recepte nezanikne.</li>
+            <li><em>Sušené droždie</em> - pol balíčku zmiešané so 100ml teplej vody vie nahradiť jedno vajce. Asi chápete, že po pridaní toľko vody treba
+            ten recept trochu viac poupraviť.
+            </li>
+            <li><em>Krv</em> - ...áno, <a href="http://nordicfoodlab.org/blog/2013/9/blood-and-egg/">skutočne</a>. Po zabíjačke niekedy zostane kopa prasačej krvi, ktorú je možné použiť napríklad
+            ako náhradu vajíčok - miesto jedného vajca 65ml krvi. Je to použiteľné aj do koláčov. Nepredpokladám, že toto bude veľa čitateľov využívať.</li>
           </ul>
+          <p>Tak či onak, univerzálna náhrada vajíčka veru neexistuje - v praženici ho nenahradíte ničím.</p>
           <h2>Múky</h2>
           <p>
             Ak nemáte múku nejakej hrubosti zrna, viete použiť múku blízkej hrubosti - teda miesto hladkej polohrubú, miesto polohrubej hrubú či hladkú, niekedy aj
@@ -39,11 +45,11 @@ export default function Substitutions() {
           </p>
           <h2>Prášok do pečiva a sóda bikarbóna</h2>
           <p>Obe tieto ingrediencie majú podobný zmysel života - nafukovať cesto. Vieme ich teda s trochou matematiky relatívne úspešne zameniť.</p>
-          <p>Na dávku kypriaceho prášku do pečiva potrebujeme iba štvrtinu hmotnosti sódy bikarbóny - avšak, sóda bikarbóna je zásada a potrebuje kyslé prostredie - 
+          <p>Na dávku kypriaceho prášku do pečiva potrebujeme iba tretinu hmotnosti sódy bikarbóny - avšak, sóda bikarbóna je zásada a potrebuje kyslé prostredie - 
             to zabezpečí napríklad citrónová šťava, jablká, jogurt, med, málinko octu alebo hnedý cukor - ak teda v recepte už niečo také nie je, mali by ste jedno z 
             toho pridať - pri sladkých koláčoch ideálne nahradiť iný cukor hnedým.
           </p>
-          <p>No a ak nemáme sódu bikarbónu, tak je ju možné nahradiť približne štvornásobkom kypriaceho prášku (akurát možno bude výsledok mierne kyslý).</p>
+          <p>No a ak nemáme sódu bikarbónu, tak je ju možné nahradiť približne trojnásobkom kypriaceho prášku (akurát možno bude výsledok mierne kyslý).</p>
           <h2>Cukor</h2>
           <p>Tu pre zmenu uvediem nie čo je možné nahradiť, ale čo nenahrádzať - hnedý cukor bielym, minimálne ak je v recepte sóda bikarbóna. Biely cukor 
             totiž nie je kyslý a sóda bikarbóna môže zanechať v koláči trpkastú chuť. Ak nemáte hnedý cukor, pridajte aspoň inú kyslú ingredienciu (viď vyššie).
