@@ -97,6 +97,11 @@ export type OptionsList = {
   isFixed?: boolean;
 };
 
+export type RecipesOfTag = {
+  partialRecipes: PartialRecipe[];
+  tag: Tag;
+};
+
 ////////////////////////////////////////////
 
 export const NONEXISTENT = -1;

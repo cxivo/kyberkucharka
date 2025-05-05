@@ -198,6 +198,7 @@ export default function ReadRecipe() {
                   <p>
                     Merať v:{" "}
                     <select
+                      autoFocus
                       className="inconspicuous-select"
                       onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
                         setMeasurementMethod(
@@ -223,7 +224,6 @@ export default function ReadRecipe() {
                       type="number"
                       step={0.1}
                       min={0.1}
-                      autoFocus
                       value={scale > 0 ? scale : ""}
                       onInput={(x) => {
                         setScale(parseFloat(x.currentTarget.value));

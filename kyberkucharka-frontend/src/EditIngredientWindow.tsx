@@ -94,6 +94,7 @@ export default function EditIngredientWindow({
                 type="text"
                 id="ingredient-name"
                 name="ingredient-name"
+                autoFocus
                 defaultValue={defaultIngredient.name}
                 onInput={(e: React.ChangeEvent<HTMLInputElement>) => {
                   // check whether the name is duplicate

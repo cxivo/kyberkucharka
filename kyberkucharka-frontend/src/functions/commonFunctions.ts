@@ -20,6 +20,10 @@ export function withoutDiacritics(s: string): string {
   return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+export function capitalizeFirstLetter(val: string): string {
+  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
+
 // for React-Select
 export function ingredientFilter(availableIngredients: Ingredient[]) {
   return (option: FilterOptionOption<{ value: number; label: string; }>, inputValue: string) => {

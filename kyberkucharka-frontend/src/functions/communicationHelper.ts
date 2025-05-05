@@ -1,4 +1,4 @@
-import { Ingredient, Recipe, Tag } from "../../../common-interfaces/interfaces";
+import { Ingredient, Recipe, RecipesOfTag, Tag } from "../../../common-interfaces/interfaces";
 import {
   ingredientAlphabeticalComparator,
   tagAlphabeticalComparator,
@@ -131,3 +131,8 @@ export async function fetchRecipesWithTag(tagID: number): Promise<Recipe[]> {
     .catch(COMMON_RECIPE_CATCH);
 }
 
+export async function fetchRecipesWithRandomTag(): Promise<RecipesOfTag[]> {
+  return fetch(`/api/recipes/random-tag/`)
+    .then(COMMON_RECIPE_THEN)
+    .catch(COMMON_RECIPE_CATCH);
+}

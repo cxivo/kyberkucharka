@@ -1,13 +1,27 @@
 import {
   fetchAllRecipes,
   fetchLatestRecipes,
-  fetchRecipesWithTag,
+  fetchRecipesWithRandomTag,
 } from "./functions/communicationHelper";
 import HorizontalLine from "./HorizontalLine";
 import InfoCard from "./staticPages/InfoCard";
 import RecipeList from "./RecipeList";
+import { useEffect, useState } from "react";
+import { RecipesOfTag } from "../../common-interfaces/interfaces";
+import { capitalizeFirstLetter } from "./functions/commonFunctions";
 
 export default function MainPage() {
+  const [recipesOfTag, setRecipesOfTag] = useState<RecipesOfTag[]>([]);
+
+ useEffect(() => {
+  const fetchData = async () => {
+    const data = await fetchRecipesWithRandomTag();
+    setRecipesOfTag(data);
+  };
+  fetchData();
+}, []);
+
+
   return (
     <div className="main-page">
       <title>Kyberkuchárka!</title>
@@ -21,7 +35,7 @@ export default function MainPage() {
         />
         <InfoCard
           title="Ako čítať zahraničné recepty?"
-          text={`Čo sakra je "cake flour", koľko je jedna libra a ako sa sakra povie po anglicky "polohrubá múka"?`}
+          text={`Čo sakra je "cake flour", koľko je jedna libra a ako sa vôbec povie po anglicky "polohrubá múka"?`}
           link="/unit-conversion"
         />
       </div>
@@ -31,32 +45,18 @@ export default function MainPage() {
         dataSource={fetchLatestRecipes()}
         flexColumn={false}
       ></RecipeList>
-
       <HorizontalLine />
 
-      <h2>Koláče</h2>
-      <RecipeList
-        dataSource={fetchRecipesWithTag(3 /* ID of tag "koláče" */)}
-        flexColumn={false}
-      ></RecipeList>
-
-      <HorizontalLine />
-
-      <h2>Sušienky</h2>
-      <RecipeList
-        dataSource={fetchRecipesWithTag(8 /* ID of tag "sušienky" */)}
-        flexColumn={false}
-      ></RecipeList>
-
-      <HorizontalLine />
-
-      <h2>Vegetariánsky výber</h2>
-      <RecipeList
-        dataSource={fetchRecipesWithTag(14 /* ID of tag "vegetariánske" */)}
-        flexColumn={false}
-      ></RecipeList>
-
-      <HorizontalLine />
+      {recipesOfTag?.map((r) => (
+        <div key={r.tag.id}>
+          <RecipeList
+            dataSource={Promise.resolve(r.partialRecipes)}
+            flexColumn={false}
+            displayText={capitalizeFirstLetter(r.tag.name)}
+          ></RecipeList>
+          <HorizontalLine />
+        </div>
+      ))}
 
       {/* This will probably be removed once there are too many recipes on the site */}
       <h2>Všetky recepty na stránke</h2>

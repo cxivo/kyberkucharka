@@ -8,6 +8,7 @@ import {
   getPartialRecipesByTagLimited,
   getPartialRecipesByUser,
   getPartialRecipesLimited,
+  getPartialRecipesRandomTagLimited,
   getRecipeByID,
   getRecipesSearch,
   getRelatedRecipesLimited,
@@ -75,6 +76,18 @@ router.get("/related-not-fork/:id", (req: Request, res: Response) => {
 // get a couple of latest recipes
 router.get("/latest/", (req: Request, res: Response) => {
   getPartialRecipesLimited()
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((e) => {
+      console.error(e);
+      res.status(500).json({ message: "Unable to return recipes", error: e });
+    });
+});
+
+// select a random used tag and send it along with a couple of recipes
+router.get("/random-tag/", (req: Request, res: Response) => {
+  getPartialRecipesRandomTagLimited()
     .then((result) => {
       res.json(result);
     })

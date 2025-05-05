@@ -81,7 +81,7 @@ export default function UnitConversion() {
           </ul>
           <h2>Iné konkrétne suroviny</h2>
           <p>Ako si preložit suroviny častokrát predávané v iných krajinách (asi hlavne v Spojených Štátoch) iným spôsobom ako u nás:</p>
-          <ul>1 stick of buttor = 115g masla</ul>
+          <ul>1 stick of butter = 115g masla</ul>
 
           <div className="recipe-text-afterspace">&nbsp;</div>
         </div>

@@ -1,10 +1,11 @@
-import pgPromise from 'pg-promise';
+import pgPromise from "pg-promise";
 import dotenv from "dotenv";
 import {
   Ingredient,
   NONEXISTENT,
   PartialRecipe,
   Recipe,
+  RecipesOfTag,
   Section,
   Tag,
   UsedIngredient,
@@ -219,7 +220,7 @@ function fixMissingRecipeTags(recipe: Recipe): Recipe {
     const s2 = { ...section };
     s2.used_ingredients ??= [];
 
-    s2.used_ingredients.sort((a, b) => a.ordering! - b.ordering!)
+    s2.used_ingredients.sort((a, b) => a.ordering! - b.ordering!);
 
     return s2;
   });
@@ -249,7 +250,7 @@ export async function getRecipesSearch(
   unwantedTags: number[],
   requiredIngredients: number[],
   unwantedIngredients: number[],
-  onlyFromIngredients: number[],
+  onlyFromIngredients: number[]
 ): Promise<PartialRecipe[]> {
   const query =
     GET_PARTIAL_RECIPE_QUERY +
@@ -311,8 +312,10 @@ export async function getRecipesSearch(
       )
       .reduce((prev, curr) => prev + " " + curr, "")}
 
-      ${onlyFromIngredients.length === 0 ? "" :
-      ` AND NOT EXISTS 
+      ${
+        onlyFromIngredients.length === 0
+          ? ""
+          : ` AND NOT EXISTS 
         (
           SELECT 1 
           FROM used_ingredients AS ui
@@ -320,19 +323,21 @@ export async function getRecipesSearch(
           WHERE s.recipe = r.id
           AND 
           (` +
-            onlyFromIngredients.map(
-              (ingredientID, index) =>
-                `ui.ingredient <> $${
-                  2 +
-                  requiredTags.length +
-                  unwantedTags.length +
-                  requiredIngredients.length +
-                  unwantedIngredients.length +
-                  index
-                }`
-            ).reduce((prev, curr) => prev + " AND " + curr)
-            + "))"
-        } 
+            onlyFromIngredients
+              .map(
+                (ingredientID, index) =>
+                  `ui.ingredient <> $${
+                    2 +
+                    requiredTags.length +
+                    unwantedTags.length +
+                    requiredIngredients.length +
+                    unwantedIngredients.length +
+                    index
+                  }`
+              )
+              .reduce((prev, curr) => prev + " AND " + curr) +
+            "))"
+      } 
           
     
     `;
@@ -342,7 +347,7 @@ export async function getRecipesSearch(
     ...unwantedTags,
     ...requiredIngredients,
     ...unwantedIngredients,
-    ...onlyFromIngredients
+    ...onlyFromIngredients,
   ]);
 }
 
@@ -359,7 +364,7 @@ export async function getRelatedRecipesLimited(
     JOIN used_recipe_tags AS urt2 ON urt.tag = urt2.tag AND urt2.recipe = $1
     WHERE NOT r.id = $1
     GROUP BY r.id, u.username
-    ORDER BY COUNT(urt) DESC
+    ORDER BY COUNT(urt) DESC, r.created_on DESC
     LIMIT ${RECIPE_LIMIT};
     `;
   return db.any(query, [id]);
@@ -372,6 +377,7 @@ export async function getForkedRecipesLimited(
     GET_PARTIAL_RECIPE_QUERY +
     `
     WHERE r.forked_from = $1
+    ORDER BY r.created_on DESC
     LIMIT ${RECIPE_LIMIT};
     `;
   return db.any(query, [id]);
@@ -388,7 +394,7 @@ export async function getRelatedRecipesNotForksLimited(
     WHERE (NOT r.id = $1)
     AND (r.forked_from IS NULL OR r.forked_from <> $1)
     GROUP BY r.id, u.username
-    ORDER BY COUNT(urt) DESC
+    ORDER BY COUNT(urt) DESC, r.created_on DESC
     LIMIT ${RECIPE_LIMIT};
     `;
   return db.any(query, [id]);
@@ -409,9 +415,39 @@ export async function getPartialRecipesByTagLimited(
     GET_PARTIAL_RECIPE_QUERY +
     ` JOIN used_recipe_tags AS urt ON urt.recipe = r.id
     WHERE urt.tag = $1
-    ORDER BY r.created_on DESC
+    ORDER BY r.created_on DESC, r.created_on DESC
     LIMIT ${RECIPE_LIMIT};`;
   return db.any(query, [tagID]);
+}
+
+function shuffle<T>(arr: T[]): T[] {
+  return arr
+    .map((value) => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
+
+const NUMBER_OF_TAGS_SELECTED = 3;
+
+export async function getPartialRecipesRandomTagLimited(): Promise<
+  RecipesOfTag[]
+> {
+  return getUsedTags().then(async (tags) => {
+    const selectedTags = shuffle(tags).splice(0, NUMBER_OF_TAGS_SELECTED);
+
+    const query =
+      GET_PARTIAL_RECIPE_QUERY +
+      ` JOIN used_recipe_tags AS urt
+      ON urt.recipe = r.id
+      WHERE urt.tag = $1 
+      ORDER BY r.created_on DESC
+      LIMIT ${RECIPE_LIMIT};`;
+
+    return (
+      await Promise.all(selectedTags.map((tag) => db.any(query, [tag.id])))
+    ).map((x: PartialRecipe[], index) => ( { partialRecipes: x, tag: selectedTags[index] 
+    }));
+  });
 }
 
 // TODO add recipe validation... maybe using zod
@@ -502,7 +538,12 @@ export async function addOrUpdateRecipe(
                 return transaction.none(
                   `INSERT INTO used_ingredients(ingredient, section, amount, ordering)
             VALUES ($1, $2, $3, $4);`,
-                  [ingredient_id, db_section_id.id, used_ingredient.weight, index]
+                  [
+                    ingredient_id,
+                    db_section_id.id,
+                    used_ingredient.weight,
+                    index,
+                  ]
                 );
               }
             )
@@ -618,6 +659,19 @@ export async function toggleAdminForUser(
 // tags
 export async function getTags(): Promise<Tag[]> {
   const query = `SELECT * FROM recipe_tags;`;
+  return db.any(query);
+}
+
+const USAGE_FOR_TAG_TO_BE_CONSIDERED_USED = 3;
+
+export async function getUsedTags(): Promise<Tag[]> {
+  const query = `
+    SELECT rt.id, rt.name 
+    FROM recipe_tags AS rt
+    LEFT JOIN used_recipe_tags AS urt ON urt.tag = rt.id
+    GROUP BY rt.id
+    HAVING COUNT(urt.recipe) >= ${USAGE_FOR_TAG_TO_BE_CONSIDERED_USED} ;
+  `;
   return db.any(query);
 }
 
