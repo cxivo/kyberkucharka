@@ -38,7 +38,7 @@ export default function EditableIngredient({
         <input
           className="p-like"
           type="number"
-          step={0.05}
+          step={0.01}
           min={0}
           autoFocus
           value={used_ingredient.weight === 0? "" : roundToAtMostDecimals(gramsToAmount(

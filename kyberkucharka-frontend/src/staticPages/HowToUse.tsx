@@ -14,6 +14,19 @@ export default function HowToUse() {
             si čítať/vytvárať/upravovať recepty, vyhľadávať. Predsa sme sem
             primiešali aj nejaké iné dobroty:
           </p>
+          <h2>Tvorba a úprava receptu</h2>
+          <p>Môžete si vytvoriť nový recept, upraviť svoj existujúci alebo forknúť si niečí recept (viď nižšie). 
+            Pri tvorbe receptu nemusíte vyplniť všetko - hlavný je názov, ingrediencie a tagy. 
+            </p>
+          <p>
+            Názov zvoľte krátky a výstižný,
+            prosím žiadne "Sušienky tak úžasné, že zmiznú zo stola za pár minút" ani "Tento recept na koláč produkuje tak neuveriteľne
+            lákavý výsledok, že by ste preň boli ochotní podpísať dohodu nútiacu Československo odstúpiť svoje južné územia". 
+          </p>
+          <p>Ingrediencie - hlavná časť receptu. Vyhľadáte si surovinu zo zoznamu (ak nie je ingrediencia dostupná, vytvoríte si ju sami - viď nižšie),
+            vyberiete si jednotku v akej to chcete merať a zadáte množstvo. Ak sa nedá určiť množstvo, nechajte tam nulu - v recepte sa potom množstvo
+            nezobrazí. Lepšie ale je si aspoň tipnúť, keďže tým uľahčíte život ľuďom, ktorí vôbec nevedia odhadnúť miery ale chcú sa tiež najesť.
+          </p>
           <h2>Forkovanie</h2>
           <p>
             Častokrát sa mi stáva, že nájdem zaujímavý recept, ale nie je to

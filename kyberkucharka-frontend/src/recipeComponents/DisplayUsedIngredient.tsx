@@ -31,7 +31,7 @@ export default function DisplayUsedIngredient({
   useEffect(() => {
     switch (measurementMethod) {
       case "primary":
-        // use 
+        // use
         if (
           used_ingredient.ingredient.primary_unit === "g" &&
           allowedUnits(used_ingredient.ingredient).includes("tsp") &&
@@ -43,7 +43,8 @@ export default function DisplayUsedIngredient({
         ) {
           setUsedUnit("tsp");
         } else {
-        setUsedUnit(used_ingredient.ingredient.primary_unit);}
+          setUsedUnit(used_ingredient.ingredient.primary_unit);
+        }
         break;
       case "grams":
         setUsedUnit("g");
@@ -94,38 +95,48 @@ export default function DisplayUsedIngredient({
 
   return (
     <li key={used_ingredient.id}>
-      {roundToAtMostDecimals(
-        gramsToAmount(
-          used_ingredient.weight * (scale ?? 1),
-          used_ingredient.ingredient,
-          usedUnit
-        )
-      )}
-      &nbsp;
-      {allowedUnits(used_ingredient.ingredient).length > 1 ? (
-        <select
-          className="inconspicuous-select"
-          onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
-            setUsedUnit(e.currentTarget.value as measurement_unit);
-            changeUnitCallback();
-          }}
-          value={usedUnit}
-        >
-          {allowedUnits(used_ingredient.ingredient).map((u) => (
-            <option value={u} key={u}>
-              {formatAmount(
-                used_ingredient.ingredient,
-                used_ingredient.weight * (scale ?? 1),
-                u
-              )}
-            </option>
-          ))}
-        </select>
+      {used_ingredient.weight === 0 ? (
+        ""
       ) : (
-        // only grams are available, don't display a select
-        formatAmount(used_ingredient.ingredient, used_ingredient.weight * (scale ?? 1), "g")
+        <>
+          {roundToAtMostDecimals(
+            gramsToAmount(
+              used_ingredient.weight * (scale ?? 1),
+              used_ingredient.ingredient,
+              usedUnit
+            )
+          )}
+          &nbsp;
+          {allowedUnits(used_ingredient.ingredient).length > 1 ? (
+            <select
+              className="inconspicuous-select"
+              onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                setUsedUnit(e.currentTarget.value as measurement_unit);
+                changeUnitCallback();
+              }}
+              value={usedUnit}
+            >
+              {allowedUnits(used_ingredient.ingredient).map((u) => (
+                <option value={u} key={u}>
+                  {formatAmount(
+                    used_ingredient.ingredient,
+                    used_ingredient.weight * (scale ?? 1),
+                    u
+                  )}
+                </option>
+              ))}
+            </select>
+          ) : (
+            // only grams are available, don't display a select
+            formatAmount(
+              used_ingredient.ingredient,
+              used_ingredient.weight * (scale ?? 1),
+              "g"
+            )
+          )}
+          {" - "}
+        </>
       )}
-      {" - "}
       {used_ingredient.ingredient.name}
     </li>
   );
