@@ -28,6 +28,7 @@ import Search from "./Search.tsx";
 import TagsList from "./admin/TagsList.tsx";
 import HowToUse from './staticPages/HowToUse.tsx';
 import UnitConversion from './staticPages/UnitConversion.tsx';
+import Substitutions from './staticPages/Substitutions.tsx';
 
 const router = createBrowserRouter([
   {
@@ -147,6 +148,14 @@ const router = createBrowserRouter([
     element: (
       <App>
         <UnitConversion />
+      </App>
+    ),
+  },
+  {
+    path: "/substitutions",
+    element: (
+      <App>
+        <Substitutions />
       </App>
     ),
   },

@@ -123,8 +123,8 @@
   text-overflow: ellipsis;
   overflow: hidden;
   display: -webkit-box;
-  line-clamp: 5;
-  -webkit-line-clamp: 5;
+  line-clamp: 6;
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
 }
 

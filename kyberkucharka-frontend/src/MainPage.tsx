@@ -34,9 +34,14 @@ export default function MainPage() {
           link="/how-to-use"
         />
         <InfoCard
-          title="Ako čítať zahraničné recepty?"
+          title="Ako čítať cudzokrajné recepty?"
           text={`Čo sakra je "cake flour", koľko je jedna libra a ako sa vôbec povie po anglicky "polohrubá múka"?`}
           link="/unit-conversion"
+        /><InfoCard
+          title="Ako nahrádzať suroviny?"
+          text={`Niekedy má človek alergie, je vegánom alebo jednoducho danú ingredienciu nemá - to však neznamená, že musí ostať o chlebe a soli
+          (prípadne iba o tej soli, ak má alergiu na glutén)`}
+          link="/substitutions"
         />
       </div>
 
