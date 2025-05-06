@@ -452,17 +452,16 @@ export async function getPartialRecipesRandomTagLimited(): Promise<
 
     return (
       await Promise.all(selectedTags.map((tag) => db.any(query, [tag.id])))
-    ).map((x: PartialRecipe[], index) => ( { partialRecipes: x, tag: selectedTags[index] 
+    ).map((x: PartialRecipe[], index) => ({
+      partialRecipes: x,
+      tag: selectedTags[index],
     }));
   });
 }
 
 // TODO add recipe validation... maybe using zod
 // this works both for adding a new recipe and forking an existing one
-export async function addOrUpdateRecipe(
-  recipe: Recipe,
-  id?: number
-): Promise<number> {
+export async function addRecipe(recipe: Recipe): Promise<number> {
   let db_recipe_id: number = -1;
   const r2: any = { ...recipe };
   r2.description ??= "";
@@ -474,111 +473,144 @@ export async function addOrUpdateRecipe(
   // use a transaction, so it either all succeeds or all fails
   return await db
     .tx(async (transaction) => {
-      // if id is set, then we need to remove the previous recipe
-      // this also removes all the sections and used_ingredients
-      // also remembers the date of the original creation
-      const original_creation: string =
-        id == null
-          ? undefined
-          : (
-              await transaction.one(
-                `DELETE FROM recipes WHERE id = $1 RETURNING created_on;`,
-                [id]
-              )
-            ).created_on
-              .toISOString()
-              .slice(0, 19)
-              .replace("T", " ");
-
       // add into the recipe table and get the ID
       db_recipe_id = (
         await transaction.one(
-          `INSERT INTO recipes(${
-            id == null ? "" : "id, "
-          }title, author, created_on, forked_from, description, image_link, preparation_time, instructions)
-          VALUES (${id == null ? "" : "$<id>, "}$<title>, $<author_username>, ${
-            id == null ? "NOW()" : `'${original_creation}'`
-          }, $<forked_from_id>, $<description>, $<image_link>, $<preparation_time>, $<instructions>)
+          `INSERT INTO recipes(title, author, created_on, forked_from, description, image_link, preparation_time, instructions)
+          VALUES ($<title>, $<author_username>, NOW(), $<forked_from_id>, $<description>, $<image_link>, $<preparation_time>, $<instructions>)
           RETURNING id; `,
           r2
         )
       ).id;
 
-      // add each section of the recipe and its used_ingredients
-      await Promise.all(
-        recipe.sections?.map(async (section: Section, i: number) => {
-          const db_section_id = await transaction.one(
-            `INSERT INTO sections(name, recipe, ordering)
-          VALUES ($1, $2, $3)
-          RETURNING id; `,
-            [section.name, db_recipe_id, i]
-          );
-
-          await Promise.all(
-            section.used_ingredients?.map(
-              async (used_ingredient: UsedIngredient, index: number) => {
-                let ingredient_id = used_ingredient.ingredient.id;
-
-                // add the ingredient if it was newly created
-                if (used_ingredient.ingredient.id === NONEXISTENT) {
-                  const newIngredient: Ingredient = {
-                    ...used_ingredient.ingredient,
-                  };
-                  newIngredient.density ??= undefined;
-                  newIngredient.mass_per_piece ??= undefined;
-                  newIngredient.mass_per_tablespoon ??= undefined;
-                  newIngredient.created_by = recipe.author.username;
-
-                  // if the user has used the newly created ingredient more than once, it would've caused problems, so we just
-                  // use ON CONFLICT to update nothing and return the id
-                  ingredient_id = (
-                    await transaction.one(
-                      `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, mass_per_tablespoon, alt_names, created_on, created_by)
-                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<mass_per_tablespoon>, $<alt_names>, NOW(), $<created_by>) 
-                ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name
-                RETURNING id;`,
-                      newIngredient
-                    )
-                  ).id;
-                }
-
-                return transaction.none(
-                  `INSERT INTO used_ingredients(ingredient, section, amount, ordering)
-            VALUES ($1, $2, $3, $4);`,
-                  [
-                    ingredient_id,
-                    db_section_id.id,
-                    used_ingredient.weight,
-                    index,
-                  ]
-                );
-              }
-            )
-          );
-        })
-      );
-
-      await Promise.all(
-        r2.tags?.map((tag: Tag) =>
-          transaction.none(
-            `INSERT INTO used_recipe_tags(recipe, tag) VALUES ($1, $2);`,
-            [db_recipe_id, tag.id]
-          )
-        )
-      );
-
-      // I have no idea why this works, but it does and I'm scared
-
-      //return transaction.batch(queries);
+      await addSectionsAndStuff(r2, recipe, db_recipe_id, transaction);
     })
     .then(() => {
-      console.log(`Modified recipe with id ${db_recipe_id}`);
+      console.log(`Created recipe with id ${db_recipe_id}`);
       return db_recipe_id;
     })
     .catch((e) => {
       console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
       return -1;
     });
+}
+
+export async function updateRecipe(
+  recipe: Recipe,
+  id: number
+): Promise<number> {
+  const r2: any = { ...recipe };
+  r2.description ??= "";
+  r2.image_link ??= "";
+  r2.tags ??= [];
+  r2.author_username = r2.author.username;
+  r2.forked_from_id = r2.forked_from == null ? undefined : r2.forked_from.id;
+
+  // use a transaction, so it either all succeeds or all fails
+  return await db
+    .tx(async (transaction) => {
+      
+      // update recipe info
+      await transaction.one(
+        `UPDATE recipes SET title = $1, description = $2, image_link = $3, preparation_time = $4, instructions = $5
+          WHERE id = $6
+          RETURNING id;`,
+        [
+          r2.title,
+          r2.description,
+          r2.image_link,
+          r2.preparation_time,
+          r2.instructions,
+          id,
+        ]
+      );
+
+      // remove existing sections
+      await transaction.none(
+        `DELETE FROM sections
+        WHERE recipe = $1;`,
+        [id]
+      );
+
+      await addSectionsAndStuff(r2, recipe, id, transaction);
+    })
+    .then(() => {
+      console.log(`Modified recipe with id ${id}`);
+      return id;
+    })
+    .catch((e) => {
+      console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
+      return -1;
+    });
+}
+
+async function addSectionsAndStuff(
+  r2: any,
+  recipe: Recipe,
+  id: number,
+  transaction: pgPromise.ITask<{}>
+) {
+  // add each section of the recipe and its used_ingredients
+  await Promise.all(
+    recipe.sections?.map(async (section: Section, i: number) => {
+      const db_section_id = await transaction.one(
+        `INSERT INTO sections(name, recipe, ordering)
+          VALUES ($1, $2, $3)
+          RETURNING id; `,
+        [section.name, id, i]
+      );
+
+      await Promise.all(
+        section.used_ingredients?.map(
+          async (used_ingredient: UsedIngredient, index: number) => {
+            let ingredient_id = used_ingredient.ingredient.id;
+
+            // add the ingredient if it was newly created
+            if (used_ingredient.ingredient.id === NONEXISTENT) {
+              const newIngredient: Ingredient = {
+                ...used_ingredient.ingredient,
+              };
+              newIngredient.density ??= undefined;
+              newIngredient.mass_per_piece ??= undefined;
+              newIngredient.mass_per_tablespoon ??= undefined;
+              newIngredient.created_by = recipe.author.username;
+
+              // if the user has used the newly created ingredient more than once, it would've caused problems, so we just
+              // use ON CONFLICT to update nothing and return the id
+              ingredient_id = (
+                await transaction.one(
+                  `INSERT INTO ingredients(name, primary_unit, density, mass_per_piece, mass_per_tablespoon, alt_names, created_on, created_by)
+                VALUES ($<name>, $<primary_unit>, $<density>, $<mass_per_piece>, $<mass_per_tablespoon>, $<alt_names>, NOW(), $<created_by>) 
+                ON CONFLICT(name) DO UPDATE SET name=EXCLUDED.name
+                RETURNING id;`,
+                  newIngredient
+                )
+              ).id;
+            }
+
+            return transaction.none(
+              `INSERT INTO used_ingredients(ingredient, section, amount, ordering)
+            VALUES ($1, $2, $3, $4);`,
+              [ingredient_id, db_section_id.id, used_ingredient.weight, index]
+            );
+          }
+        )
+      );
+    })
+  );
+
+  await Promise.all(
+    r2.tags?.map((tag: Tag) =>
+      transaction.none(
+        `INSERT INTO used_recipe_tags(recipe, tag) VALUES ($1, $2);`,
+        [id, tag.id]
+      )
+    )
+  );
+
+  // I have no idea why this works, but it does and I'm scared
+
+  //return transaction.batch(queries);
 }
 
 // deletes a recipe if the person who wants to delete it is the author or an admin
@@ -725,7 +757,7 @@ export async function initTables() {
       console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
     });
 
-  const recipePromises = recipes.map((r) => addOrUpdateRecipe(r));
+  const recipePromises = recipes.map((r) => addRecipe(r));
   await Promise.all(recipePromises)
     .then(() => {
       console.log("Rows inserted successfully!");

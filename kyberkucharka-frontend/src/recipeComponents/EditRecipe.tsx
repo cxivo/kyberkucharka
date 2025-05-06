@@ -120,7 +120,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     };
 
     // if creating a new recipe, no data will be loaded
-    if (type !== "create") {
+    if (slug !== "") {
       fetchData();
     } else {
       setRecipeData(structuredClone(DEFAULT_RECIPE));
@@ -169,7 +169,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
             `An error has occured while trying to add the new recipe: ${json.message}, ${json.error}`
           );
         } else {
-          setRecipeData(structuredClone(DEFAULT_RECIPE));
           navigate(`/recipes/${json.newID}`);
         }
       })

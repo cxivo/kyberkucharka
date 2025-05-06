@@ -310,7 +310,7 @@ export default function ReadRecipe() {
               <RecipeList
                 dataSource={fetchRecipesForkedFrom(recipeData.id)}
                 flexColumn={true}
-                displayText="Forknuté z receptu"
+                displayText="Forky receptu"
               ></RecipeList>
 
               <RecipeList

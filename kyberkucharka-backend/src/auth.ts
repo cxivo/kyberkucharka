@@ -68,8 +68,6 @@ export function authenticateToken(
     res.status(401).json({ message: "No token was provided", error: "" });
   } else {
     verify(token, process.env.TOKEN_SECRET as string, (err: any, user: any) => {
-      console.error(err);
-
       if (err) {
         // invalid or expired token => remove the cookies!
         res.clearCookie("jwtoken").clearCookie("userData").sendStatus(403);

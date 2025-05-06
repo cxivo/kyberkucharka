@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import {
-  addOrUpdateRecipe,
+  addRecipe,
   deleteRecipe,
   getForkedRecipesLimited,
   getPartialRecipeByID,
@@ -13,6 +13,7 @@ import {
   getRecipesSearch,
   getRelatedRecipesLimited,
   getRelatedRecipesNotForksLimited,
+  updateRecipe,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 import { Recipe } from "../../../common-interfaces/interfaces";
@@ -182,7 +183,7 @@ router.post("/", authenticateToken, (req: Request, res: Response) => {
   const recipe: Recipe = req.body;
   recipe.author.username = res.locals.user.username;
 
-  addOrUpdateRecipe(recipe)
+  addRecipe(recipe)
     .then((newID) => {
       res.status(201).json({ newID });
     })
@@ -199,7 +200,7 @@ router.put("/:id", authenticateToken, (req: Request, res: Response) => {
       r.author.username === res.locals.user.username ||
       res.locals.user.is_admin
     ) {
-      addOrUpdateRecipe(req.body, id)
+      updateRecipe(req.body, id)
         .then((newID) => {
           res.status(200).json({ newID });
         })
@@ -222,6 +223,7 @@ router.delete("/:id", authenticateToken, (req: Request, res: Response) => {
 
   deleteRecipe(id, res.locals.user.username)
     .then(() => {
+      console.log(`deleted recipe with id = ${id}`)
       res.sendStatus(204);
     })
     .catch((e) => {
