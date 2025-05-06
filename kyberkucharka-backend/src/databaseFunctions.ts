@@ -255,7 +255,11 @@ export async function getRecipesSearch(
   const query =
     GET_PARTIAL_RECIPE_QUERY +
     ` 
-    WHERE UPPER(unaccent(r.title)) LIKE UPPER(unaccent($1))
+    WHERE (
+      UPPER(unaccent(r.title)) LIKE UPPER(unaccent($1))
+      OR UPPER(unaccent(r.description)) LIKE UPPER(unaccent($1))
+      OR UPPER(unaccent(u.display_name)) LIKE UPPER(unaccent($1))
+    )
     ${requiredTags
       .map(
         (tagID, index) => `
