@@ -13,10 +13,19 @@ import { authenticateToken } from "../auth";
 const router = Router();
 
 // get all users
-router.get("/", (req: Request, res: Response) => {
-  getUsers().then((result) => {
-    res.json(result);
-  });
+router.get("/", authenticateToken, (req: Request, res: Response) => {
+  if (res.locals.user.is_admin) {
+    getUsers().then((result) => {
+      res.json(result);
+    });
+  } else {
+    res
+      .status(403)
+      .json({
+        message:
+          "You don't have the permissions to get the full list of users.",
+      });
+  }
 });
 
 // get user by username
@@ -131,20 +140,25 @@ router.get("/page/:username", async (req: Request, res: Response) => {
   const userPromise = getUserByUsername(req.params.username ?? "");
   const recipesPromise = getPartialRecipesByUser(req.params.username ?? "");
 
-  await Promise.all([userPromise, recipesPromise]).then(
-    ([user, recipes]) => {
+  await Promise.all([userPromise, recipesPromise])
+    .then(([user, recipes]) => {
       if (user == null) {
-        res.status(404).json({message: `No user with username "${req.params.username}" was found.`, error: ""});
+        res
+          .status(404)
+          .json({
+            message: `No user with username "${req.params.username}" was found.`,
+            error: "",
+          });
       } else {
-        res.status(200).json({user: user, recipes: recipes});
+        res.status(200).json({ user: user, recipes: recipes });
       }
-    }
-  ).catch(e => {
-    console.error(e);
-    res.status(500).json({ message: "An unknown error has occured", error: e });
-  });
-
+    })
+    .catch((e) => {
+      console.error(e);
+      res
+        .status(500)
+        .json({ message: "An unknown error has occured", error: e });
+    });
 });
-
 
 export default router;

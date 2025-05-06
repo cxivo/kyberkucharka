@@ -11,7 +11,13 @@ export default function UsersList() {
   const [selectedUsername, setSelectedUsername] = useState<string>("");
 
   async function fetchData() {
-    fetch(`/api/users/`)
+    fetch(`/api/users/`, {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+      credentials: "include",
+    })
       .then(async (response) => {
         const result = await response.json();
 
