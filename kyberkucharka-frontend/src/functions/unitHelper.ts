@@ -294,11 +294,7 @@ export function allowedUnits(ingredient: Ingredient): measurement_unit[] {
 }
 
 export function allowedUnitsExpanded(ingredient: Ingredient): measurement_unit_expanded[] {
-  const units: measurement_unit_expanded[] = ["g", "oz", "lb"];
-
-  if (ingredient.density != null) {
-    units.push("ml", "cup", "fl_oz", "imp_gal", "liquid_pt", "qt", "us_cup");
-  }
+  const units: measurement_unit_expanded[] = ["g"];
 
   if (ingredient.mass_per_piece != null) {
     units.push("pc", "pack");
@@ -307,6 +303,12 @@ export function allowedUnitsExpanded(ingredient: Ingredient): measurement_unit_e
   if (ingredient.mass_per_tablespoon != null) {
     units.push("tsp", "tbsp");
   }
+
+  if (ingredient.density != null) {
+    units.push("ml", "cup", "imp_gal", "qt", "liquid_pt", "us_cup", "fl_oz");
+  }
+
+  units.push("oz", "lb");
 
   return units;
 }
