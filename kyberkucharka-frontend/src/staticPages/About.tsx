@@ -103,6 +103,27 @@ export default function About() {
               tam <em>cxivo</em>.
             </li>
           </ul>
+          <p></p>
+          <h2>Prémiová edícia</h2>
+          <p>Keďže mi nestačí vedieť len ako a z čoho variť, ale aj za <em>čo</em> variť, padlo rozhodnutie pridať pre vás, užívateľov s príliš veľa peniazmi, nejakú
+            bonusovú funkcionalitu...
+          </p>
+          <p>Predstavujem vám <strong>Kyberkuchárku &plusmn;</strong> !</p>
+          <p>To &plusmn; v názve vzniká z toho, že ťažko povedať, či je tá pridaná funkcionalita vôbec... dobrá.
+          </p>
+          <p> V bežnej prevádzke je možné 
+            pri vytváraní receptu zadať ingrediencie aj v imperiálnych mierach, čo uľahčí prepis receptov z angličtiny - vývojový tím si imperiálnu
+            sústavu odtrpel za vás. Pre prémiových
+          užívateľov však ponúkam aj možnosť <em>zobraziť</em> si recept v imperiálnych mierach... A to je všetko. </p>
+          <p>Možno sa teraz pýtate, "prečo by som si to mal kúpiť?", na čo vám poviem že to je aj moja otázka. Netuším, prečo by niekto
+            chcel dobrovoľne používať imperiálne miery. Viac si užívam debbugovanie Cčka než pridávanie podpory pre imperiálne miery. Dokonca som vynaložil viac 
+            snahy len pre to, aby sa pri čítaní receptu nezobrazovali bežnému užívateľovi ani ako možnosť, lebo len čo si spomeniem na existenciu imperiálnej sústavy,
+            môj celý deň je zničený.
+          </p>
+          <p>Keby si však chcete predsa len z nejakého dôvodu kúpiť Kyberkuchárku &plusmn;, ponúkam ju za jednorázovú cenu 20 eur na ruku, čo beriem ako
+            bolestné za to, že som sa musel pozerať na imperiálne jednotky. V cene je aj moje odpustenie vám za tento fetiš na 
+            nepraktické sústavy mier.
+          </p>
 
           <div className="recipe-text-afterspace">&nbsp;</div>
         </div>

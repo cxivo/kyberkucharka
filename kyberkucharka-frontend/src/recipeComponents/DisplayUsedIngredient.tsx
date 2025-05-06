@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 import {
+  Ingredient,
   measurement_method,
   measurement_unit,
+  measurement_unit_expanded,
   UsedIngredient,
 } from "../../../common-interfaces/interfaces";
 import {
   allowedUnits,
+  allowedUnitsExpanded,
   formatAmount,
   gramsToAmount,
   roundToAtMostDecimals,
 } from "../functions/unitHelper";
+import { useCookies } from "react-cookie";
 
 interface DisplayUsedIngredientProps {
   used_ingredient: UsedIngredient;
@@ -27,6 +31,20 @@ export default function DisplayUsedIngredient({
   const [usedUnit, setUsedUnit] = useState<measurement_unit>(
     used_ingredient.ingredient.primary_unit
   );
+  const [userCookie, _setUserCookie, _removeUserCookie] = useCookies(
+    ["userData"],
+    {}
+  );
+  const [allowedFunction, setAllowedFunction] = useState<(i: Ingredient) => measurement_unit_expanded[]>(() => allowedUnits);
+
+  useEffect(() => {
+    if (userCookie.userData?.is_premium) {
+      setAllowedFunction(() => allowedUnitsExpanded);
+    } else {
+      setAllowedFunction(() => allowedUnits);
+    }
+    
+  }, [userCookie])
 
   useEffect(() => {
     switch (measurementMethod) {
@@ -107,7 +125,7 @@ export default function DisplayUsedIngredient({
             )
           )}
           &nbsp;
-          {allowedUnits(used_ingredient.ingredient).length > 1 ? (
+          {allowedFunction(used_ingredient.ingredient).length > 1 ? (
             <select
               className="inconspicuous-select"
               onInput={(e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -116,7 +134,7 @@ export default function DisplayUsedIngredient({
               }}
               value={usedUnit}
             >
-              {allowedUnits(used_ingredient.ingredient).map((u) => (
+              {allowedFunction(used_ingredient.ingredient).map((u) => (
                 <option value={u} key={u}>
                   {formatAmount(
                     used_ingredient.ingredient,

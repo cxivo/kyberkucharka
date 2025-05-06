@@ -119,7 +119,8 @@ json_build_object(
   'username', u.username,
   'display_name', u.display_name,
   'registered_on', u.registered_on,
-  'is_admin', u.is_admin
+  'is_admin', u.is_admin,
+  'is_premium', u.is_premium
 ) AS author
 FROM recipes AS r
 JOIN users AS u 
@@ -134,7 +135,8 @@ const GET_RECIPE_QUERY = `
     'username', u.username,
     'display_name', u.display_name,
     'registered_on', u.registered_on,
-    'is_admin', u.is_admin  
+    'is_admin', u.is_admin,
+    'is_premium', u.is_premium
   ) AS author,
   r.created_on,
   (
@@ -149,7 +151,8 @@ const GET_RECIPE_QUERY = `
         'username', u2.username,
         'display_name', u2.display_name,
         'registered_on', u2.registered_on,
-        'is_admin', u2.is_admin  
+        'is_admin', u2.is_admin, 
+        'is_premium', u2.is_premium
       ) AS author
       FROM recipes AS r2
       JOIN users AS u2 ON r2.author = u2.username
@@ -631,7 +634,7 @@ export async function usernameExists(name: string): Promise<boolean> {
 }
 
 export async function getUsers(): Promise<User[]> {
-  return await db.any(`SELECT username, display_name, registered_on, is_admin 
+  return await db.any(`SELECT username, display_name, registered_on, is_admin, is_premium
     FROM users
     ORDER BY username ASC;`);
 }
@@ -640,7 +643,7 @@ export async function getUserByUsername(
   username: string
 ): Promise<User | null> {
   return await db.oneOrNone(
-    `SELECT username, display_name, registered_on, is_admin 
+    `SELECT username, display_name, registered_on, is_admin, is_premium
     FROM users
     WHERE username = $1;`,
     [username]
@@ -658,6 +661,14 @@ export async function toggleAdminForUser(
 ) {
   const query = `UPDATE users SET is_admin = $2 WHERE username = $1 RETURNING username;`;
   return db.one(query, [username, should_be_admin]);
+}
+
+export async function togglePremiumForUser(
+  username: string,
+  should_be_premium: boolean
+) {
+  const query = `UPDATE users SET is_premium = $2 WHERE username = $1 RETURNING username;`;
+  return db.one(query, [username, should_be_premium]);
 }
 
 // tags

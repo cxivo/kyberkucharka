@@ -7,6 +7,7 @@ export const users: User[] = [
     password: "cx",
     registered_on: new Date(Date.UTC(2025, 3, 20, 19, 8, 20)),
     is_admin: true,
+    is_premium: false,
   },
   {
     username: "cimrman",
@@ -14,6 +15,7 @@ export const users: User[] = [
     password: "jj",
     registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
     is_admin: false,
+    is_premium: false,
   },
   {
     username: "admin",
@@ -21,6 +23,7 @@ export const users: User[] = [
     password: "nbusr123",
     registered_on: new Date(Date.UTC(1970, 1, 1, 0, 0, 0)),
     is_admin: true,
+    is_premium: false,
   },
 ];
 

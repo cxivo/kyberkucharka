@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS users (
     password varchar(64) NOT NULL,
     registered_on timestamp,
     email varchar(256),
-    is_admin boolean NOT NULL DEFAULT false
+    is_admin boolean NOT NULL DEFAULT false,
+    is_premium boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS ingredients (

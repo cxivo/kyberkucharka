@@ -5,6 +5,7 @@ export interface User {
   registered_on?: Date;
   email?: string;
   is_admin: boolean;
+  is_premium: boolean;
 }
 
 export interface Tag {
@@ -123,6 +124,7 @@ export const DEFAULT_RECIPE: Recipe = {
     display_name: "",
     registered_on: new Date(),
     is_admin: false,
+    is_premium: false,
   },
   title: "",
   preparation_time: 0,
@@ -145,6 +147,7 @@ export const DEFAULT_USER: User = {
   username: "",
   display_name: "",
   is_admin: false,
+  is_premium: false
 };
 
 export const TEASPOON_ML = 5;

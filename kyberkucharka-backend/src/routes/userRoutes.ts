@@ -6,6 +6,7 @@ import {
   getUserByUsername,
   getUsers,
   toggleAdminForUser,
+  togglePremiumForUser,
 } from "../databaseFunctions";
 import { authenticateToken } from "../auth";
 
@@ -72,7 +73,7 @@ router.put(
   authenticateToken,
   (req: Request, res: Response) => {
     const username = req.params.username;
-    const should_be_admin = req.body.should_be_admin;
+    const should_be_admin = req.body.newStatus;
 
     if (username === "admin") {
       res.status(403).json({
@@ -90,6 +91,32 @@ router.put(
     }
 
     toggleAdminForUser(username ?? "", should_be_admin)
+      .then(() => {
+        res.status(200).json({});
+      })
+      .catch(() => {
+        res.status(404).json({ message: "User not found" });
+      });
+  }
+);
+
+// update premium status for user
+router.put(
+  "/modify-premium/:username",
+  authenticateToken,
+  (req: Request, res: Response) => {
+    const username = req.params.username;
+    const should_be_admin = req.body.newStatus;
+
+    if (!res.locals.user.is_admin) {
+      res.status(403).json({
+        message:
+          "You don't have the permission to update the premium status of this user.",
+      });
+      return;
+    }
+
+    togglePremiumForUser(username ?? "", should_be_admin)
       .then(() => {
         res.status(200).json({});
       })

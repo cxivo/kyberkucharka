@@ -52,10 +52,10 @@ export default function UsersList() {
     });
   }
 
-  function modifyAdminStatus(username: string, should_be_admin: boolean) {
-    fetch(`/api/users/modify-admin/${username}`, {
+  function modifyStatus(username: string, newStatus: boolean, path: string) {
+    fetch(`/api/users/modify-${path}/${username}`, {
       method: "PUT",
-      body: JSON.stringify({should_be_admin: should_be_admin}),
+      body: JSON.stringify({newStatus: newStatus}),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
@@ -80,6 +80,7 @@ export default function UsersList() {
             <th scope="col">Meno</th>
             <th scope="col">Čas registrácie</th>
             <th scope="col">Administrátor</th>
+            <th scope="col">Prémiový používateľ</th>
             <th scope="col">Zmazať</th>
           </tr>
         </thead>
@@ -103,7 +104,16 @@ export default function UsersList() {
                   type="checkbox"
                   defaultChecked={user.is_admin}
                   onChange={(e) =>
-                    modifyAdminStatus(user.username, e.target.checked)
+                    modifyStatus(user.username, e.target.checked, "admin")
+                  }
+                ></input>
+              </td>
+              <td>
+                <input
+                  type="checkbox"
+                  defaultChecked={user.is_premium}
+                  onChange={(e) =>
+                    modifyStatus(user.username, e.target.checked, "premium")
                   }
                 ></input>
               </td>
