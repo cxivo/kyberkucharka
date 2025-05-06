@@ -532,6 +532,13 @@ export async function updateRecipe(
         [id]
       );
 
+      // remove existing tags
+      await transaction.none(
+        `DELETE FROM used_recipe_tags
+        WHERE recipe = $1;`,
+        [id]
+      );
+
       await addSectionsAndStuff(r2, recipe, id, transaction);
     })
     .then(() => {
