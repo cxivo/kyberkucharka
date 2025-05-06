@@ -173,13 +173,13 @@ export default function ReadRecipe() {
                 <Tooltip id="recipe-title-tooltip" />
               </div>
               <div className="recipe-body">
-                <p className="recipe-author">
+                <div className="recipe-author">
                   (autor:{" "}
                   <Link to={`/user/${recipeData?.author?.username}`}>
                     {recipeData?.author?.display_name}
                   </Link>
                   )
-                </p>
+                </div>
 
                 {recipeData?.image_link && (
                   <img
@@ -195,7 +195,7 @@ export default function ReadRecipe() {
                   <p>{recipeData?.description}</p>
                   <h2>Ingrediencie</h2>
 
-                  <p>
+                  <div>
                     Merať v:{" "}
                     <select
                       autoFocus
@@ -232,7 +232,7 @@ export default function ReadRecipe() {
                         e.currentTarget.value = e.currentTarget.value || "0";
                       }}
                     />
-                  </p>
+                  </div>
 
                   {recipeData?.sections?.map((section) => (
                     <div key={section.id} className="recipe-section">
@@ -252,7 +252,7 @@ export default function ReadRecipe() {
                       </ul>
                     </div>
                   ))}
-                  <p
+                  <div
                     data-tooltip-id="recipe-mass-tooltip"
                     data-tooltip-content="Hmotnosť spočítaná z hmotností z ingrediencií; nerátajú sa straty"
                   >
@@ -271,7 +271,7 @@ export default function ReadRecipe() {
                     )}{" "}
                     g
                     <Tooltip id="recipe-mass-tooltip" />
-                  </p>
+                  </div>
                   <h2>Postup</h2>
                   <p style={{ whiteSpace: "pre-line" }}>
                     {recipeData?.instructions}

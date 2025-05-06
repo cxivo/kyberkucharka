@@ -59,7 +59,7 @@ export function forkSubmit(_slug: string, recipe: Recipe) {
 }
 
 export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
-  const [recipeData, setRecipeData] = useState<Recipe>(DEFAULT_RECIPE);
+  const [recipeData, setRecipeData] = useState<Recipe>(structuredClone(DEFAULT_RECIPE));
   const [availableTags, setAvailableTags] = useState<OptionsList[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("načítavam...");
@@ -78,12 +78,13 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
   >([]);
 
   const { slug = "" } = useParams();
-  const params = useParams();
 
   let navigate = useNavigate();
 
   // fetch the recipe
-  useEffect(() => {
+  function init() {
+    setLoading(true);
+
     const fetchData = async () => {
       fetchRecipe(
         slug,
@@ -103,7 +104,6 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
           }
 
           setRecipeData(result);
-          setLoading(false);
         },
         // http error
         (status, message) =>
@@ -120,15 +120,16 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     };
 
     // if creating a new recipe, no data will be loaded
-    if (slug !== "") {
+    if (type !== "create") {
       fetchData();
     } else {
-      setRecipeData(DEFAULT_RECIPE);
-      setLoading(false);
+      setRecipeData(structuredClone(DEFAULT_RECIPE));
     }
-  }, [params]);
+  }
 
   useEffect(() => {
+    init();
+
     // fetch all ingredients
     fetchIngredients().then((result) => {
       setSelectableIngredients(result.sort(ingredientAlphabeticalComparator));
@@ -146,6 +147,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
 
   function submitRecipe(event?: React.SyntheticEvent<HTMLFormElement>) {
     event?.preventDefault();
+    console.log("submitting:");
     console.log(recipeData);
     setSendingDisabled(true);
 
@@ -167,6 +169,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
             `An error has occured while trying to add the new recipe: ${json.message}, ${json.error}`
           );
         } else {
+          setRecipeData(structuredClone(DEFAULT_RECIPE));
           navigate(`/recipes/${json.newID}`);
         }
       })
@@ -175,6 +178,8 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
 
   useEffect(() => {
     console.log(recipeData);
+
+    setLoading(false);
 
     // soft prevent sending recipe with empty title
     setSendingDisabled(recipeData.title == "");
@@ -214,6 +219,7 @@ export default function EditRecipe({ submitAction, type }: EditRecipeProps) {
     const newRecipe: Recipe = { ...recipeData };
     newRecipe.sections[index] = section;
     setRecipeData(newRecipe);
+    console.log(`section update: ${section}`)
   }
 
   function createNewIngredient(
