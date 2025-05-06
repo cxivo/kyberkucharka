@@ -6,7 +6,7 @@ import {
   UsedIngredient,
 } from "../../../common-interfaces/interfaces";
 import {
-  allowedUnits,
+  allowedUnitsExpanded,
   amountToGrams,
   formatAmount,
   gramsToAmount,
@@ -80,7 +80,7 @@ export default function EditableIngredient({
           }}
           value={usedUnit}
         >
-          {allowedUnits(used_ingredient.ingredient).map((u) => (
+          {allowedUnitsExpanded(used_ingredient.ingredient).map((u) => (
             <option value={u} key={u}>
               {formatAmount(
                 used_ingredient.ingredient,

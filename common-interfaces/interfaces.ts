@@ -32,6 +32,16 @@ export const measurement_unit_list: measurement_unit[] = [
   "cup",
 ];
 
+export type measurement_unit_expanded =
+  | measurement_unit
+  | "us_cup"
+  | "oz"
+  | "lb"
+  | "fl_oz"
+  | "liquid_pt"
+  | "qt"
+  | "imp_gal";
+
 export type measurement_method =
   | "primary"
   | "grams"

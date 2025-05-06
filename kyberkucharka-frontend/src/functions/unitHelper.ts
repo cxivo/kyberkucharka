@@ -3,11 +3,12 @@ import {
   Ingredient,
   measurement_method,
   measurement_unit,
+  measurement_unit_expanded,
   TEASPOONS_PER_TABLESPOON,
   UsedIngredient,
 } from "../../../common-interfaces/interfaces";
 
-export function getUnitName(unit: measurement_unit) {
+export function getUnitName(unit: measurement_unit_expanded) {
   switch (unit) {
     case "g":
       return "gramy";
@@ -23,6 +24,20 @@ export function getUnitName(unit: measurement_unit) {
       return "kusy";
     case "cup":
       return "šálky";
+    case "fl_oz":
+      return "tekutá unca";
+    case "imp_gal":
+      return "galóny";
+    case "lb":
+      return "libry";
+    case "liquid_pt":
+      return "pint";
+    case "oz":
+      return "unca";
+    case "qt":
+      return "quart";
+    case "us_cup":
+      return "americká šálka";
     default:
       return "<neznáme>";
   }
@@ -94,7 +109,7 @@ export function amountToGramsUsed(
 export function amountToGrams(
   amount: number,
   ingredient: Ingredient,
-  unit: measurement_unit
+  unit: measurement_unit_expanded
 ): number {
   switch (unit) {
     case "g":
@@ -114,6 +129,21 @@ export function amountToGrams(
       return amount * (ingredient.mass_per_piece ?? 1);
     case "cup":
       return amount * CUP_ML * (ingredient.density ?? 1);
+    // imperial whackery
+    case "fl_oz":
+      return amount * (ingredient.density ?? 1) * 29.5735;
+    case "imp_gal":
+      return amount * (ingredient.density ?? 1) * 4546;
+    case "lb":
+      return amount * 453.5924;
+    case "liquid_pt":
+      return amount * (ingredient.density ?? 1) * 473;
+    case "oz":
+      return amount * 28.3495;
+    case "qt":
+      return amount * (ingredient.density ?? 1) * 946.3529;
+    case "us_cup":
+      return amount * (ingredient.density ?? 1) * 236.5882;
     default:
       return 0;
   }
@@ -136,7 +166,7 @@ export function gramsToAmountInPrimaryIngredient(
 export function gramsToAmount(
   grams: number,
   ingredient: Ingredient,
-  unit: measurement_unit
+  unit: measurement_unit_expanded
 ): number {
   switch (unit) {
     case "g":
@@ -156,6 +186,21 @@ export function gramsToAmount(
       return grams / (ingredient.mass_per_piece ?? 1);
     case "cup":
       return grams / (CUP_ML * (ingredient.density ?? 1));
+    // imperial whackery
+    case "fl_oz":
+      return grams / ((ingredient.density ?? 1) * 29.5735);
+    case "imp_gal":
+      return grams / ((ingredient.density ?? 1) * 4546);
+    case "lb":
+      return grams / 453.5924;
+    case "liquid_pt":
+      return grams / ((ingredient.density ?? 1) * 473);
+    case "oz":
+      return grams / 28.3495;
+    case "qt":
+      return grams / ((ingredient.density ?? 1) * 946.3529);
+    case "us_cup":
+      return grams / ((ingredient.density ?? 1) * 236.5882);
     default:
       return grams;
   }
@@ -168,11 +213,18 @@ const declensions_tbsp = ["lyžica", "lyžice", "lyžíc"];
 const declensions_pc = ["kus", "kusy", "kusov"];
 const declensions_pack = ["balenie", "balenia", "balení"];
 const declensions_cup = ["šálka", "šálky", "šálok"];
+const declensions_fl_oz = ["tekutá unca", "tekuté unce", "tekutých uncí"];
+const declensions_imp_gal = ["galón", "galóny", "galónov"];
+const declensions_lb =  ["libra", "libry", "libier"];
+const declensions_liquid_pt = ["pinta", "pinty", "pint"];
+const declensions_oz = ["unca", "unce", "uncí"];
+const declensions_qt = ["quart", "quarty", "quartov"];
+const declensions_us_cup = ["americká šálka", "americké šálky", "amerických šálok"];
 
 export function formatAmount(
   ingredient: Ingredient,
   grams: number,
-  unit: measurement_unit
+  unit: measurement_unit_expanded
 ): string {
   const amount = roundToAtMostDecimals(gramsToAmount(grams, ingredient, unit));
   const declension =
@@ -191,6 +243,21 @@ export function formatAmount(
       return declensions_pc[declension];
     case "cup":
       return declensions_cup[declension];
+    // imperial whackery 
+    case "fl_oz":
+      return declensions_fl_oz[declension]
+    case "imp_gal":
+      return declensions_imp_gal[declension]
+    case "lb":
+      return declensions_lb[declension]
+    case "liquid_pt":
+      return declensions_liquid_pt[declension]
+    case "oz":
+      return declensions_oz[declension]
+    case "qt":
+      return declensions_qt[declension]
+    case "us_cup":
+        return declensions_us_cup[declension]
     default:
       return declensions_g[declension];
   }
@@ -213,6 +280,24 @@ export function allowedUnits(ingredient: Ingredient): measurement_unit[] {
 
   if (ingredient.density != null) {
     units.push("ml", "cup");
+  }
+
+  if (ingredient.mass_per_piece != null) {
+    units.push("pc", "pack");
+  }
+
+  if (ingredient.mass_per_tablespoon != null) {
+    units.push("tsp", "tbsp");
+  }
+
+  return units;
+}
+
+export function allowedUnitsExpanded(ingredient: Ingredient): measurement_unit_expanded[] {
+  const units: measurement_unit_expanded[] = ["g", "oz", "lb"];
+
+  if (ingredient.density != null) {
+    units.push("ml", "cup", "fl_oz", "imp_gal", "liquid_pt", "qt", "us_cup");
   }
 
   if (ingredient.mass_per_piece != null) {
