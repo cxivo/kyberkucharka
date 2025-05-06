@@ -112,4 +112,4 @@ CREATE TABLE IF NOT EXISTS used_recipe_tags (
             ON DELETE CASCADE
 ); */
 
-CREATE EXTENSION unaccent; 
+CREATE EXTENSION IF NOT EXISTS unaccent; 

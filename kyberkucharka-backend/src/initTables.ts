@@ -8,5 +8,6 @@ dropTables()
     const a = await getRecipesByName("raňajky");
     console.log(a);
   }).then(() => {
+    console.log("done! you can now kill the process");
     exit(0);
   });

@@ -601,8 +601,8 @@ export async function addUser(user: User): Promise<User> {
   const hash = bcrypt.hashSync(user.password ?? "");
   user.password = hash;
 
-  const query = `INSERT INTO users(username, display_name, password, registered_on, email)
-    VALUES ($<username>, $<display_name>, $<password>, NOW(), $<email>) RETURNING username, display_name, registered_on, is_admin;`;
+  const query = `INSERT INTO users(username, display_name, password, registered_on)
+    VALUES ($<username>, $<display_name>, $<password>, NOW()) RETURNING username, display_name, registered_on, is_admin;`;
   return db.one(query, user);
 }
 
@@ -713,6 +713,7 @@ export async function deleteTag(id: number): Promise<number> {
 // init
 
 export async function initTables() {
+  console.log("initializing tables");
   const ingredientsPromises = ingredients.map((i) => addIngredient(i));
   const usersPromises: Promise<any>[] = users.map((u) => addUser(u));
 
@@ -735,19 +736,24 @@ export async function initTables() {
 
   // give admin powers to the, well, admin
   await db.none("UPDATE users SET is_admin = true WHERE username = 'admin';");
+  console.log("tables initialized");
 }
 
 export async function dropTables() {
+  console.log("dropping tables");
   try {
     await db.none(readFileSync("./migrations/schema/dropTables.sql", "utf-8"));
+    console.log("tables dropped");
   } catch (e) {
     console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
   }
 }
 
 export async function createTables() {
+  console.log("creating tables");
   try {
     await db.none(readFileSync("./migrations/schema/tables.sql", "utf-8"));
+    console.log("tables created");
   } catch (e) {
     console.error(e instanceof Error ? e.stack : `Unknown problem: ${e}`);
   }
