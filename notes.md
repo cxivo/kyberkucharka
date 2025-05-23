@@ -8,3 +8,4 @@
 - užívateľské štýly - vyber si vlastný stôl
 - maybe nahraď content-editable inputmi
 - https://stackoverflow.com/questions/4069718/postgres-insert-if-does-not-exist-already
+- how to backup: `pg_dump connection-string > backup.txt`

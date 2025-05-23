@@ -42,12 +42,12 @@ export default function Popup() {
                 navigate(
                   `/search?` +
                     new URLSearchParams({
-                      requiredTags: `[8]`, // id of the cookies tag
+                      requiredTags: `[7]`, // id of the cookies tag
                     })
                 );
               }}
             >
-              Ukáž recepty!
+              Ukáž cookies!
             </button>
             <button className="kyberbutton" type="button" onClick={okayStopShowingMeThisDialog}>
               Choď preč
