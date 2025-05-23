@@ -127,7 +127,7 @@ export default function HowToUse() {
             <ul>
               <li>Pridáte názov, v nominatíve</li>
               <li>
-                V čom sa primárnej surovina meria - ako sa najčastejšie objavuje
+                V čom sa primárne surovina meria - ako sa najčastejšie objavuje
                 v receptoch. Ak je to pol na pol, preferujte radšej gramy.
               </li>
               <li>
